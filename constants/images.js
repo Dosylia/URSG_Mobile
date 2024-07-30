@@ -6,6 +6,7 @@ import logo from "../assets/images/logo_ursg.png";
 import logoWhite from "../assets/images/logo_ursg_white.png";
 import empty from "../assets/images/empty.png";
 import ahri from "../assets/images/Ahri.png"
+import joystick from "../assets/images/joystick.png"
 
 
-export default { profile, thumbnail, cards, path, logo, logoWhite, empty, swipeIcon, ahri };
+export default { profile, thumbnail, cards, path, logo, logoWhite, empty, ahri, joystick };
