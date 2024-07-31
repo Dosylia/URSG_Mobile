@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import { View, Text, Image, ScrollView } from "react-native";
-import { Link } from 'expo-router';
+import { Redirect, router } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { CustomButton } from "../components";
 
@@ -39,7 +39,7 @@ export default function App() {
 
           <CustomButton 
           title="Join with google"
-          handlePress={() => {}}
+          handlePress={() => router.push("/basic-info")} // Add google handling function here and once done finish with router.push("/basic-info"), Reset page with error otherwise or new page?
           containerStyles ="w-full mt-7"
           />
         </View>
