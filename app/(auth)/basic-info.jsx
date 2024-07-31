@@ -1,46 +1,12 @@
 import { View, Text, ScrollView, Image } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context';
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
+import { SessionContext } from '../../context/SessionContext';
+import { Redirect, router } from 'expo-router';
 
 import { images } from "../../constants";
 import { FormField } from "../../components";
 import { CustomButton } from "../../components";
-
-function submitForm() { // Add google data from Session created in previous step
-  // Check if all form fields are filled
-  if (
-    form.username &&
-    form.gender &&
-    form.age &&
-    form.kindOfGamer &&
-    form.game &&
-    form.shortBio
-  ) {
-    // Send data to the PHP folder
-    fetch('https://ur-sg.com/createUserPhone', {
-      method: 'POST',
-      body: JSON.stringify(form),
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    })
-      .then(response => response.json())
-      .then(data => {
-        // Handle the response from the PHP folder
-        console.log(data);
-        // Redirect to next page
-        router.push("/league-data");
-      })
-      .catch(error => {
-        console.error('Error:', error);
-      });
-  } else {
-    // Display an error message or handle the case when not all form fields are filled
-    console.log('Please fill in all form fields');
-  }
-}
-
-
 
 const BasicInfo = () => {
   const [form, setForm] = useState({
@@ -52,6 +18,43 @@ const BasicInfo = () => {
     shortBio:''
 
   })
+
+  // const { setSession } = useContext(SessionContext);
+
+  function submitForm() { // Add google data from Session created in previous step
+    // Check if all form fields are filled
+    if (
+      form.username &&
+      form.gender &&
+      form.age &&
+      form.kindOfGamer &&
+      form.game &&
+      form.shortBio
+    ) {
+      // Send data to the PHP folder
+      fetch('https://ur-sg.com/createUserPhone', {
+        method: 'POST',
+        body: JSON.stringify(form),
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+        .then(response => response.json())
+        .then(data => {
+          // Handle the response from the PHP server
+          console.log(data);
+          // Store session ID if needed
+          setSession('userSession', data);
+          router.push("/league-data");
+        })
+        .catch(error => {
+          console.error('Error:', error);
+        });
+    } else {
+      // Display an error message or handle the case when not all form fields are filled
+      console.log('Please fill in all form fields');
+    }
+  }
 
   const gamerOptions = [
     { label: 'Chill / Normal games', value: 'Chill' },
@@ -131,7 +134,7 @@ const BasicInfo = () => {
           />
           <CustomButton 
              title="About your game"
-             handlePress={() => submitForm()} // Handle sending data to database and router.push("/league-data")
+             handlePress={() => router.push("/league-data")} // Handle sending data to database and router.push("/league-data")
              containerStyles ="w-full mt-7"
           />
         </View>
