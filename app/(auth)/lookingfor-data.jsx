@@ -49,11 +49,13 @@ const LookingForData = () => {
       })
         .then(response => response.json())
         .then(data => {
-          // Handle the response from the PHP server
-          console.log(data);
+          if (data.message) {
+            setErrors(data.message);
+          } else {
           // Store session ID if needed
-          setSession('userSession', data);
+          setSession('lookingforSession', data);
           router.push("/league-data");
+          }
         })
         .catch(error => {
           console.error('Error:', error);
@@ -184,7 +186,7 @@ const LookingForData = () => {
           />
           <CustomButton 
              title="About your interests"
-             handlePress={() => router.push("./tabs/swiping")} // Handle sending data to database and router.push("/looking-data")
+             handlePress={() => router.push("/swiping")} // Handle sending data to database and router.push("/swiping")
              containerStyles ="w-full mt-7"
           />
         </View>

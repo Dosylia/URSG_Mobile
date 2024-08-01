@@ -48,11 +48,13 @@ const LeagueData = () => {
       })
         .then(response => response.json())
         .then(data => {
-          // Handle the response from the PHP server
-          console.log(data);
+          if (data.message) {
+            setErrors(data.message);
+          } else {
           // Store session ID if needed
-          setSession('userSession', data);
+          setSession('leagueSession', data);
           router.push("/league-data");
+          }
         })
         .catch(error => {
           console.error('Error:', error);
@@ -164,7 +166,7 @@ const LeagueData = () => {
           />
           <CustomButton 
              title="About your interests"
-             handlePress={() => router.push("/lookingfor-data")} // Handle sending data to database and router.push("/looking-data")
+             handlePress={() => router.push("/lookingfor-data")} // Handle sending data to database and router.push("/lookingfor-data")
              containerStyles ="w-full mt-7"
           />
         </View>

@@ -8,9 +8,14 @@ import { images } from "../../constants";
 import { FormField } from "../../components";
 import { CustomButton } from "../../components";
 
+// const { setSession } = useContext(SessionContext);
+// const { googleSession } = sessions;
+// const googleId = googleSession.googleId;
+
 const BasicInfo = () => {
   const [errors, setErrors] = useState('');
   const [form, setForm] = useState({
+    // googleId : googleId,
     username: '',
     gender: '',
     age: '',
@@ -20,11 +25,10 @@ const BasicInfo = () => {
 
   })
 
-  // const { setSession } = useContext(SessionContext);
-
   function submitForm() { // Add google data from Session created in previous step
     // Check if all form fields are filled
     if (
+      googleId &&
       form.username &&
       form.gender &&
       form.age &&
@@ -42,11 +46,13 @@ const BasicInfo = () => {
       })
         .then(response => response.json())
         .then(data => {
-          // Handle the response from the PHP server
-          console.log(data);
+          if (data.message) {
+            setErrors(data.message);
+          } else {
           // Store session ID if needed
           setSession('userSession', data);
           router.push("/league-data");
+          }
         })
         .catch(error => {
           console.error('Error:', error);
