@@ -1,10 +1,8 @@
-const requireContext = require.context("../assets/roles", false, /\.(png|jpe?g|svg)$/);
-const roles = requireContext.keys().reduce((images, path) => {
-  const key = path.replace('./', '').replace(/\.(png|jpe?g|svg)$/, '');
-  images[key] = requireContext(path);
-  return images;
-}, {});
+import ADCarry from '../assets/roles/ADCarry.png';
+import Support from '../assets/roles/support.png';
+import Fill from '../assets/roles/fill.png';
+import Jungler from '../assets/roles/Jungler.png';
+import Midlaner from '../assets/roles/Midlaner.png';
+import Toplaner from '../assets/roles/Toplaner.png';
 
-export default { 
-  ...roles
-};
+export default { ADCarry, Support, Fill, Jungler, Midlaner, Toplaner };

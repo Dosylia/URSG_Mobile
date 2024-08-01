@@ -9,6 +9,7 @@ import { FormField } from "../../components";
 import { CustomButton } from "../../components";
 
 const BasicInfo = () => {
+  const [errors, setErrors] = useState('');
   const [form, setForm] = useState({
     username: '',
     gender: '',
@@ -52,7 +53,7 @@ const BasicInfo = () => {
         });
     } else {
       // Display an error message or handle the case when not all form fields are filled
-      console.log('Please fill in all form fields');
+      setErrors('Please fill all fields.');
     }
   }
 
@@ -82,6 +83,7 @@ const BasicInfo = () => {
             resizeMode='contain'
           />
           <Text className="text-2xl text-white text-semibpmd mt-5 font-psemibold">Basic informations</Text>
+          {errors ? <Text className="text-red-600 text-xl my-2">{errors}</Text> : null}
           <FormField 
             title="Username"
             value={form.username}
