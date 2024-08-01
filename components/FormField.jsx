@@ -5,8 +5,8 @@ import { Picker } from '@react-native-picker/picker';
 
 import { champions } from "../constants";
 import { images } from "../constants";
-// import { roles } from "../constants";
-// import { ranks } from "../constants";
+import { roles } from "../constants";
+import { ranks } from "../constants";
 
 const FormField = ({ title, value, handleChangeText, placeholder, otherStyles, keyboardType, isSelect, options, hasImage, image, imageOrigin, ...props }) => {
 
@@ -14,10 +14,10 @@ const FormField = ({ title, value, handleChangeText, placeholder, otherStyles, k
     let baseImage;
     if (imageOrigin == 'champions') {
       baseImage = champions;
-    // } else if (imageOrigin == 'roles') {
-    //   baseImage = roles;
-    // } else if (imageOrigin == 'rank') {
-    //   baseImage = ranks;
+    } else if (imageOrigin == 'roles') {
+      baseImage = roles;
+    } else if (imageOrigin == 'ranks') {
+      baseImage = ranks;
     } else {
       baseImage = images;
     }

@@ -8,8 +8,14 @@ import { images } from "../../constants";
 import { FormField } from "../../components";
 import { CustomButton } from "../../components";
 
+// const { setSession } = useContext(SessionContext);
+// const { googleSession } = sessions;
+// const googleId = googleSession.googleId;
+
 const BasicInfo = () => {
+  const [errors, setErrors] = useState('');
   const [form, setForm] = useState({
+    // googleId : googleId,
     username: '',
     gender: '',
     age: '',
@@ -19,11 +25,10 @@ const BasicInfo = () => {
 
   })
 
-  // const { setSession } = useContext(SessionContext);
-
   function submitForm() { // Add google data from Session created in previous step
     // Check if all form fields are filled
     if (
+      googleId &&
       form.username &&
       form.gender &&
       form.age &&
@@ -41,18 +46,20 @@ const BasicInfo = () => {
       })
         .then(response => response.json())
         .then(data => {
-          // Handle the response from the PHP server
-          console.log(data);
+          if (data.message) {
+            setErrors(data.message);
+          } else {
           // Store session ID if needed
           setSession('userSession', data);
           router.push("/league-data");
+          }
         })
         .catch(error => {
           console.error('Error:', error);
         });
     } else {
       // Display an error message or handle the case when not all form fields are filled
-      console.log('Please fill in all form fields');
+      setErrors('Please fill all fields.');
     }
   }
 
@@ -82,6 +89,7 @@ const BasicInfo = () => {
             resizeMode='contain'
           />
           <Text className="text-2xl text-white text-semibpmd mt-5 font-psemibold">Basic informations</Text>
+          {errors ? <Text className="text-red-600 text-xl my-2">{errors}</Text> : null}
           <FormField 
             title="Username"
             value={form.username}
