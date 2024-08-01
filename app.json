@@ -13,9 +13,20 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "bundleIdentifier": "com.ursgapp.googleauthexporeactnative",
+      "supportsTablet": true,
+      "infoPlist": {
+        "CFBundleURLTypes": [
+          {
+            "CFBundleURLSchemes": [
+              "com.googleusercontent.apps.515525000068-0ci6qe38vc834ei52mpj57ofmhrl1e35 "
+            ]
+          }
+        ]
+      }
     },
     "android": {
+      "package": "com.ursgapp.googleauthexporeactnative",
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"

@@ -14,61 +14,61 @@ export default function App() {
     const { sub: googleId, name: fullName, given_name: givenName, family_name: familyName, picture: imageUrl, email } = responsePayload;
 
     if (googleId && fullName && givenName && familyName && imageUrl && email) {
-        const userData = { googleId, fullName, givenName, familyName, imageUrl, email };
+      const userData = { googleId, fullName, givenName, familyName, imageUrl, email };
 
-        fetch('https://ur-sg.com/googleTest', {
-            method: 'POST',
-            body: JSON.stringify(userData),
-            headers: { 'Content-Type': 'application/json' }
-        })
+      fetch('https://ur-sg.com/googleTest', {
+        method: 'POST',
+        body: JSON.stringify(userData),
+        headers: { 'Content-Type': 'application/json' }
+      })
         .then(response => response.json())
         .then(data => {
-            if (data.message !== "Success") {
-                setErrors(data.message);
-                return;
-            }
+          if (data.message !== "Success") {
+            setErrors(data.message);
+            return;
+          }
 
-            setSession('googleSession', data.googleUser);
+          setSession('googleSession', data.googleUser);
 
-            if (!data.newUser) {
-                setSession('userSession', data.user);
-                
-                if (data.userExists) {
-                    if (data.leagueUserExists) {
-                        setSession('leagueSession', data.leagueUser);
+          if (!data.newUser) {
+            setSession('userSession', data.user);
 
-                        if (data.lookingForUserExists) {
-                            setSession('lookingforSession', data.lookingForUser);
-                            router.push("/swiping");
-                        } else {
-                            router.push("/lookingfor-data");
-                        }
-                    } else {
-                        router.push("/league-data");
-                    }
+            if (data.userExists) {
+              if (data.leagueUserExists) {
+                setSession('leagueSession', data.leagueUser);
+
+                if (data.lookingForUserExists) {
+                  setSession('lookingforSession', data.lookingForUser);
+                  router.push("/swiping");
                 } else {
-                    router.push("/basic-info");
+                  router.push("/lookingfor-data");
                 }
+              } else {
+                router.push("/league-data");
+              }
+            } else {
+              router.push("/basic-info");
             }
+          }
         })
         .catch(error => console.error('Error:', error));
     } else {
-        setErrors('Please fill all fields.');
+      setErrors('Please fill all fields.');
     }
-}
+  }
   return (
     <SafeAreaView className="bg-darkgrey h-full">
       <ScrollView contentContainerStyle={{
-          height: "100%",
-        }}>
+        height: "100%",
+      }}>
         <View className="w-full flex justify-normal items-center h-full px-4">
-          <Image 
+          <Image
             source={images.logoWhite}
             className="w-[150px] h-[100px] mt-5"
             resizeMode='contain'
           />
 
-          <Image 
+          <Image
             source={images.ahri}
             className="max-w-[380px] w-full h-[300px] rounded-md"
             resizeMode='contain'
@@ -76,7 +76,7 @@ export default function App() {
 
           <View className="relative mt-5">
             <Text className="text-3xl text-white font-bold text-center">
-              Find your perfect {"\n"} 
+              Find your perfect {"\n"}
               soulmate with {' '}
               <Text className="text-mainred">URSG</Text>
             </Text>
@@ -86,10 +86,10 @@ export default function App() {
             Level up your game with your future match
           </Text>
           {errors ? <Text className="text-red-600 text-xl my-2">{errors}</Text> : null}
-          <CustomButton 
-          title="Join with google"
-          handlePress={() => router.push("/confirm-mail")} // Add google handling function here and once done finish with router.push("/basic-info"), Reset page with error otherwise or new page?
-          containerStyles ="w-full mt-7"
+          <CustomButton
+            title="Join with google"
+            handlePress={() => router.push("/confirm-mail")} // Add google handling function here and once done finish with router.push("/basic-info"), Reset page with error otherwise or new page?
+            containerStyles="w-full mt-7"
           />
         </View>
       </ScrollView>
