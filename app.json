@@ -13,13 +13,15 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.dosylia.URSG" 
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.dosylia.URSG" 
     },
     "web": {
       "bundler": "metro",
@@ -39,6 +41,9 @@
       "eas": {
         "projectId": "94f54469-7266-46df-b5a2-c4628f8d9a8d"
       }
-    }
+    },
+    "assetBundlePatterns": [
+      "assets/*"
+    ]
   }
 }
