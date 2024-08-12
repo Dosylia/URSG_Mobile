@@ -8,6 +8,7 @@ import {
   GoogleSignin,
 } from "@react-native-google-signin/google-signin";
 import { images } from "../constants";
+import axios from 'axios';
 
 export default function App() {
   const [errors, setErrors] = useState('');
@@ -56,15 +57,15 @@ export default function App() {
       const userData = { googleId, fullName, givenName, familyName, imageUrl, email };
       console.log("Submitting form with user data:", userData);
 
-      fetch('https://ur-sg.com/googleTest', {
-        method: 'POST',
+      axios.post('https://ur-sg.com/googleTest', {
+        googleData: JSON.stringify(userData)
+      }, {
         headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-        },
-        body: "googleData=" + encodeURIComponent(JSON.stringify(userData))
-    })
-      .then(response => response.json())
-      .then(data => {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        }
+      })
+      .then(response => {
+        const data = response.data;
         console.log("Response from server:", data);
         if (data.message !== "Success") {
           setErrors(data.message);
@@ -99,12 +100,23 @@ export default function App() {
         }
       })
       .catch(error => {
-        console.error("Error submitting form:", error);
+        if (axios.isAxiosError(error)) {
+          console.error("Error submitting form:", error.message);
+          console.error("Error details:", {
+            message: error.message,
+            code: error.code,
+            config: error.config,
+            response: error.response ? {
+              status: error.response.status,
+              data: error.response.data,
+              headers: error.response.headers
+            } : undefined
+          });
+        } else {
+          console.error("Error submitting form:", error);
+        }
         setErrors('Error submitting form');
       });
-    } else {
-      console.error("Please fill all fields.");
-      setErrors('Please fill all fields.');
     }
   }
 
@@ -134,7 +146,7 @@ export default function App() {
           </Text>
           {errors ? <Text className="text-red-600 text-xl my-2">{errors}</Text> : null}
           <CustomButton
-            title="Join with Google.."
+            title="Join with Google"
             handlePress={signIn}
             containerStyles="w-full mt-7"
           />
