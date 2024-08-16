@@ -3,6 +3,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { SessionContext } from '../../context/SessionContext';
 import React, { useState, useContext, useEffect } from 'react'
 import { Redirect, router } from 'expo-router';
+import { SessionContext } from '../../context/SessionContext';
 
 import { images } from "../../constants";
 import { FormField } from "../../components";
@@ -13,15 +14,30 @@ import rankList from "../../constants/rankList";
 import serverList from "../../constants/serverList";
 
 const LeagueData = () => {
+  const { sessions, setSession } = useContext(SessionContext);
   const [errors, setErrors] = useState('');
   const [form, setForm] = useState({
+    userId: '',
     main1: '',
     main2: '',
     main3: '',
-    rank: '',
-    role: '',
-    server: ''
+    rank: 'Bronze',
+    role: 'AD Carry',
+    server: 'Europe West'
   })
+
+  useEffect(() => {
+    if (sessions.userSession && sessions.googleSession.userId) {
+      console.log("User session found:", sessions.userSession);
+      setForm(prevForm => ({
+        ...prevForm,
+        userId: sessions.userSession.userId,
+        // Optionally, you can prepopulate other fields if necessary
+      }));
+    } else {
+      console.log("Google session not yet populated");
+    }
+  }, [sessions.userSession]);
 
   // const { setSession } = useContext(SessionContext);
 
@@ -39,16 +55,16 @@ const LeagueData = () => {
       form.main2 !== form.main3
     ) {
       // Send data to the PHP folder
-      fetch('https://ur-sg.com/createLeagueUserPhone', {
-        method: 'POST',
-        body: JSON.stringify(form),
+      axios.post('https://ur-sg.com/createLeagueUserPhone', {
+        leagueData: JSON.stringify(form)
+      }, {
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/x-www-form-urlencoded'
         }
       })
-        .then(response => response.json())
-        .then(data => {
-          if (data.message) {
+        .then(response => {
+          const data = response.data;
+          if (data.message !== 'Success') {
             setErrors(data.message);
           } else {
           // Store session ID if needed

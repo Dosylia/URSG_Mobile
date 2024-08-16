@@ -3,16 +3,18 @@ import { View, Text, Image, ScrollView } from "react-native";
 import { router } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { CustomButton } from "../components";
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import {
   GoogleSignin,
 } from "@react-native-google-signin/google-signin";
 import { images } from "../constants";
 import axios from 'axios';
+import { SessionContext } from '../context/SessionContext';
 
 export default function App() {
   const [errors, setErrors] = useState('');
   const [error, setError] = useState();
+  const { setSession, sessions } = useContext(SessionContext);
 
   const configureGoogleSignIn = () => {
     GoogleSignin.configure({
@@ -57,7 +59,7 @@ export default function App() {
       const userData = { googleId, fullName, givenName, familyName, imageUrl, email };
       console.log("Submitting form with user data:", userData);
 
-      axios.post('https://ur-sg.com/googleTest', {
+      axios.post('https://ur-sg.com/googleDataPhone', {
         googleData: JSON.stringify(userData)
       }, {
         headers: {
@@ -72,17 +74,26 @@ export default function App() {
           return;
         }
 
-        setSession('googleSession', data.googleUser);
+        setSession('googleSession', data.googleUser, (updatedSessions) => {
+          console.log("Google session after setting:", updatedSessions.googleSession);
+      });
 
         if (!data.newUser) {
-          setSession('userSession', data.user);
+          setSession('userSession', data.user, (updatedSessions) => {
+            console.log("User session after setting:", updatedSessions.userSession);
+        });
+  
 
           if (data.userExists) {
             if (data.leagueUserExists) {
-              setSession('leagueSession', data.leagueUser);
+              setSession('leagueSession', data.leagueUser, (updatedSessions) => {
+                console.log("League user session after setting:", updatedSessions.leagueSession);
+            });
 
               if (data.lookingForUserExists) {
-                setSession('lookingforSession', data.lookingForUser);
+                setSession('lookingforSession', data.lookingForUser, (updatedSessions) => {
+                  console.log("Looking for session after setting:", updatedSessions.lookingforSession);
+              });
                 console.log("Navigating to /swiping");
                 router.push("/swiping");
               } else {
@@ -121,38 +132,38 @@ export default function App() {
   }
 
   return (
-    <SafeAreaView className="bg-darkgrey h-full">
-      <ScrollView contentContainerStyle={{ height: "100%" }}>
-        <View className="w-full flex justify-normal items-center h-full px-4">
-          <Image
-            source={images.logoWhite}
-            className="w-[150px] h-[100px] mt-5"
-            resizeMode='contain'
-          />
-          <Image
-            source={images.ahri}
-            className="max-w-[380px] w-full h-[300px] rounded-md"
-            resizeMode='contain'
-          />
-          <View className="relative mt-5">
-            <Text className="text-3xl text-white font-bold text-center">
-              Find your perfect {"\n"}
-              soulmate with {' '}
-              <Text className="text-mainred">URSG</Text>
+      <SafeAreaView className="bg-darkgrey h-full">
+        <ScrollView contentContainerStyle={{ height: "100%" }}>
+          <View className="w-full flex justify-normal items-center h-full px-4">
+            <Image
+              source={images.logoWhite}
+              className="w-[150px] h-[100px] mt-5"
+              resizeMode='contain'
+            />
+            <Image
+              source={images.ahri}
+              className="max-w-[380px] w-full h-[300px] rounded-md"
+              resizeMode='contain'
+            />
+            <View className="relative mt-5">
+              <Text className="text-3xl text-white font-bold text-center">
+                Find your perfect {"\n"}
+                soulmate with {' '}
+                <Text className="text-mainred">URSG</Text>
+              </Text>
+            </View>
+            <Text className="text-center text-white mt-5 font-pregular mb-5">
+              Level up your game with your future match
             </Text>
+            {errors ? <Text className="text-red-600 text-xl my-2">{errors}</Text> : null}
+            <CustomButton
+              title="Join with Google"
+              handlePress={signIn}
+              containerStyles="w-full mt-7"
+            />
           </View>
-          <Text className="text-center text-white mt-5 font-pregular mb-5">
-            Level up your game with your future match
-          </Text>
-          {errors ? <Text className="text-red-600 text-xl my-2">{errors}</Text> : null}
-          <CustomButton
-            title="Join with Google"
-            handlePress={signIn}
-            containerStyles="w-full mt-7"
-          />
-        </View>
-      </ScrollView>
-      <StatusBar backgroundColor='#161622' style='light' />
-    </SafeAreaView>
+        </ScrollView>
+        <StatusBar backgroundColor='#161622' style='light' />
+      </SafeAreaView>
   );
 }

@@ -10,11 +10,17 @@ export const SessionProvider = ({ children }) => {
     lookingforSession: {}
   });
 
-  const setSession = (type, data) => {
-    setSessions(prevSessions => ({
-      ...prevSessions,
-      [type]: data
-    }));
+  const setSession = (type, data, callback) => {
+    console.log(`Setting session: ${type}`, data);
+    setSessions(prevSessions => {
+      const updatedSessions = {
+        ...prevSessions,
+        [type]: data
+      };
+      console.log('Updated sessions:', updatedSessions);
+      if (callback) callback(updatedSessions);
+      return updatedSessions;
+    });
   };
 
   return (

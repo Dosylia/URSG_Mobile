@@ -2,6 +2,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import { useFonts } from "expo-font";
 import { SplashScreen, Stack } from 'expo-router';
 import { useEffect } from "react";
+import { SessionProvider } from '../context/SessionContext';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -36,9 +37,11 @@ const RootLayout = () => {
   }
 
   return (
-    <Stack>
-        <Stack.Screen name="index" options={{ headerShown:false }}/>
-    </Stack>
+    <SessionProvider>
+      <Stack>
+          <Stack.Screen name="index" options={{ headerShown:false }}/>
+      </Stack>
+    </SessionProvider>
   )
 }
 
