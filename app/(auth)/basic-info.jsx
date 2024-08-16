@@ -1,34 +1,49 @@
 import { View, Text, ScrollView, Image } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context';
-import React, { useState, useContext } from 'react'
+import React, { useState, useContext, useEffect } from 'react'
 import { SessionContext } from '../../context/SessionContext';
 import { Redirect, router } from 'expo-router';
+import axios from 'axios';
 
 import { images } from "../../constants";
 import { FormField } from "../../components";
 import { CustomButton } from "../../components";
 
-// const { setSession } = useContext(SessionContext);
-// const { googleSession } = sessions;
-// const googleId = googleSession.googleId;
+
 
 const BasicInfo = () => {
+  const { sessions, setSession } = useContext(SessionContext);
   const [errors, setErrors] = useState('');
   const [form, setForm] = useState({
-    // googleId : googleId,
+    googleId: '',
     username: '',
-    gender: '',
+    gender: 'Male',
     age: '',
-    kindOfGamer: '',
-    game: '',
-    shortBio:''
+    kindOfGamer: 'Chill',
+    game: 'League of Legends',
+    shortBio: ''
+  });
 
-  })
+  useEffect(() => {
+    if (sessions.googleSession && sessions.googleSession.googleId) {
+      console.log("Google session found:", sessions.googleSession);
+      setForm(prevForm => ({
+        ...prevForm,
+        googleId: sessions.googleSession.googleUserId,
+        // Optionally, you can prepopulate other fields if necessary
+      }));
+    } else {
+      console.log("Google session not yet populated");
+    }
+  }, [sessions.googleSession]);
+
 
   function submitForm() { // Add google data from Session created in previous step
     // Check if all form fields are filled
+    console.log("Submitting form with data:", form);
+
     if (
-      googleId &&
+      form.googleId &&
       form.username &&
       form.gender &&
       form.age &&
@@ -37,16 +52,16 @@ const BasicInfo = () => {
       form.shortBio
     ) {
       // Send data to the PHP folder
-      fetch('https://ur-sg.com/createUserPhone', {
-        method: 'POST',
-        body: JSON.stringify(form),
+      axios.post('https://ur-sg.com/createUserPhone', {
+        userData: JSON.stringify(form)
+      }, {
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/x-www-form-urlencoded'
         }
       })
-        .then(response => response.json())
-        .then(data => {
-          if (data.message) {
+        .then(response => {
+          const data = response.data;
+          if (data.message !== 'Success') {
             setErrors(data.message);
           } else {
           // Store session ID if needed
@@ -55,7 +70,22 @@ const BasicInfo = () => {
           }
         })
         .catch(error => {
-          console.error('Error:', error);
+          if (axios.isAxiosError(error)) {
+            console.error("Error submitting form:", error.message);
+            console.error("Error details:", {
+              message: error.message,
+              code: error.code,
+              config: error.config,
+              response: error.response ? {
+                status: error.response.status,
+                data: error.response.data,
+                headers: error.response.headers
+              } : undefined
+            });
+          } else {
+            console.error("Error submitting form:", error);
+          }
+          setErrors('Error submitting form');
         });
     } else {
       // Display an error message or handle the case when not all form fields are filled
@@ -76,7 +106,7 @@ const BasicInfo = () => {
   ];
 
   const gameOptions = [
-    { label: 'League of Legends', value: 'league-of-legends' },
+    { label: 'League of Legends', value: 'League of Legends' },
   ];
 
   return (
@@ -142,7 +172,7 @@ const BasicInfo = () => {
           />
           <CustomButton 
              title="About your game"
-             handlePress={() => router.push("/league-data")} // Handle sending data to database and router.push("/league-data")
+             handlePress={submitForm} // Handle sending data to database and router.push("/league-data")
              containerStyles ="w-full mt-7"
           />
         </View>
