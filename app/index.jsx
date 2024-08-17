@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import { View, Text, Image, ScrollView } from "react-native";
-import { router } from 'expo-router';
+import { router, Redirect } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { CustomButton } from "../components";
 import React, { useState, useEffect, useContext } from 'react';
@@ -81,7 +81,7 @@ export default function App() {
         if (!data.newUser) {
           setSession('userSession', data.user, (updatedSessions) => {
             console.log("User session after setting:", updatedSessions.userSession);
-        });
+          });
   
 
           if (data.userExists) {
@@ -108,6 +108,9 @@ export default function App() {
             console.log("Navigating to /basic-info");
             router.push("/basic-info");
           }
+        } else {
+          console.log("Navigating to /basic-info");
+          router.push("/basic-info");
         }
       })
       .catch(error => {
@@ -131,6 +134,21 @@ export default function App() {
     }
   }
 
+  if (
+    sessions.googleSession && Object.keys(sessions.googleSession).length > 0 &&
+    sessions.userSession && Object.keys(sessions.userSession).length > 0 &&
+    sessions.leagueSession && Object.keys(sessions.leagueSession).length > 0 &&
+    sessions.lookingforSession && Object.keys(sessions.lookingforSession).length > 0
+  ) {
+    console.log("Google session found:", sessions.googleSession);
+    console.log("User session found:", sessions.userSession);
+    console.log("League session found:", sessions.leagueSession);
+    console.log("Looking for session found:", sessions.lookingforSession);
+    return <Redirect href="/swiping" />;
+  } else {
+    console.log("Not all sessions found:", sessions);
+  }
+ 
   return (
       <SafeAreaView className="bg-darkgrey h-full">
         <ScrollView contentContainerStyle={{ height: "100%" }}>

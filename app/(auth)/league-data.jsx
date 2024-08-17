@@ -3,7 +3,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { SessionContext } from '../../context/SessionContext';
 import React, { useState, useContext, useEffect } from 'react'
 import { Redirect, router } from 'expo-router';
-import { SessionContext } from '../../context/SessionContext';
+import axios from 'axios';
 
 import { images } from "../../constants";
 import { FormField } from "../../components";
@@ -18,16 +18,16 @@ const LeagueData = () => {
   const [errors, setErrors] = useState('');
   const [form, setForm] = useState({
     userId: '',
-    main1: '',
-    main2: '',
-    main3: '',
+    main1: 'Aatrox',
+    main2: 'Aatrox',
+    main3: 'Aatrox',
     rank: 'Bronze',
-    role: 'AD Carry',
+    role: 'ADCarry',
     server: 'Europe West'
   })
 
   useEffect(() => {
-    if (sessions.userSession && sessions.googleSession.userId) {
+    if (sessions.userSession && sessions.userSession.userId) {
       console.log("User session found:", sessions.userSession);
       setForm(prevForm => ({
         ...prevForm,
@@ -35,14 +35,14 @@ const LeagueData = () => {
         // Optionally, you can prepopulate other fields if necessary
       }));
     } else {
-      console.log("Google session not yet populated");
+      console.log("User session not yet populated");
     }
   }, [sessions.userSession]);
 
-  // const { setSession } = useContext(SessionContext);
 
   function submitForm() { // Add google data from Session created in previous step
     // Check if all form fields are filled
+    console.log("Submitting form with data:", form);
     if (
       form.main1 &&
       form.main2 &&
@@ -69,14 +69,30 @@ const LeagueData = () => {
           } else {
           // Store session ID if needed
           setSession('leagueSession', data);
-          router.push("/league-data");
+          router.push("/lookingfor-data");
           }
         })
         .catch(error => {
-          console.error('Error:', error);
+          if (axios.isAxiosError(error)) {
+            console.error("Error submitting form:", error.message);
+            console.error("Error details:", {
+              message: error.message,
+              code: error.code,
+              config: error.config,
+              response: error.response ? {
+                status: error.response.status,
+                data: error.response.data,
+                headers: error.response.headers
+              } : undefined
+            });
+          } else {
+            console.error("Error submitting form:", error);
+          }
+          setErrors('Error submitting form');
         });
     } else {
       // Display an error message or handle the case when not all form fields are filled
+      console.error("Mains cannot be same");
       setErrors('Please fill all fields and ensure main champions are unique.');
     }
   }
@@ -182,7 +198,7 @@ const LeagueData = () => {
           />
           <CustomButton 
              title="About your interests"
-             handlePress={() => router.push("/lookingfor-data")} // Handle sending data to database and router.push("/lookingfor-data")
+             handlePress={submitForm}
              containerStyles ="w-full mt-7"
           />
         </View>

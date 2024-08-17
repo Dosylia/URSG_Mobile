@@ -42,8 +42,12 @@ const BasicInfo = () => {
     // Check if all form fields are filled
     console.log("Submitting form with data:", form);
 
+    if (!form.googleId) {
+      setErrors('Google ID not found');
+      return;
+    }
+
     if (
-      form.googleId &&
       form.username &&
       form.gender &&
       form.age &&
@@ -65,7 +69,9 @@ const BasicInfo = () => {
             setErrors(data.message);
           } else {
           // Store session ID if needed
-          setSession('userSession', data);
+          setSession('userSession', data.user, (updatedSessions) => {
+            console.log("User session after setting:", updatedSessions.userSession);
+          });
           router.push("/league-data");
           }
         })

@@ -3,6 +3,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { SessionContext } from '../../context/SessionContext';
 import React, { useState, useContext, useEffect } from 'react'
 import { Redirect, router } from 'expo-router';
+import axios from 'axios';
 
 import { images } from "../../constants";
 import { FormField } from "../../components";
@@ -12,18 +13,35 @@ import roleList from "../../constants/roleList";
 import rankList from "../../constants/rankList";
 
 const LookingForData = () => {
+  const { sessions, setSession } = useContext(SessionContext);
   const [errors, setErrors] = useState('');
   const [form, setForm] = useState({
-    gender: '',
-    kindOfGamer: '',
-    main1: '',
-    main2: '',
-    main3: '',
-    rank: '',
-    role: ''
+    userId: '',
+    gender: 'Male',
+    kindOfGamer: 'Chill',
+    game: 'League of Legends',
+    main1: 'Aatrox',
+    main2: 'Aatrox',
+    main3: 'Aatrox',
+    rank: 'Bronze',
+    role: 'ADCarry'
   })
 
-  // const { setSession } = useContext(SessionContext);
+  useEffect(() => {
+    if (sessions.userSession && sessions.userSession.userId) {
+      console.log("User session found:", sessions.userSession);
+      setForm(prevForm => ({
+        ...prevForm,
+        userId: sessions.userSession.userId,
+        game: sessions.userSession.game,
+        // Optionally, you can prepopulate other fields if necessary
+      }));
+    } else {
+      console.log("User session not yet populated");
+    }
+  }, [sessions.userSession]);
+
+
 
   function submitForm() { // Add google data from Session created in previous step
     // Check if all form fields are filled
@@ -40,25 +58,40 @@ const LookingForData = () => {
       form.main2 !== form.main3
     ) {
       // Send data to the PHP folder
-      fetch('https://ur-sg.com/createLookingForUserPhone', {
-        method: 'POST',
-        body: JSON.stringify(form),
+      axios.post('https://ur-sg.com/createLookingForUserPhone', {
+        lookingforData: JSON.stringify(form)
+      }, {
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/x-www-form-urlencoded'
         }
       })
-        .then(response => response.json())
-        .then(data => {
+        .then(response => {
+          const data = response.data;
           if (data.message) {
             setErrors(data.message);
           } else {
           // Store session ID if needed
           setSession('lookingforSession', data);
-          router.push("/league-data");
+          router.push("/swiping");
           }
         })
         .catch(error => {
-          console.error('Error:', error);
+          if (axios.isAxiosError(error)) {
+            console.error("Error submitting form:", error.message);
+            console.error("Error details:", {
+              message: error.message,
+              code: error.code,
+              config: error.config,
+              response: error.response ? {
+                status: error.response.status,
+                data: error.response.data,
+                headers: error.response.headers
+              } : undefined
+            });
+          } else {
+            console.error("Error submitting form:", error);
+          }
+          setErrors('Error submitting form');
         });
     } else {
       // Display an error message or handle the case when not all form fields are filled
@@ -186,7 +219,7 @@ const LookingForData = () => {
           />
           <CustomButton 
              title="About your interests"
-             handlePress={() => router.push("/swiping")} // Handle sending data to database and router.push("/swiping")
+             handlePress={submitForm} // Handle sending data to database and router.push("/swiping")
              containerStyles ="w-full mt-7"
           />
         </View>
