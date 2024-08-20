@@ -114,11 +114,14 @@ const LookingForData = () => {
   ];
 
 
-  const champions = championList?.filter(champion => (
-    champion !== form.main1 && champion !== form.main2 && champion !== form.main3
-  )).map(champion => (
-    { label: champion, value: champion }
-  ));
+  const availableChampionsForMain1 = championList;
+  const availableChampionsForMain2 = form.main1 !== 'Aatrox' ? 
+  championList.filter(champion => champion !== form.main1) : 
+  championList;
+const availableChampionsForMain3 = form.main1 !== 'Aatrox' && form.main2 !== 'Aatrox' ? 
+  championList.filter(champion => champion !== form.main1 && champion !== form.main2) : 
+  championList;
+
 
   const roles = roleList.map((role) => (
     { label: role, value: role }
@@ -165,7 +168,7 @@ const LookingForData = () => {
             otherStyles="mt-7"
             isSelect={true}
             hasImage={true}
-            options={champions}
+            options={availableChampionsForMain1.map(champion => ({ label: champion, value: champion }))}
             image={form.main1}
             imageOrigin='champions'
           />
@@ -177,7 +180,7 @@ const LookingForData = () => {
             otherStyles="mt-7"
             isSelect={true}
             hasImage={true}
-            options={champions}
+            options={availableChampionsForMain2.map(champion => ({ label: champion, value: champion }))}
             image={form.main2}
             imageOrigin='champions'
           />
@@ -189,7 +192,7 @@ const LookingForData = () => {
             otherStyles="mt-7"
             isSelect={true}
             hasImage={true}
-            options={champions}
+            options={availableChampionsForMain3.map(champion => ({ label: champion, value: champion }))}
             image={form.main3}
             imageOrigin='champions'
           />

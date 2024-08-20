@@ -8,23 +8,37 @@ import { images } from "../constants";
 import { roles } from "../constants";
 import { ranks } from "../constants";
 
+import championMapping from "../constants/championMapping";
+import roleMapping from '../constants/roleMaping';
+import rankMapping from '../constants/rankMapping';
+
+
+
 const FormField = ({ title, value, handleChangeText, placeholder, otherStyles, keyboardType, isSelect, options, hasImage, image, imageOrigin, ...props }) => {
 
   function displayImage(imageOrigin, image) {
     let baseImage;
+    let optionKey = image;
+    let valueKey;
     if (imageOrigin == 'champions') {
       baseImage = champions;
+      optionKey = championMapping[image];
+      valueKey = championMapping[options[0].value];
     } else if (imageOrigin == 'roles') {
       baseImage = roles;
+      optionKey = roleMapping[image];
+      valueKey = roleMapping[options[0].value];
     } else if (imageOrigin == 'ranks') {
       baseImage = ranks;
+      optionKey = rankMapping[image];
+      valueKey = rankMapping[options[0].value];
     } else {
       baseImage = images;
     }
-    if (!image) {
+    if (typeof optionKey === 'undefined' || optionKey === null || optionKey === '') {
       return (
         <Image 
-          source={baseImage[options[0].value]}
+          source={baseImage[valueKey]}
           className="w-10 h-10 rounded-full"
           resizeMode='contain'
         />
@@ -32,7 +46,7 @@ const FormField = ({ title, value, handleChangeText, placeholder, otherStyles, k
     } else {
       return (
         <Image 
-          source={baseImage[image]}
+          source={baseImage[optionKey]}
           className="w-10 h-10 rounded-full"
           resizeMode='contain'
         />

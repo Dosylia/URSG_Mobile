@@ -1,16 +1,20 @@
 import React from 'react';
 import { View, Image } from 'react-native';
 import { champions, roles, ranks } from "../constants";
+import championMapping from "../constants/championMapping";
+import roleMapping from '../constants/roleMaping';
+import rankMapping from '../constants/rankMapping';
 
 const LeagueDataComponent = ({ main1, main2, main3, role, rank }) => {
   const getChampionImage = (championName) => {
-    if (!championName) return champions.Aatrox; 
-    const normalizedChampionName = championName.replace(/\s+/g, '');
-    return champions[normalizedChampionName] || champions.Aatrox;
+    const imageKey = championMapping[championName];
+    return imageKey ? champions[imageKey] : null;
   };
 
-  const getRankImage = (rank) => ranks[rank] || ranks.Bronze;
-  const getRoleImage = (role) => roles[role] || roles.Support;
+  roleKey = roleMapping[role];
+  rankKey = rankMapping[rank];
+  const getRankImage = (rank) => ranks[rankKey] || ranks.Bronze;
+  const getRoleImage = (role) => roles[roleKey] || roles.Support;
 
   return (
     <View className="flex-row justify-between mb-4">

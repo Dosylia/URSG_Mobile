@@ -4,8 +4,8 @@ import ProfileSection from './ProfileSection';
 import { images } from "../constants";
 import LeagueDataComponent from './LeagueDataComponent';
 
-const RiotProfileSection = ({ userData }) => {
-  const riotProfilePicture = images.defaultpictureLol; // riotProfilePicture = userData?.sProfileIcon ? { uri: userData.sProfileIcon } : images.defaultpictureLol;
+const RiotProfileSection = ({ userData, isProfile }) => {
+  const riotProfilePicture = images.defaultpictureLol; // riotProfilePicture = userData?.sProfileIcon ? userData.sProfileIcon : images.defaultpictureLol;
   const riotName = userData?.account || 'Unknown Player';
   const server = userData?.server || 'N/A';
   const rank = userData?.sRank || 'N/A';
@@ -15,11 +15,11 @@ const RiotProfileSection = ({ userData }) => {
   const shortBio = userData?.shortBio || 'No bio available';
 
   return (
-    <ProfileSection title="About you">
+    <ProfileSection title={isProfile ? 'About you' : 'About them'}>
       {userData && (
         <View>
           {/* Riot Profile Section */}
-          {userData.sUsername && (
+          {userData.sUsername && isProfile && (
             <View className="flex-row items-center mb-4">
               <Image
                 source={riotProfilePicture}
@@ -44,10 +44,15 @@ const RiotProfileSection = ({ userData }) => {
               rank={userData.rank}
             />
           )}
-
-          <Text className="text-white">Gender: {gender}</Text>
-          <Text className="text-white">Kind of gamer: {kindOfGamer}</Text>
-          <Text className="text-white">Your short bio: {shortBio}</Text>
+      <Text className="text-white">
+        {isProfile ? 'Gender' : 'Their gender'}: {gender}
+      </Text>
+      <Text className="text-white">
+        {isProfile ? 'Kind of gamer' : 'Their kind of gamer'}: {kindOfGamer}
+      </Text>
+      <Text className="text-white">
+        {isProfile ? 'Short bio' : 'Their short bio'}: {shortBio}
+      </Text>
         </View>
       )}
     </ProfileSection>

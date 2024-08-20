@@ -1,10 +1,10 @@
 const roleList = [
-    "ADCarry",
+    "AD Carry",
     "Support",
     "Fill",
     "Jungler",
-    "Midlaner",
-    "Toplaner"
+    "Mid laner",
+    "Top laner"
 ];
 
 

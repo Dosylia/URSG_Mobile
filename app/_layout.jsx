@@ -3,6 +3,7 @@ import { useFonts } from "expo-font";
 import { SplashScreen, Stack } from 'expo-router';
 import { useEffect } from "react";
 import { SessionProvider } from '../context/SessionContext';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -37,11 +38,13 @@ const RootLayout = () => {
   }
 
   return (
-    <SessionProvider>
-      <Stack>
-          <Stack.Screen name="index" options={{ headerShown:false }}/>
-      </Stack>
-    </SessionProvider>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <SessionProvider>
+        <Stack>
+            <Stack.Screen name="index" options={{ headerShown:false }}/>
+        </Stack>
+      </SessionProvider>
+    </GestureHandlerRootView>
   )
 }
 

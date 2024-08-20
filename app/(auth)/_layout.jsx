@@ -18,6 +18,10 @@ const AuthLayout = () => {
               name="lookingfor-data"
               option={{ headerShown: false }}
             />
+            <Stack.Screen 
+              name="update-profile"
+              option={{ headerShown: false }}
+            />
         </Stack>
       <StatusBar backgroundColor="#161622" style="light" />
     </>

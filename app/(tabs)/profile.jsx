@@ -9,39 +9,50 @@ import { ProfileHeader } from "../../components";
 import { RiotProfileSection } from "../../components";
 import { LookingForSection } from "../../components";
 import { UserDataComponent } from "../../components";
+import { CustomButton } from "../../components";
 
 const profile = () => {
   const { sessions, setSession } = useContext(SessionContext);
   const [userData, setUserData] = useState(null);
-  console.log('userData:', userData);
+
   const handleLogout = async () => {
     try {
       await GoogleSignin.signOut();
       console.log('Logged out');
+      
+      // Clear session and user data
+      setSession(null);
+      setUserData(null);
+      
       router.push("/");
     } catch (error) {
       console.error('Error logging out:', error);
     }
   };
 
+  const handleProfileUpdate = () => {
+    router.push("/(auth)/update-profile");
+  };
 
   return (
     <ScrollView className="flex-1 bg-gray-900 p-4">
-        <UserDataComponent sessions={sessions} onUserDataChange={setUserData} />
-       <TouchableOpacity
-        onPress={handleLogout}
-        className="flex w-full items-end mb-7"
-      >
-        <Image
-          source={icons.logout}
-          resizeMode="contain"
-          className="w-6 h-6"
-        />
-      </TouchableOpacity>
-     <ProfileHeader userData={userData} />
-     <RiotProfileSection userData={userData} />
-     <LookingForSection userData={userData} />
-   </ScrollView>
+      <UserDataComponent sessions={sessions} onUserDataChange={setUserData} />
+
+
+      <ProfileHeader userData={userData} />
+      <CustomButton 
+        title="Bind a League of Legends account"
+        handlePress={() => router.push("/(auth)/bind-account")} // Handle sending data to database and router.push("/league-data")
+        containerStyles ="w-full mt-7"
+      />
+      <CustomButton 
+        title="Add social links"
+        handlePress={() => router.push("/(auth)/update-social")} // Handle sending data to database and router.push("/league-data")
+        containerStyles ="w-full mt-7 mb-7"
+      />
+      <RiotProfileSection userData={userData} isProfile={true} />
+      <LookingForSection userData={userData} />
+    </ScrollView>
   );
 };
 

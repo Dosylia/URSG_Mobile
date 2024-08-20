@@ -13,6 +13,7 @@ import eye from "../assets/icons/eye.png";
 import play from "../assets/icons/play.png";
 import swipeIcon from "../assets/icons/swipe.png";
 import bubbleChat from "../assets/icons/bubble-chat.png";
+import gear from "../assets/icons/gear.png";
 
 export default {
   play,
@@ -30,4 +31,5 @@ export default {
   eye,
   swipeIcon,
   bubbleChat,
+  gear,
 };
