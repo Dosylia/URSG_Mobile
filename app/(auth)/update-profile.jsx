@@ -42,7 +42,7 @@ const updateProfile = () => {
   });
 
   useEffect(() => {
-    if (sessions.googleSession && sessions.googleSession.googleId) {
+    if (sessions.googleSession && sessions.userSession && sessions.leagueSession && sessions.lookingforSession) {
       setForm(prevForm => ({
         ...prevForm,
       }));
