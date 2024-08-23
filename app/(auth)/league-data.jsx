@@ -192,7 +192,7 @@ const availableChampionsForMain3 = form.main1 !== 'Aatrox' && form.main2 !== 'Aa
             title="Server"
             value={form.server}
             handleChangeText={(value) => setForm({ ...form, server: value })}
-            placeholder= "Choose your role"
+            placeholder= "Choose your server"
             otherStyles="mt-7"
             isSelect={true}
             options={servers}

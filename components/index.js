@@ -5,6 +5,7 @@ import ProfileHeader from "./ProfileHeader";
 import ProfileSection from "./ProfileSection";
 import RiotProfileSection from "./RiotProfileSection";
 import LookingForSection from "./LookingForSection";
+import UserDataChat from "./UserDataChat";
 
 export {
     CustomButton,
@@ -13,5 +14,6 @@ export {
     ProfileHeader,
     ProfileSection,
     RiotProfileSection,
-    LookingForSection
+    LookingForSection,
+    UserDataChat
   };

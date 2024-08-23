@@ -3,6 +3,7 @@ import { View, Text, Image } from 'react-native';
 import ProfileSection from './ProfileSection';
 import { images } from "../constants";
 import LeagueDataComponent from './LeagueDataComponent';
+import he from 'he';
 
 const RiotProfileSection = ({ userData, isProfile }) => {
   const riotProfilePicture = images.defaultpictureLol; // riotProfilePicture = userData?.sProfileIcon ? userData.sProfileIcon : images.defaultpictureLol;
@@ -12,7 +13,7 @@ const RiotProfileSection = ({ userData, isProfile }) => {
   const level = userData?.sLevel || 'N/A';
   const gender = userData?.gender || 'N/A';
   const kindOfGamer = userData?.kindOfGamer || 'N/A';
-  const shortBio = userData?.shortBio || 'No bio available';
+  const shortBio = he.decode(userData?.shortBio) || 'No bio available';
 
   return (
     <ProfileSection title={isProfile ? 'About you' : 'About them'}>

@@ -24,7 +24,7 @@ const championMapping = {
     "Corki": "Corki",
     "Darius": "Darius",
     "Diana": "Diana",
-    "Dr.Mundo": "Dr.Mundo",
+    "Dr. Mundo": "DrMundo",
     "Draven": "Draven",
     "Ekko": "Ekko",
     "Elise": "Elise",

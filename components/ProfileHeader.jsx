@@ -4,7 +4,7 @@ import { Linking } from 'react-native';
 import { images } from "../constants";
 
 const ProfileHeader = ({ userData }) => {
-  const profileImage = images.defaultpicture; //   const profileImage = userData && userData.picture ? userData.picture : images.defaultpicture;
+  const profileImage = images.defaultpicture; //   const profileImage = userData && userData.friend_picture ? userData.friend_picture : images.defaultpicture;
 
 
   const handleOpenLink = (url) => {

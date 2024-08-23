@@ -10,7 +10,7 @@ import { FormField } from "../../components";
 import { CustomButton } from "../../components";
 
 
-const updateProfile = () => {
+const updateSocial = () => {
   const { sessions, setSession } = useContext(SessionContext);
   const [errors, setErrors] = useState('');
   const [form, setForm] = useState({
@@ -20,6 +20,7 @@ const updateProfile = () => {
     instagram: sessions.userSession.instagram,
     twitch: sessions.userSession.twitch
   });
+  const hasAnySocial = form.twitter || form.instagram || form.discord || form.twitch;
 
   useEffect(() => {
     if (sessions.googleSession && sessions.userSession && sessions.leagueSession && sessions.lookingforSession) {
@@ -95,45 +96,47 @@ const updateProfile = () => {
             className="w-[100px] h-[50px]"
             resizeMode='contain'
           />
-          <Text className="text-2xl text-white text-semibpmd mt-5 font-psemibold">Update your profile</Text>
-          {errors ? <Text className="text-red-600 text-xl my-2">{errors}</Text> : null}
-          <FormField 
+        <Text className="text-2xl text-white text-semibpmd mt-5 font-psemibold">
+        {hasAnySocial ? "Update your social profiles" : "Add your social profiles"}
+        </Text>
+        {errors ? <Text className="text-red-600 text-xl my-2">{errors}</Text> : null}
+        <FormField 
             title="Twitter"
             value={form.twitter}
             placeholder={form.twitter ? form.twitter : "URL of your Twitter profile"}
             handleChangeText={(e) => setForm({ ...form, twitter: e })}
             otherStyles="mt-7"
-          />
-            <FormField 
+        />
+        <FormField 
             title="Instagram"
             value={form.instagram}
             placeholder={form.instagram ? form.instagram : "URL of your Instagram profile"}
             handleChangeText={(e) => setForm({ ...form, instagram: e })}
             otherStyles="mt-7"
-            />
-            <FormField 
+        />
+        <FormField 
             title="Discord"
             value={form.discord}
             placeholder={form.discord ? form.discord : "Your Discord username"}
             handleChangeText={(e) => setForm({ ...form, discord: e })}
             otherStyles="mt-7"
-            />
-            <FormField 
+        />
+        <FormField 
             title="Twitch"
             value={form.twitch}
             placeholder={form.twitch ? form.twitch : "URL of your Twitch profile"}
             handleChangeText={(e) => setForm({ ...form, twitch: e })}
             otherStyles="mt-7"
-            />
-          <CustomButton 
-             title="Update profile"
-             handlePress={submitForm} // Handle sending data to database and router.push("/league-data")
-             containerStyles ="w-full mt-7"
-          />
+        />
+        <CustomButton 
+            title="Update profile"
+            handlePress={submitForm} // Handle sending data to database and router.push("/league-data")
+            containerStyles ="w-full mt-7"
+        />
         </View>
       </ScrollView>
     </SafeAreaView>
   )
 }
 
-export default updateProfile
+export default updateSocial
