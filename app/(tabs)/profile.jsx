@@ -1,4 +1,4 @@
-import { Text, View, ScrollView } from 'react-native';
+import { Text, View, ScrollView, TouchableOpacity } from 'react-native';
 import React, { useState, useEffect, useContext, useCallback } from 'react';
 import { useFocusEffect } from '@react-navigation/native'; // Import the hook
 import axios from 'axios';
@@ -9,9 +9,93 @@ import { ProfileHeader, RiotProfileSection, LookingForSection, CustomButton, Use
 const Profile = () => {
   const { sessions, setSession } = useContext(SessionContext);
   const [userData, setUserData] = useState(null);
+  const [friendRequests, setFriendRequests] = useState([]);
   const friendId = sessions?.friendId;
 
   console.log('Friend ID:', friendId);
+
+  const getFriendList = async () => { 
+    const { userId } = sessions.userSession;
+    axios.post('https://ur-sg.com/getFriendRequestPhone', new URLSearchParams({ userId }).toString(), {
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+    })
+    .then(response => {
+      const data = response.data;
+      if (data.message !== 'Success') {
+        setErrors(data.message);
+      } else {
+        setFriendRequests(data.friendRequest || []); 
+      }
+    })
+    .catch(error => {
+      if (axios.isAxiosError(error)) {
+        console.error("Error submitting form:", error.message);
+        console.error("Error details:", {
+          message: error.message,
+          code: error.code,
+          config: error.config,
+          response: error.response ? {
+            status: error.response.status,
+            data: error.response.data,
+            headers: error.response.headers
+          } : undefined
+        });
+      }
+    });
+  };
+
+  const handleAcceptRequest = async (friendId, frId) => {
+    try {
+      const response = await axios.post('https://ur-sg.com/acceptFriendRequestPhone', new URLSearchParams({ friendId, frId }).toString(), {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+      });
+      if (response.data.message === 'Success') {
+        console.log('Friend request accepted:', response.data.message);
+        setFriendRequests(prevRequests => {
+          console.log('Previous requests:', prevRequests);
+          const updatedRequests = prevRequests.filter(request => request.fr_id !== response.data.fr_id);
+          console.log('Updated requests:', updatedRequests);
+          return updatedRequests;
+        });
+      } else {
+        console.error('Failed to accept friend request:', response.data.message);
+      }
+    } catch (error) {
+      console.error('Error accepting friend request:', error);
+    }
+  };
+
+  const handleRefuseRequest = async (friendId, frId) => {
+    try {
+      const response = await axios.post('https://ur-sg.com/refuseFriendRequestPhone', new URLSearchParams({ friendId, frId }).toString(), {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+      });
+
+      if (response.data.success && response.data.message === 'Success') {
+        console.log('Friend request refused:', response.data.message);
+        setFriendRequests(prevRequests => {
+          console.log('Previous requests:', prevRequests);
+          const updatedRequests = prevRequests.filter(request => request.fr_id !== response.data.fr_id); // Use fr_id from response
+          console.log('Updated requests:', updatedRequests);
+          return updatedRequests;
+        });
+      } else {
+        console.error('Failed to refuse friend request:', response.data.message);
+      }
+    } catch (error) {
+      console.error('Error refusing friend request:', error);
+    }
+  };
+
+  useEffect(() => {
+    getFriendList();
+  }, []);
 
   useEffect(() => {
     if (friendId) {
@@ -66,7 +150,6 @@ const Profile = () => {
     }
   }, [friendId]);
 
-  // Clear the friendId when the profile screen is focused
   useFocusEffect(
     useCallback(() => {
       return () => {
@@ -77,10 +160,37 @@ const Profile = () => {
 
   return (
     <ScrollView className="flex-1 bg-gray-900 p-4">
+
+      {/* Rest of your component code */}
       {!friendId && (
         <UserDataComponent sessions={sessions} onUserDataChange={setUserData} />
       )} 
       {userData && <ProfileHeader userData={userData} />}
+
+      {/* Friend Requests */}
+      {!friendId && friendRequests.length > 0 && (
+        <View>
+          {friendRequests.map((request) => (
+            <View key={request.user_id} className="flex-row justify-between items-center mb-2 p-3 bg-gray-800 rounded">
+              <Text className="text-white">{request.user_username}</Text>
+              <View className="flex-row">
+                <TouchableOpacity 
+                  onPress={() => handleAcceptRequest(request.user_id, request.fr_id)} 
+                  className="bg-mainred p-2 rounded mr-2"
+                >
+                  <Text className="text-white">Accept</Text>
+                </TouchableOpacity>
+                <TouchableOpacity 
+                  onPress={() => handleRefuseRequest(request.user_id, request.fr_id)} 
+                  className="bg-gray-600 p-2 rounded"
+                >
+                  <Text className="text-white">Refuse</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          ))}
+        </View>
+      )}
   
       {!friendId && ( 
         <>

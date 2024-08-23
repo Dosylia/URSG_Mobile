@@ -13,7 +13,7 @@ const RiotProfileSection = ({ userData, isProfile }) => {
   const level = userData?.sLevel || 'N/A';
   const gender = userData?.gender || 'N/A';
   const kindOfGamer = userData?.kindOfGamer || 'N/A';
-  const shortBio = he.decode(userData?.shortBio) || 'No bio available';
+  const shortBio = userData?.shortBio ? he.decode(userData.shortBio) : 'No bio available';
 
   return (
     <ProfileSection title={isProfile ? 'About you' : 'About them'}>
