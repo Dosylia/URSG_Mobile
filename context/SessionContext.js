@@ -13,17 +13,27 @@ export const SessionProvider = ({ children }) => {
 
   const setSession = (type, data, callback) => {
     console.log(`Setting session: ${type}`, data);
-  
+
     setSessions(prevSessions => {
       let updatedSessions;
-  
-      // Check if the type corresponds to a primitive value like friendId
-      if (type === 'friendId') {
+
+      // Reset all sessions if 'type' is 'reset'
+      if (type === 'reset') {
+        updatedSessions = {
+          googleSession: {},
+          userSession: {},
+          leagueSession: {},
+          lookingforSession: {},
+          friendId: null
+        };
+      } else if (type === 'friendId') {
+        // Handle updating the friendId separately
         updatedSessions = {
           ...prevSessions,
-          [type]: data  // Directly assign the new value for primitives
+          [type]: data
         };
       } else {
+        // Handle updating individual session types
         updatedSessions = {
           ...prevSessions,
           [type]: {
@@ -32,7 +42,7 @@ export const SessionProvider = ({ children }) => {
           }
         };
       }
-  
+
       console.log('Updated sessions:', updatedSessions);
       if (callback) callback(updatedSessions);
       return updatedSessions;
