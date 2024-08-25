@@ -87,15 +87,13 @@ const TabsLayout = () => {
     fetchFriendRequest();
     fetchUnreadMessage();
 
-    // Set interval to fetch data every 20 seconds
     const intervalId = setInterval(() => {
       fetchFriendRequest();
       fetchUnreadMessage();
     }, 20000);
 
-    // Cleanup interval on component unmount
     return () => clearInterval(intervalId);
-  }, []); // Empty dependency array ensures this effect runs only once on mount
+  }, []); // 
 
   const handleLogout = async () => {
     try {

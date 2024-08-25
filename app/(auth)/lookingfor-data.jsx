@@ -67,11 +67,15 @@ const LookingForData = () => {
       })
         .then(response => {
           const data = response.data;
-          if (data.message) {
+          console.log(data)
+          if (data.message !== 'Success') {
             setErrors(data.message);
           } else {
           // Store session ID if needed
-          setSession('lookingforSession', data);
+          console.log("Looking for user data submitted successfully:", data.user);
+          setSession('lookingforSession', data.user, (updatedSessions) => {
+            console.log("Looking for session after setting:", updatedSessions.lookingforSession);
+          });
           router.push("/swiping");
           }
         })

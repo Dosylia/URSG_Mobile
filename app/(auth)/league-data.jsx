@@ -67,7 +67,7 @@ const LeagueData = () => {
             setErrors(data.message);
           } else {
           // Store session ID if needed
-          setSession('leagueSession', data);
+          setSession('leagueSession', data.user);
           router.push("/lookingfor-data");
           }
         })

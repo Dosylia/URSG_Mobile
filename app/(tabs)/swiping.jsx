@@ -1,9 +1,9 @@
-import { Text, View, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
+import { ActivityIndicator, Text, View, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
 import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import { PanGestureHandler } from 'react-native-gesture-handler'; 
 import { SessionContext } from '../../context/SessionContext';
-import { ProfileHeader } from "../../components";
+import { ProfileHeader, UseSwipeAlgorithm } from "../../components";
 import { RiotProfileSection } from "../../components";
 import { UserDataComponent } from "../../components";
 
@@ -11,15 +11,38 @@ const Swiping = () => {
   const { sessions } = useContext(SessionContext);
   const [userData, setUserData] = useState(null);
   const [otherUser, setOtherUser] = useState(null);
+  const [allUsers, setAllUsers] = useState([]); 
   const [errors, setErrors] = useState(null);
   const [noMoreUsers, setNoMoreUsers] = useState(false); 
 
-  const fetchUsers = async () => {
+  const reshapedUserData = {
+    user_id: userData?.userId,
+    user_gender: userData?.gender,
+    user_age: userData?.age,
+    user_kindOfGamer: userData?.kindOfGamer,
+    user_game: userData?.game,
+    lol_server: userData?.server,
+    lol_main1: userData?.main1,
+    lol_main2: userData?.main2,
+    lol_main3: userData?.main3,
+    lol_rank: userData?.rank,
+    lol_role: userData?.role,
+    lf_gender: userData?.genderLf,
+    lf_kindofgamer: userData?.kindOfGamerLf,
+    lf_game: userData?.gameLf,
+    lf_lolmain1: userData?.main1Lf,
+    lf_lolmain2: userData?.main2Lf,
+    lf_lolmain3: userData?.main3Lf,
+    lf_lolrank: userData?.rankLf,
+    lf_lolrole: userData?.roleLf,
+  };
+
+  const fetchAllUsers = async () => {
     try {
       if (sessions.userSession && sessions.userSession.userId) {
         console.log("User session found:", sessions.userSession);
-
-        // First Axios Request
+  
+        // First Axios Request to get all users
         const allUsersResponse = await axios.post('https://ur-sg.com/getAllUsers', {
           allUsers: 'allUsers'
         }, {
@@ -27,17 +50,28 @@ const Swiping = () => {
             'Content-Type': 'application/x-www-form-urlencoded'
           }
         });
-
+  
         const allUsersData = allUsersResponse.data;
         if (allUsersData.message !== 'Success') {
           setErrors(allUsersData.message);
           return;
         }
-
+  
         const allUsers = allUsersData.allUsers;
+        setAllUsers(allUsers);
+      } else {
+        console.log("User session not yet populated");
+      }
+    } catch (error) {
+      handleAxiosError(error);
+    }
+  };
 
-        // Second Axios Request (Fixing data format)
+  const fetchUserMatching = async () => {
+    try {
+      if (sessions.userSession && sessions.userSession.userId) {
         console.log('Making request to getUserMatching');
+  
         const userId = sessions.userSession.userId;
         const userMatchingResponse = await axios.post('https://ur-sg.com/getUserMatching', 
           `userId=${encodeURIComponent(userId)}`,  // Correctly format the data
@@ -47,7 +81,7 @@ const Swiping = () => {
             }
           }
         );
-        // console.log('Received response from getUserMatching:', userMatchingResponse);
+  
         const matchingData = userMatchingResponse.data;
         if (!matchingData.success) {
           if (matchingData.error === 'No matching users found') {
@@ -56,7 +90,7 @@ const Swiping = () => {
           setErrors(matchingData.error);
           return;
         }
-
+  
         const UserMatched = {
           username: matchingData.user.user_username,
           age: matchingData.user.user_age,
@@ -69,7 +103,7 @@ const Swiping = () => {
           kindOfGamer: matchingData.user.user_kindOfGamer,
           shortBio: matchingData.user.user_shortBio,
           picture: matchingData.user.user_picture,
-          userId: matchingData.user.user_id // Make sure to include the userId for the swipe request
+          userId: matchingData.user.user_id
         };
         setOtherUser(UserMatched);
         setNoMoreUsers(false); // Reset the noMoreUsers state
@@ -77,24 +111,10 @@ const Swiping = () => {
         console.log("User session not yet populated");
       }
     } catch (error) {
-      if (axios.isAxiosError(error)) {
-        console.error("Error:", error.message);
-        console.error("Error details:", {
-          message: error.message,
-          code: error.code,
-          config: error.config,
-          response: error.response ? {
-            status: error.response.status,
-            data: error.response.data,
-            headers: error.response.headers
-          } : undefined
-        });
-      } else {
-        console.error("Error:", error);
-      }
-      setErrors('Error fetching data');
+      handleAxiosError(error);
     }
   };
+  
 
   const handleSwipe = async (direction) => {
     if (!otherUser) return;
@@ -110,7 +130,7 @@ const Swiping = () => {
       });
 
       // Fetch the next user after the swipe action
-      fetchUsers();
+      fetchUserMatching();
     } catch (error) {
       console.error("Error during swipe action:", error);
       setErrors('Error during swipe action');
@@ -127,13 +147,21 @@ const Swiping = () => {
   };
 
   useEffect(() => {
-    fetchUsers();
+    fetchAllUsers();
+    const timer = setTimeout(() => {
+      fetchUserMatching();
+    }, 2000); 
+  
+    return () => clearTimeout(timer);
   }, [sessions.userSession]);
 
   return (
     <PanGestureHandler onGestureEvent={onGestureEvent}>
       <ScrollView className="flex-1 bg-gray-900 p-4">
         <UserDataComponent sessions={sessions} onUserDataChange={setUserData} />
+        {allUsers.length > 0 && (
+          <UseSwipeAlgorithm reshapedUserData={reshapedUserData} allUsers={allUsers} />
+        )}
         {noMoreUsers ? (
           <Text className="text-white">You have seen all available profiles.</Text>
         ) : otherUser ? (
@@ -150,7 +178,7 @@ const Swiping = () => {
             </View>
           </>
         ) : (
-          <Text className="text-white">Loading...</Text>
+          <ActivityIndicator size="large" color="#e74057" />
         )}
         {errors && <Text className="text-red-500">{errors}</Text>}
       </ScrollView>

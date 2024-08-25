@@ -125,7 +125,9 @@ const updateProfile = () => {
               rankLf: form.rankLf,
               roleLf: form.roleLf
             }, () => {
-              router.push("/(tabs)/profile");
+              setTimeout(() => {
+                router.push("/(tabs)/profile");
+              }, 1000);
             });
           }
         })

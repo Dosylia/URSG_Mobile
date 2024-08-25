@@ -5,8 +5,14 @@ import { images } from "../constants";
 import LeagueDataComponent from './LeagueDataComponent';
 import he from 'he';
 
+const BASE_PROFILE_ICON_URL = 'https://ddragon.leagueoflegends.com/cdn/14.14.1/img/profileicon/';
+
 const RiotProfileSection = ({ userData, isProfile }) => {
-  const riotProfilePicture = images.defaultpictureLol; // riotProfilePicture = userData?.sProfileIcon ? userData.sProfileIcon : images.defaultpictureLol;
+  // Construct the URL for the profile icon
+  const riotProfilePicture = userData?.sProfileIcon
+    ? { uri: `${BASE_PROFILE_ICON_URL}${userData.sProfileIcon}.png` }
+    : images.defaultpictureLol;
+
   const riotName = userData?.account || 'Unknown Player';
   const server = userData?.server || 'N/A';
   const rank = userData?.sRank || 'N/A';
@@ -21,16 +27,16 @@ const RiotProfileSection = ({ userData, isProfile }) => {
         <View>
           {/* Riot Profile Section */}
           {userData.sUsername && isProfile && (
-            <View className="flex-row items-center mb-4">
+            <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 16 }}>
               <Image
                 source={riotProfilePicture}
-                className="w-12 h-12 rounded-full mr-3"
+                style={{ width: 48, height: 48, borderRadius: 24, marginRight: 12 }}
               />
               <View>
-                <Text className="text-white font-bold">{riotName}</Text>
-                <Text className="text-gray-400">{server}</Text>
-                <Text className="text-gray-400">{rank}</Text>
-                <Text className="text-gray-400">Level: {level}</Text>
+                <Text style={{ color: 'white', fontWeight: 'bold' }}>{riotName}</Text>
+                <Text style={{ color: 'gray' }}>{server}</Text>
+                <Text style={{ color: 'gray' }}>{rank}</Text>
+                <Text style={{ color: 'gray' }}>Level: {level}</Text>
               </View>
             </View>
           )}
@@ -45,15 +51,16 @@ const RiotProfileSection = ({ userData, isProfile }) => {
               rank={userData.rank}
             />
           )}
-      <Text className="text-white">
-        {isProfile ? 'Gender' : 'Their gender'}: {gender}
-      </Text>
-      <Text className="text-white">
-        {isProfile ? 'Kind of gamer' : 'Their kind of gamer'}: {kindOfGamer}
-      </Text>
-      <Text className="text-white">
-        {isProfile ? 'Short bio' : 'Their short bio'}: {shortBio}
-      </Text>
+
+          <Text style={{ color: 'white' }}>
+            {isProfile ? 'Gender' : 'Their gender'}: {gender}
+          </Text>
+          <Text style={{ color: 'white' }}>
+            {isProfile ? 'Kind of gamer' : 'Their kind of gamer'}: {kindOfGamer}
+          </Text>
+          <Text style={{ color: 'white' }}>
+            {isProfile ? 'Short bio' : 'Their short bio'}: {shortBio}
+          </Text>
         </View>
       )}
     </ProfileSection>
