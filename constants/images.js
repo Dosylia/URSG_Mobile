@@ -13,6 +13,7 @@ import instagram from "../assets/images/instagram_user.png";
 import twitch from "../assets/images/twitch_user.png";
 import defaultpicture from "../assets/images/defaultprofilepicture.jpg";
 import defaultpictureLol from "../assets/images/7.png";
+import sadBee from "../assets/images/sadbee.webp";
 
 
-export default { profile, thumbnail, cards, path, logo, logoWhite, empty, ahri, joystick, discord, instagram, twitch, twitter, defaultpicture, defaultpictureLol };
+export default { profile, thumbnail, cards, path, logo, logoWhite, empty, ahri, joystick, discord, instagram, twitch, twitter, defaultpicture, defaultpictureLol, sadBee };

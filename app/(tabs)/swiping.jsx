@@ -1,11 +1,13 @@
-import { ActivityIndicator, Text, View, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
-import React, { useState, useEffect, useContext } from 'react';
+import { ActivityIndicator, Text, View, ScrollView, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import React, { useState, useEffect, useContext, useCallback } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
 import axios from 'axios';
 import { PanGestureHandler } from 'react-native-gesture-handler'; 
 import { SessionContext } from '../../context/SessionContext';
 import { ProfileHeader, UseSwipeAlgorithm } from "../../components";
 import { RiotProfileSection } from "../../components";
 import { UserDataComponent } from "../../components";
+import { images } from "../../constants";
 
 const Swiping = () => {
   const { sessions } = useContext(SessionContext);
@@ -14,6 +16,8 @@ const Swiping = () => {
   const [allUsers, setAllUsers] = useState([]); 
   const [errors, setErrors] = useState(null);
   const [noMoreUsers, setNoMoreUsers] = useState(false); 
+  const [isLoading, setIsLoading] = useState(true);
+  const [hasSwiped, setHasSwiped] = useState(false);
 
   const reshapedUserData = {
     user_id: userData?.userId,
@@ -117,6 +121,7 @@ const Swiping = () => {
   
 
   const handleSwipe = async (direction) => {
+    setHasSwiped(true)
     if (!otherUser) return;
 
     const action = direction === 'right' ? 'swipe_yes' : 'swipe_no';
@@ -131,6 +136,7 @@ const Swiping = () => {
 
       // Fetch the next user after the swipe action
       fetchUserMatching();
+      setHasSwiped(false);
     } catch (error) {
       console.error("Error during swipe action:", error);
       setErrors('Error during swipe action');
@@ -139,21 +145,35 @@ const Swiping = () => {
 
   const onGestureEvent = (event) => {
     const { translationX } = event.nativeEvent;
-    if (translationX > 100) {
+    if (translationX > 100 && hasSwiped === false) {
       handleSwipe('right');
-    } else if (translationX < -100) {
+    } else if (translationX < -100 && hasSwiped === false) {
       handleSwipe('left');
     }
   };
+  useEffect(() => { 
+    setErrors(null);
+  }, [otherUser]);
 
-  useEffect(() => {
-    fetchAllUsers();
-    const timer = setTimeout(() => {
-      fetchUserMatching();
-    }, 2000); 
-  
-    return () => clearTimeout(timer);
-  }, [sessions.userSession]);
+  useFocusEffect(
+    useCallback(() => {
+      fetchAllUsers();
+      const timer = setTimeout(() => {
+        fetchUserMatching();
+        setIsLoading(false);
+      }, 2000); 
+    
+      return () => clearTimeout(timer);
+    }, [])
+  );
+
+  if (isLoading) {
+    return (
+      <View className="flex-1 justify-center items-center bg-gray-900">
+        <ActivityIndicator size="large" color="#e74057" />
+      </View>
+    );
+  }
 
   return (
     <PanGestureHandler onGestureEvent={onGestureEvent}>
@@ -163,10 +183,13 @@ const Swiping = () => {
           <UseSwipeAlgorithm reshapedUserData={reshapedUserData} allUsers={allUsers} />
         )}
         {noMoreUsers ? (
-          <Text className="text-white">You have seen all available profiles.</Text>
-        ) : otherUser ? (
+          <View className="flex-1 h-[500px] justify-center items-center bg-gray-900">
+            <Text className="text-white justify-center items-center">You have seen all available profiles.</Text>
+            <Image source={images.sadBee} className="w-50 h-50" />
+          </View>
+        ) : otherUser && (
           <>
-            <ProfileHeader userData={otherUser} />
+            <ProfileHeader userData={otherUser} isProfile={false}/>
             <RiotProfileSection userData={otherUser} isProfile={false} />
             <View style={styles.arrowContainer}>
             <TouchableOpacity onPress={() => handleSwipe('left')} style={styles.arrowButton}>
@@ -177,8 +200,6 @@ const Swiping = () => {
             </TouchableOpacity>
             </View>
           </>
-        ) : (
-          <ActivityIndicator size="large" color="#e74057" />
         )}
         {errors && <Text className="text-red-500">{errors}</Text>}
       </ScrollView>

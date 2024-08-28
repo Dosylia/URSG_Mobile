@@ -22,7 +22,7 @@ export default function App() {
       webClientId:
         "666369513537-fvmdrlsup4oca1ahbojmmc5anpdtj7cv.apps.googleusercontent.com",
       androidClientId:
-        "666369513537-qu6aohlsb3bk7s89qmfeduqov4ab5rou.apps.googleusercontent.com",
+        "666369513537-ct9j3v3f7vl9ml2l5t9nj68pnoqd7jl4.apps.googleusercontent.com",
     });
     console.log("Google Sign-In configured");
   };

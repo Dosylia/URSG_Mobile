@@ -1,10 +1,13 @@
-import { Text, View, ScrollView, TouchableOpacity } from 'react-native';
+import { Text, View, ScrollView, TouchableOpacity, Image } from 'react-native';
 import React, { useState, useEffect, useContext, useCallback } from 'react';
-import { useFocusEffect } from '@react-navigation/native'; // Import the hook
+import { useFocusEffect } from '@react-navigation/native';
 import axios from 'axios';
+import { router } from 'expo-router';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
 
 import { SessionContext } from '../../context/SessionContext';
 import { ProfileHeader, RiotProfileSection, LookingForSection, CustomButton, UserDataComponent } from "../../components";
+import { icons } from "../../constants";
 
 const Profile = () => {
   const { sessions, setSession } = useContext(SessionContext);
@@ -93,9 +96,18 @@ const Profile = () => {
     }
   };
 
-  useEffect(() => {
-    getFriendList();
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      getFriendList();
+      const interval = setInterval(() => {
+        getFriendList(); 
+      }, 20000);
+
+      return () => {
+        clearInterval(interval);
+      };
+    }, [])
+  );
 
   useEffect(() => {
     if (friendId) {
@@ -158,14 +170,45 @@ const Profile = () => {
     }, [])
   );
 
+  const handleLogout = async () => {
+    try {
+      await GoogleSignin.signOut();
+      console.log('Logged out');
+      setSession('reset');
+      router.replace("/");
+    } catch (error) {
+      console.error('Error logging out:', error);
+    }
+  };
+
+  const handleProfileUpdate = () => {
+    router.push("/(auth)/update-profile");
+  };
+
   return (
     <ScrollView className="flex-1 bg-gray-900 p-4">
-
+      <View className="flex w-full flex-row justify-between items-center bg-gray-900">
+        <TouchableOpacity onPress={handleProfileUpdate}>
+          <Image
+            source={icons.gear}
+            resizeMode="contain"
+            className="w-6 h-6"
+            style={{ transform: [{ rotateY: '180deg' }] }}
+          />
+        </TouchableOpacity>
+        <TouchableOpacity onPress={handleLogout}>
+          <Image
+            source={icons.logout}
+            resizeMode="contain"
+            className="w-6 h-6"
+          />
+        </TouchableOpacity>
+      </View>
       {/* Rest of your component code */}
       {!friendId && (
         <UserDataComponent sessions={sessions} onUserDataChange={setUserData} />
       )} 
-      {userData && <ProfileHeader userData={userData} />}
+      {userData && <ProfileHeader userData={userData} isProfile={true}/>}
 
       {/* Friend Requests */}
       {!friendId && friendRequests.length > 0 && (

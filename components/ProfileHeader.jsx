@@ -2,9 +2,11 @@ import React from 'react';
 import { View, Text, Image, TouchableOpacity, Clipboard, Alert } from 'react-native';
 import { Linking } from 'react-native';
 import { images } from "../constants";
+import { icons } from "../constants";
+import { router } from 'expo-router';
 
-const ProfileHeader = ({ userData }) => {
-  const profileImage = images.defaultpicture; //   const profileImage = userData && userData.friend_picture ? userData.friend_picture : images.defaultpicture;
+const ProfileHeader = ({ userData, isProfile }) => {
+  const profileImage = images.defaultpicture; 
 
 
   const handleOpenLink = (url) => {
@@ -16,9 +18,29 @@ const ProfileHeader = ({ userData }) => {
     Alert.alert('Copied to Clipboard', 'Discord has been copied!');
   };
 
+  const handlePictureUpdate = () => {
+    router.push("/(auth)/update-picture");
+  };
+
   return (
     <View className="items-center mb-5">
-      <Image source={profileImage} className="w-36 h-36 rounded-full" />
+      <View className="relative">
+          <Image
+            source={
+              userData.picture
+                ? { uri: `https://ur-sg.com/public/upload/${userData.picture}` }
+                : profileImage
+            }
+            className="w-36 h-36 rounded-full"
+          />
+          {isProfile && (
+            <TouchableOpacity onPress={handlePictureUpdate} className="absolute top-0 -right-5">
+              <Image 
+              source={icons.addImage} 
+              className="w-6 h-6" />
+            </TouchableOpacity>
+          )}
+        </View>
       <Text className="text-3xl font-bold mt-4 text-white">{userData?.username || 'Unknown User'}</Text>
       <Text className="text-lg text-white">{userData?.age || 'N/A'}</Text>
       <View className="flex-row mt-3 space-x-3">

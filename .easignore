@@ -1,0 +1,50 @@
+# Node modules
+node_modules/
+
+# Android build files
+android/app/build/
+android/build/
+.gradle/
+
+# iOS build files
+ios/build/
+ios/Pods/
+
+# Expo and Metro bundler caches
+.expo/
+.expo-shared/
+.vscode/
+*.log
+*.tmp
+.cache/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Test and coverage reports
+coverage/
+*.spec.*
+*.test.*
+jest/
+test-results/
+
+# Bundler output
+dist/
+build/
+out/
+expo-splash-screen-cache/
+
+# IDE-specific files
+*.iml
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Miscellaneous
+*.env
+.env.*
+*.local

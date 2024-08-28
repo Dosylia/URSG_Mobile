@@ -66,7 +66,12 @@ const UserDataChat = ({ userData }) => {
   return (
     <View className="flex-row items-center justify-between p-4 mb-2 bg-gray-800 rounded">
       {/* User Profile Image */}
-      <Image source={profileImage} className="w-10 h-10 rounded-full" />
+      <Image 
+      source={
+        userData.friend_picture
+          ? { uri: `https://ur-sg.com/public/upload/${userData.friend_picture}` }
+          : profileImage}  
+      className="w-10 h-10 rounded-full" />
 
       {/* Username */}
       <Text className="text-white ml-4" onPress={() => redirectToProfile(userData.friend_id)}>

@@ -1,5 +1,6 @@
-import React, { useState, useEffect, useContext, useRef } from 'react';
+import React, { useState, useEffect, useContext, useCallback, useRef } from 'react';
 import { View, Text, ScrollView, TextInput, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { useFocusEffect } from '@react-navigation/native';
 import axios from 'axios';
 import he from 'he';
 import { SessionContext } from '../../context/SessionContext';
@@ -11,7 +12,7 @@ const ChatPage = () => {
 
   const [friends, setFriends] = useState([]);
   const [selectedFriend, setSelectedFriend] = useState(null);
-  const [messages, setMessages] = useState([]); // Initialize as an empty array
+  const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [errors, setErrors] = useState(null);
@@ -52,6 +53,38 @@ const ChatPage = () => {
   useEffect(() => {
     setErrors(null);
   }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      const fetchChatData = async () => {
+        try {
+          const friendsResponse = await axios.post('https://ur-sg.com/getFriendlist', new URLSearchParams({ userId }).toString(), {
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded',
+            },
+          });
+  
+          if (friendsResponse.data.success) {
+            const friendlist = friendsResponse.data.friendlist;
+            setFriends(friendlist);
+  
+            if (friendlist.length > 0 && selectedFriend === null) {
+              setSelectedFriend(friendlist[0]);
+              fetchMessages(userId, friendlist[0].friend_id);
+            }
+          } else {
+            setErrors(friendsResponse.data.error);
+          }
+        } catch (error) {
+          setErrors('Error fetching friends');
+        } finally {
+          setIsLoading(false);
+        }
+      };
+  
+      fetchChatData();
+    }, [])
+  );
 
   const fetchMessages = async (userId, friendId) => {
     try {
@@ -180,7 +213,7 @@ const ChatPage = () => {
   if (isLoading) {
     return (
       <View className="flex-1 justify-center items-center bg-gray-900">
-        <ActivityIndicator size="large" color="#ffffff" />
+        <ActivityIndicator size="large" color="#e74057" />
       </View>
     );
   }

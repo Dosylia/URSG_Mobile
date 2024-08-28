@@ -1,4 +1,4 @@
-package com.dosylia.ursg
+package com.dosylia.URSG
 
 import android.os.Build
 import android.os.Bundle
