@@ -2,13 +2,15 @@ import React from 'react';
 import { Text } from 'react-native';
 import ProfileSection from './ProfileSection';
 import LeagueDataComponent from './LeagueDataComponent';
+import { useTranslation } from 'react-i18next';
 
 const LookingForSection = ({ userData }) => {
+  const { t } = useTranslation();
   const genderLf = userData?.genderLf || 'Not specified';
   const kindOfGamerLf = userData?.kindOfGamerLf || 'Not specified';
 
   return (
-    <ProfileSection title="Looking for">
+    <ProfileSection title={t('looking-for')}>
       {userData && (
         <>
           {/* League Data Component */}
@@ -21,8 +23,8 @@ const LookingForSection = ({ userData }) => {
               rank={userData.rankLf}
             />
           )}
-          <Text className="text-white">Gender: {genderLf}</Text>
-          <Text className="text-white">Kind of gamer: {kindOfGamerLf}</Text>
+          <Text className="text-white">{`${t('gender')}: ${genderLf}`}</Text>
+          <Text className="text-white">{`${t('kind-of-gamer')}: ${kindOfGamerLf}`}</Text>
         </>
       )}
     </ProfileSection>

@@ -1,16 +1,17 @@
-import { View, Text, ScrollView, Image } from 'react-native'
+import { View, Text, ScrollView, Image, TouchableOpacity } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import React, { useState, useContext, useEffect } from 'react'
 import { SessionContext } from '../../context/SessionContext';
 import { router } from 'expo-router';
 import axios from 'axios';
 
-import { images } from "../../constants";
 import { FormField } from "../../components";
 import { CustomButton } from "../../components";
+import { useTranslation } from 'react-i18next';
 
 
 const updateSocial = () => {
+  const { t } = useTranslation();
   const { sessions, setSession } = useContext(SessionContext);
   const [errors, setErrors] = useState('');
   const [form, setForm] = useState({
@@ -87,50 +88,55 @@ const updateSocial = () => {
         });
   }
 
+  const closePage = () => {
+    router.push("/(tabs)/profile");
+  };
+
   return (
-    <SafeAreaView className="bg-darkgrey h-full">
+    <SafeAreaView className="bg-gray-900 h-full">
       <ScrollView>
+      <View className="flex w-full flex-row items-center bg-gray-900">
+        <View className="flex-1" />
+        <TouchableOpacity onPress={closePage}>
+          <Text className="text-mainred px-6 text-2xl font-extrabold">X</Text>
+        </TouchableOpacity>
+      </View>
         <View className="w-full justify-start h-full px-4 my-6">
-          <Image 
-            source={images.logoWhite}
-            className="w-[100px] h-[50px]"
-            resizeMode='contain'
-          />
-        <Text className="text-2xl text-white text-semibpmd mt-5 font-psemibold">
-        {hasAnySocial ? "Update your social profiles" : "Add your social profiles"}
+          <Text className="text-2xl text-white text-semibpmd font-psemibold">
+        {hasAnySocial ? t('update-social-profiles') : t('add-social-profiles')}
         </Text>
         {errors ? <Text className="text-red-600 text-xl my-2">{errors}</Text> : null}
         <FormField 
             title="Twitter"
             value={form.twitter}
-            placeholder={form.twitter ? form.twitter : "URL of your Twitter profile"}
+            placeholder={form.twitter ? form.twitter : t('placeholders.twitter')}
             handleChangeText={(e) => setForm({ ...form, twitter: e })}
             otherStyles="mt-7"
         />
         <FormField 
             title="Instagram"
             value={form.instagram}
-            placeholder={form.instagram ? form.instagram : "URL of your Instagram profile"}
+            placeholder={form.instagram ? form.instagram : t('placeholders.instagram')}
             handleChangeText={(e) => setForm({ ...form, instagram: e })}
             otherStyles="mt-7"
         />
         <FormField 
             title="Discord"
             value={form.discord}
-            placeholder={form.discord ? form.discord : "Your Discord username"}
+            placeholder={form.discord ? form.discord : t('placeholders.discord')}
             handleChangeText={(e) => setForm({ ...form, discord: e })}
             otherStyles="mt-7"
         />
         <FormField 
             title="Twitch"
             value={form.twitch}
-            placeholder={form.twitch ? form.twitch : "URL of your Twitch profile"}
+            placeholder={form.twitch ? form.twitch : t('placeholders.twitch')}
             handleChangeText={(e) => setForm({ ...form, twitch: e })}
             otherStyles="mt-7"
         />
         <CustomButton 
-            title="Update profile"
-            handlePress={submitForm} // Handle sending data to database and router.push("/league-data")
+            title={t('update-social')}
+            handlePress={submitForm}
             containerStyles ="w-full mt-7"
         />
         </View>

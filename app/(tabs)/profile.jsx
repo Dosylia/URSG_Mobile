@@ -8,8 +8,10 @@ import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { SessionContext } from '../../context/SessionContext';
 import { ProfileHeader, RiotProfileSection, LookingForSection, CustomButton, UserDataComponent } from "../../components";
 import { icons } from "../../constants";
+import { useTranslation } from 'react-i18next';
 
 const Profile = () => {
+  const { t } = useTranslation();
   const { sessions, setSession } = useContext(SessionContext);
   const [userData, setUserData] = useState(null);
   const [friendRequests, setFriendRequests] = useState([]);
@@ -182,7 +184,7 @@ const Profile = () => {
   };
 
   const handleProfileUpdate = () => {
-    router.push("/(auth)/update-profile");
+    router.push("/(auth)/settings");
   };
 
   return (
@@ -221,13 +223,13 @@ const Profile = () => {
                   onPress={() => handleAcceptRequest(request.user_id, request.fr_id)} 
                   className="bg-mainred p-2 rounded mr-2"
                 >
-                  <Text className="text-white">Accept</Text>
+                  <Text className="text-white">{t('accept')}</Text>
                 </TouchableOpacity>
                 <TouchableOpacity 
                   onPress={() => handleRefuseRequest(request.user_id, request.fr_id)} 
                   className="bg-gray-600 p-2 rounded"
                 >
-                  <Text className="text-white">Refuse</Text>
+                  <Text className="text-white">{t('accept')}</Text>
                 </TouchableOpacity>
               </View>
             </View>
@@ -238,12 +240,17 @@ const Profile = () => {
       {!friendId && ( 
         <>
           <CustomButton 
-            title="Bind a League of Legends account"
+            title={t('update-profile')}
+            handlePress={() => router.push("/(auth)/update-profile")}
+            containerStyles="w-full mt-7"
+          />
+          <CustomButton 
+            title={t('bind-league')}
             handlePress={() => router.push("/(auth)/bind-account")}
             containerStyles="w-full mt-7"
           />
           <CustomButton 
-            title="Add or update your social links"
+            title={t('update-socials')}
             handlePress={() => router.push("/(auth)/update-social")}
             containerStyles="w-full mt-7 mb-7"
           />

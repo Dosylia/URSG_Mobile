@@ -8,8 +8,10 @@ import { ProfileHeader, UseSwipeAlgorithm } from "../../components";
 import { RiotProfileSection } from "../../components";
 import { UserDataComponent } from "../../components";
 import { images } from "../../constants";
+import { useTranslation } from 'react-i18next';
 
 const Swiping = () => {
+  const { t } = useTranslation();
   const { sessions } = useContext(SessionContext);
   const [userData, setUserData] = useState(null);
   const [otherUser, setOtherUser] = useState(null);
@@ -87,6 +89,7 @@ const Swiping = () => {
         );
   
         const matchingData = userMatchingResponse.data;
+        console.log('Matching data:', matchingData);
         if (!matchingData.success) {
           if (matchingData.error === 'No matching users found') {
             setNoMoreUsers(true);
@@ -171,6 +174,10 @@ const Swiping = () => {
     return (
       <View className="flex-1 justify-center items-center bg-gray-900">
         <ActivityIndicator size="large" color="#e74057" />
+        <UserDataComponent sessions={sessions} onUserDataChange={setUserData} />
+        {allUsers.length > 0 && (
+          <UseSwipeAlgorithm reshapedUserData={reshapedUserData} allUsers={allUsers} />
+        )}
       </View>
     );
   }
@@ -178,18 +185,14 @@ const Swiping = () => {
   return (
     <PanGestureHandler onGestureEvent={onGestureEvent}>
       <ScrollView className="flex-1 bg-gray-900 p-4">
-        <UserDataComponent sessions={sessions} onUserDataChange={setUserData} />
-        {allUsers.length > 0 && (
-          <UseSwipeAlgorithm reshapedUserData={reshapedUserData} allUsers={allUsers} />
-        )}
         {noMoreUsers ? (
           <View className="flex-1 h-[500px] justify-center items-center bg-gray-900">
-            <Text className="text-white justify-center items-center">You have seen all available profiles.</Text>
+            <Text className="text-white justify-center items-center">{t('seen-all-profiles')}</Text>
             <Image source={images.sadBee} className="w-50 h-50" />
           </View>
         ) : otherUser && (
           <>
-            <ProfileHeader userData={otherUser} isProfile={false}/>
+            <ProfileHeader userData={otherUser} />
             <RiotProfileSection userData={otherUser} isProfile={false} />
             <View style={styles.arrowContainer}>
             <TouchableOpacity onPress={() => handleSwipe('left')} style={styles.arrowButton}>

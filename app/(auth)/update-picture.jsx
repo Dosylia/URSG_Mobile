@@ -1,20 +1,22 @@
-import { View, Text, ScrollView, Image, TouchableOpacity } from 'react-native';
+import { View, Text, ScrollView, Image, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import React, { useState, useContext, useEffect } from 'react';
 import { SessionContext } from '../../context/SessionContext';
 import { router } from 'expo-router';
 import axios from 'axios';
 import { Platform } from 'react-native';
+import { useTranslation } from 'react-i18next';
 
-import { images } from "../../constants";
 import { CustomButton } from "../../components";
 import * as ImagePicker from 'expo-image-picker';
 
 const updatePicture = () => {
-    const { sessions, setSession } = useContext(SessionContext);
+  const { t } = useTranslation();
+  const { sessions, setSession } = useContext(SessionContext);
   const [errors, setErrors] = useState('');
   const [image, setImage] = useState(null);
   const [fileName, setFileName] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
   const username = sessions?.userSession.username;
 
   const requestPermissions = async () => {
@@ -67,6 +69,8 @@ const updatePicture = () => {
       setErrors('Please select an image');
       return;
     }
+
+    setIsLoading(true);
   
     // Create FormData object and append image and userId
     let formData = new FormData();
@@ -103,6 +107,7 @@ const updatePicture = () => {
       });
   
       if (response.data.message !== 'Success') {
+        setIsLoading(false);
         setErrors(response.data.message);
       } else {
         setSession('userSession', {
@@ -123,18 +128,30 @@ const updatePicture = () => {
     }
   };
   
+  if (isLoading) {
+    return (
+      <View className="flex-1 justify-center items-center bg-gray-900">
+        <ActivityIndicator size="large" color="#e74057" />
+      </View>
+    );
+  }
+
+  const closePage = () => {
+    router.push("/(tabs)/profile");
+  };
 
   return (
-    <SafeAreaView className="bg-darkgrey h-full">
+    <SafeAreaView className="bg-gray-900 h-full">
       <ScrollView>
+      <View className="flex w-full flex-row items-center bg-gray-900">
+        <View className="flex-1" />
+        <TouchableOpacity onPress={closePage}>
+          <Text className="text-mainred px-6 text-2xl font-extrabold">X</Text>
+        </TouchableOpacity>
+      </View>
         <View className="w-full justify-start h-full px-4 my-6">
-          <Image
-            source={images.logoWhite}
-            className="w-[100px] h-[50px]"
-            resizeMode="contain"
-          />
-          <Text className="text-2xl text-white text-semibpmd mt-5 font-psemibold">
-            Update your profile
+          <Text className="text-2xl text-white text-semibpmd font-psemibold">
+          {t('update-picture')}
           </Text>
           {errors ? <Text className="text-red-600 text-xl my-2">{errors}</Text> : null}
 
@@ -146,12 +163,12 @@ const updatePicture = () => {
           )}
 
           <TouchableOpacity onPress={pickImage} className="w-full mt-7">
-            <Text className="text-white text-center">Pick an Image</Text>
+            <Text className="text-white text-center">{t('pick-image')}</Text>
           </TouchableOpacity>
 
           <CustomButton
-            title="Update your picture"
-            handlePress={submitForm} // Handle sending data to database and router.push("/league-data")
+            title={t('change-picture')}
+            handlePress={submitForm}
             containerStyles="w-full mt-7"
           />
         </View>

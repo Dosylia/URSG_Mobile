@@ -7,6 +7,7 @@ import RiotProfileSection from "./RiotProfileSection";
 import LookingForSection from "./LookingForSection";
 import UserDataChat from "./UserDataChat";
 import UseSwipeAlgorithm  from "./UseSwipingAlgoritm";
+import Collapse from "./Collapse";
 
 export {
     CustomButton,
@@ -17,5 +18,6 @@ export {
     RiotProfileSection,
     LookingForSection,
     UserDataChat,
-    UseSwipeAlgorithm
+    UseSwipeAlgorithm,
+    Collapse
   };

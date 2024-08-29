@@ -5,11 +5,12 @@ import axios from 'axios';
 import he from 'he';
 import { SessionContext } from '../../context/SessionContext';
 import { UserDataChat } from '../../components';
+import { useTranslation } from 'react-i18next';
 
 const ChatPage = () => {
+  const { t } = useTranslation();
   const { sessions } = useContext(SessionContext);
   const { userId } = sessions.userSession;
-
   const [friends, setFriends] = useState([]);
   const [selectedFriend, setSelectedFriend] = useState(null);
   const [messages, setMessages] = useState([]);
@@ -210,6 +211,13 @@ const ChatPage = () => {
     }
   }, [messages, selectedFriend]);
 
+  const formatTimestamp = (dateString) => {
+    const utcDate = new Date(dateString);
+    const localOffset = utcDate.getTimezoneOffset();
+    const localDate = new Date(utcDate.getTime() - localOffset * 60000);
+    return localDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  };
+
   if (isLoading) {
     return (
       <View className="flex-1 justify-center items-center bg-gray-900">
@@ -249,7 +257,8 @@ const ChatPage = () => {
               {Array.isArray(messages) && messages.length > 0 ? (
                 messages.map((message) => {
                   const chatId = message.chat_id || `${message.chat_senderId}-${message.chat_date}`;
-
+                  const formattedTime = formatTimestamp(message.chat_date);
+  
                   return (
                     <View
                       key={chatId}
@@ -261,24 +270,25 @@ const ChatPage = () => {
                         flexShrink: 1   
                       }}
                     >
-                      <Text className="text-white">
-                        {message.chat_senderId === userId ? 'You' : selectedFriend.friend_username}: {he.decode(message.chat_message)}
+                      <Text className="text-white text-base pb-1">
+                        {message.chat_senderId === userId ? t('you') : selectedFriend.friend_username}: {he.decode(message.chat_message)}
                       </Text>
+                      <Text className="text-white text-xs absolute bottom-0 right-0 pr-1 pt-1 opacity-50">{formattedTime}</Text>
                     </View>
                   );
                 })
               ) : (
-                <Text className="text-white">No messages yet.</Text>
+                <Text className="text-white">{t('no-message')}</Text>
               )}
             </ScrollView>
           </View>
         </>
       ) : (
         <View className="flex-1 justify-center items-center">
-          <Text className="text-white text-center">No friends available</Text>
+          <Text className="text-white text-center">{t('no-friend')}</Text>
           {selectedFriend && (
             <View className="flex-1 justify-center">
-              <Text className="text-white text-center">Please select a friend to start chatting.</Text>
+              <Text className="text-white text-center">{t('select-friend')}</Text>
             </View>
           )}
         </View>
@@ -289,7 +299,7 @@ const ChatPage = () => {
           <TextInput
             value={newMessage}
             onChangeText={setNewMessage}
-            placeholder="Type a message..."
+            placeholder={t('type-message')}
             placeholderTextColor="#aaa"
             className="flex-1 bg-gray-800 text-white p-2 rounded-l"
           />
@@ -297,7 +307,7 @@ const ChatPage = () => {
             onPress={handleSendMessage}
             className="bg-mainred p-3 rounded-r"
           >
-            <Text className="text-white">Send</Text>
+            <Text className="text-white">{t('send-message')}</Text>
           </TouchableOpacity>
         </View>
       )}

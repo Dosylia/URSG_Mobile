@@ -33,7 +33,7 @@ const confirmMail = () => {
             });
     }
   return (
-    <SafeAreaView className="bg-darkgrey h-full">
+    <SafeAreaView className="bg-gray-900 h-full">
       <ScrollView>
         <View className="w-full justify-start h-full px-4 my-6">
             <Image 

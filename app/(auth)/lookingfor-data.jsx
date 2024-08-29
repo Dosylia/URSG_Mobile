@@ -104,17 +104,15 @@ const LookingForData = () => {
   }
 
   const gamerOptions = [
-    { label: 'Chill / Normal games', value: 'Chill' },
-    { label: 'Competition / Ranked', value: 'Competition' },
-    { label: 'Competition/Ranked and chill', value: 'Competition and Chill' },
+    { label: t('gamer-options.chill'), value: 'Chill' },
+    { label: t('gamer-options.competition'), value: 'Competition' },
+    { label: t('gamer-options.competition-chill'), value: 'Competition and Chill' },
   ];
 
   const genderOptions = [
-    { label: 'Male', value: 'Male' },
-    { label: 'Female', value: 'Female' },
-    { label: 'Non-binary', value: 'Non binary' },
-    { label: 'Male and Female', value: 'Male and Female' },
-    { label: 'All', value: 'All' },
+    { label: t('gender-options.male'), value: 'Male' },
+    { label: t('gender-options.female'), value: 'Female' },
+    { label: t('gender-options.non-binary'), value: 'Non binary' },
   ];
 
 
@@ -136,7 +134,7 @@ const availableChampionsForMain3 = form.main1 !== 'Aatrox' && form.main2 !== 'Aa
   ));
 
   return (
-    <SafeAreaView className="bg-darkgrey h-full">
+    <SafeAreaView className="bg-gray-900 h-full">
       <ScrollView>
         <View className="w-full justify-start h-full px-4 my-6">
           <Image 
@@ -144,31 +142,31 @@ const availableChampionsForMain3 = form.main1 !== 'Aatrox' && form.main2 !== 'Aa
             className="w-[100px] h-[50px]"
             resizeMode='contain'
           />
-          <Text className="text-2xl text-white text-semibpmd mt-5 font-psemibold">Your interests</Text>
+          <Text className="text-2xl text-white text-semibpmd mt-5 font-psemibold">{t('interest')}</Text>
           {errors ? <Text className="text-red-600 text-xl my-2">{errors}</Text> : null}
           <FormField 
-            title="Gender you are looking for"
+            title={t('lf.gender')}
             value={form.gender}
             handleChangeText={(value) => setForm({ ...form, gender: value })}
-            placeholder= "Chose gender you are looking for"
+            placeholder={t('placeholders.genderLf')}
             otherStyles="mt-7"
             isSelect={true}
             options={genderOptions}
           />
           <FormField 
-            title="Kind of Gamer you are looking for"
+            title={t('lf.kind-of-gamer')}
             value={form.kindOfGamer}
             handleChangeText={(value) => setForm({ ...form, kindOfGamer: value })}
-            placeholder= "What kind of gamer are you looking for?"
+            placeholder={t('placeholders.kind-of-gamerLf')}
             otherStyles="mt-7"
             isSelect={true}
             options={gamerOptions}
           />
           <FormField 
-            title="Main 1 you are looking for"
+            title={t('lf.main1')}
             value={form.main1}
             handleChangeText={(value) => setForm({ ...form, main1: value })}
-            placeholder= "Choose first main you are looking for"
+            placeholder= {t('placeholders.main1Lf')}
             otherStyles="mt-7"
             isSelect={true}
             hasImage={true}
@@ -177,10 +175,10 @@ const availableChampionsForMain3 = form.main1 !== 'Aatrox' && form.main2 !== 'Aa
             imageOrigin='champions'
           />
           <FormField 
-            title="Main 2 you are looking for"
+            title={t('lf.main2')}
             value={form.main2}
             handleChangeText={(value) => setForm({ ...form, main2: value })}
-            placeholder= "Choose second main you are looking for"
+            placeholder={t('placeholders.main2Lf')}
             otherStyles="mt-7"
             isSelect={true}
             hasImage={true}
@@ -189,10 +187,10 @@ const availableChampionsForMain3 = form.main1 !== 'Aatrox' && form.main2 !== 'Aa
             imageOrigin='champions'
           />
           <FormField 
-            title="Main 3 you are looking for"
+            title={t('lf.main3')}
             value={form.main3}
             handleChangeText={(value) => setForm({ ...form, main3: value })}
-            placeholder= "Choose third main you are looking for"
+            placeholder={t('placeholders.main3Lf')}
             otherStyles="mt-7"
             isSelect={true}
             hasImage={true}
@@ -201,10 +199,10 @@ const availableChampionsForMain3 = form.main1 !== 'Aatrox' && form.main2 !== 'Aa
             imageOrigin='champions'
           />
             <FormField 
-            title="Rank you are looking for"
+            title={t('lf.rank')}
             value={form.rank}
             handleChangeText={(value) => setForm({ ...form, rank: value })}
-            placeholder= "Choose your rank"
+            placeholder={t('placeholders.rankLf')}
             otherStyles="mt-7"
             isSelect={true}
             hasImage={true}
@@ -213,10 +211,10 @@ const availableChampionsForMain3 = form.main1 !== 'Aatrox' && form.main2 !== 'Aa
             imageOrigin='ranks'
           />
           <FormField 
-            title="Role you are looking for"
+            title={t('lf.role')}
             value={form.role}
             handleChangeText={(value) => setForm({ ...form, role: value })}
-            placeholder= "Choose your role"
+            placeholder={t('placeholders.roleLf')}
             otherStyles="mt-7"
             isSelect={true}
             hasImage={true}
@@ -225,7 +223,7 @@ const availableChampionsForMain3 = form.main1 !== 'Aatrox' && form.main2 !== 'Aa
             imageOrigin='roles'
           />
           <CustomButton 
-             title="About your interests"
+             title={t('to-swiping')}
              handlePress={submitForm} // Handle sending data to database and router.push("/swiping")
              containerStyles ="w-full mt-7"
           />

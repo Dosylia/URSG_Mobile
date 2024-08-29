@@ -4,11 +4,12 @@ import ProfileSection from './ProfileSection';
 import { images } from "../constants";
 import LeagueDataComponent from './LeagueDataComponent';
 import he from 'he';
+import { useTranslation } from 'react-i18next';
 
 const BASE_PROFILE_ICON_URL = 'https://ddragon.leagueoflegends.com/cdn/14.14.1/img/profileicon/';
 
 const RiotProfileSection = ({ userData, isProfile }) => {
-  // Construct the URL for the profile icon
+  const { t } = useTranslation();
   const riotProfilePicture = userData?.sProfileIcon
     ? { uri: `${BASE_PROFILE_ICON_URL}${userData.sProfileIcon}.png` }
     : images.defaultpictureLol;
@@ -22,7 +23,7 @@ const RiotProfileSection = ({ userData, isProfile }) => {
   const shortBio = userData?.shortBio ? he.decode(userData.shortBio) : 'No bio available';
 
   return (
-    <ProfileSection title={isProfile ? 'About you' : 'About them'}>
+    <ProfileSection title={isProfile ? t('about-you') : t('about-them')}>
       {userData && (
         <View>
           {/* Riot Profile Section */}
@@ -53,13 +54,13 @@ const RiotProfileSection = ({ userData, isProfile }) => {
           )}
 
           <Text style={{ color: 'white' }}>
-            {isProfile ? 'Gender' : 'Their gender'}: {gender}
+            {isProfile ? t('your-gender') : t('their-gender')}: {gender}
           </Text>
           <Text style={{ color: 'white' }}>
-            {isProfile ? 'Kind of gamer' : 'Their kind of gamer'}: {kindOfGamer}
+            {isProfile ? t('your-kind-of-gamer') : t('their-kind-of-gamer')}: {kindOfGamer}
           </Text>
           <Text style={{ color: 'white' }}>
-            {isProfile ? 'Short bio' : 'Their short bio'}: {shortBio}
+            {isProfile ? t('your-short-bio') : t('their-short-io')}: {shortBio}
           </Text>
         </View>
       )}

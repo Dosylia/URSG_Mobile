@@ -1090,9 +1090,9 @@ const UseSwipeAlgorithm = ({ reshapedUserData, allUsers }) => {
             return userProfile.user_id !== obj.user_id;
         });
 
-        // console.log("Matched profiles:", matched_profiles)
-        // console.log("all users profiles:",profileList)
-        // console.log("main user profile:",userProfile)
+        // console.log("Matched profiles:", matched_profiles.user_id)
+        // console.log("all users profiles:",profileList.user_id)
+        // console.log("main user profile:",userProfile.user_id)
     
         sendDataToPHP(matched_profiles.map((obj) => {
             const dataToSend = ({

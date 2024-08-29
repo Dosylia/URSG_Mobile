@@ -15,6 +15,8 @@ import swipeIcon from "../assets/icons/swipe.png";
 import bubbleChat from "../assets/icons/bubble-chat.png";
 import gear from "../assets/icons/gear.png";
 import addImage from "../assets/icons/add-image.png";
+import arrowtop from "../assets/icons/top.png";
+import earth from "../assets/icons/earth.png";
 
 export default {
   play,
@@ -34,4 +36,6 @@ export default {
   bubbleChat,
   gear,
   addImage,
+  arrowtop,
+  earth
 };

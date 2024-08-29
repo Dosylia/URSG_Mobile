@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import { View, Text, Image, ScrollView } from "react-native";
+import { View, Text, Image, ScrollView, TouchableOpacity } from "react-native";
 import { router, Redirect } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { CustomButton } from "../components";
@@ -8,14 +8,16 @@ import {
   GoogleSignin,
 } from "@react-native-google-signin/google-signin";
 
-import { images } from "../constants";
+import { images, icons } from "../constants";
 import axios from 'axios';
 import { SessionContext } from '../context/SessionContext';
+import { useTranslation } from 'react-i18next';
 
 export default function App() {
+  const { t } = useTranslation();
   const [errors, setErrors] = useState('');
   const [error, setError] = useState();
-  const { setSession, sessions } = useContext(SessionContext);
+  const { setSession, sessions } = useContext(SessionContext);;
 
   const configureGoogleSignIn = () => {
     GoogleSignin.configure({
@@ -23,6 +25,8 @@ export default function App() {
         "666369513537-fvmdrlsup4oca1ahbojmmc5anpdtj7cv.apps.googleusercontent.com",
       androidClientId:
         "666369513537-ct9j3v3f7vl9ml2l5t9nj68pnoqd7jl4.apps.googleusercontent.com",
+      iosClientId: 
+        "515525000068-0ci6qe38vc834ei52mpj57ofmhrl1e35.apps.googleusercontent.com",
     });
     console.log("Google Sign-In configured");
   };
@@ -149,10 +153,24 @@ export default function App() {
   } else {
     console.log("Not all sessions found:", sessions);
   }
+
+  const handleProfileUpdate = () => {
+    router.push("/(auth)/settings");
+  };
  
   return (
-      <SafeAreaView className="bg-darkgrey h-full">
+      <SafeAreaView className="bg-gray-900 h-full">
         <ScrollView contentContainerStyle={{ height: "100%" }}>
+        <View className="flex w-full flex-row justify-end items-center bg-gray-900">
+          <TouchableOpacity className="p-2" onPress={handleProfileUpdate}>
+            <Image
+              source={icons.gear}
+              resizeMode="contain"
+              className="w-6 h-6"
+              style={{ transform: [{ rotateY: '180deg' }] }}
+            />
+          </TouchableOpacity>
+        </View>
           <View className="w-full flex justify-normal items-center h-full px-4">
             <Image
               source={images.logoWhite}
@@ -166,17 +184,16 @@ export default function App() {
             />
             <View className="relative mt-5">
               <Text className="text-3xl text-white font-bold text-center">
-                Find your perfect {"\n"}
-                soulmate with {' '}
+                {`${t('find-perfect')} ${"\n"} ${t('soulmate')} ${""} `}
                 <Text className="text-mainred">URSG</Text>
               </Text>
             </View>
             <Text className="text-center text-white mt-5 font-pregular mb-5">
-              Level up your game with your future match
+              {t('level-up')}
             </Text>
             {errors ? <Text className="text-red-600 text-xl my-2">{errors}</Text> : null}
             <CustomButton
-              title="Join with Google"
+              title={t('join-google')}
               handlePress={signIn}
               containerStyles="w-full mt-7"
             />

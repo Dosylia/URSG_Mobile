@@ -1,17 +1,17 @@
-import { View, Text, ScrollView, Image, Button } from 'react-native'
+import { View, Text, ScrollView, Image, TouchableOpacity } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import React, { useState, useContext, useEffect } from 'react'
 import { SessionContext } from '../../context/SessionContext';
 import { router } from 'expo-router';
 import axios from 'axios';
+import { useTranslation } from 'react-i18next';
 
-import { images } from "../../constants";
 import { FormField } from "../../components";
 import { CustomButton } from "../../components";
 import serverList from "../../constants/serverList";
-import { server } from 'typescript';
 
 const BindAccount = () => {
+  const { t } = useTranslation();
   const { sessions, setSession } = useContext(SessionContext);
   const [errors, setErrors] = useState('');
   const [verificationVisible, setVerificationVisible] = useState(false);
@@ -147,17 +147,22 @@ const BindAccount = () => {
     { label: server, value: server }
   ));
 
+  const closePage = () => {
+    router.push("/(tabs)/profile");
+  };
+
   return (
-    <SafeAreaView className="bg-darkgrey h-full">
+    <SafeAreaView className="bg-gray-900 h-full">
       <ScrollView>
+      <View className="flex w-full flex-row items-center bg-gray-900">
+        <View className="flex-1" />
+        <TouchableOpacity onPress={closePage}>
+          <Text className="text-mainred px-6 text-2xl font-extrabold">X</Text>
+        </TouchableOpacity>
+      </View>
         <View className="w-full justify-start h-full px-4 my-6">
-          <Image 
-            source={images.logoWhite}
-            className="w-[100px] h-[50px]"
-            resizeMode='contain'
-          />
-          <Text className="text-2xl text-white text-semibpmd mt-5 font-psemibold">
-              Bind your League of Legends account
+          <Text className="text-2xl text-white text-semibpmd font-psemibold">
+            {t('bind-league')}
           </Text>
           {errors ? <Text className="text-red-600 text-xl my-2">{errors}</Text> : null}
   
@@ -165,23 +170,23 @@ const BindAccount = () => {
           {!verificationVisible && (
             <>
               <FormField 
-                title="Your LoL account, # is needed"
+                title={t('account-needed')}
                 value={form.account}
-                placeholder="Example: OtpYasuoEh#EUW"
+                placeholder={`${t('example')} : OTPYasuoEh#EUW`}
                 handleChangeText={(e) => setForm({ ...form, account: e })}
                 otherStyles="mt-7"
               />
               <FormField 
-                title="Server"
+                title={t('lol.server')}
                 value={form.server}
                 handleChangeText={(value) => setForm({ ...form, server: value })}
-                placeholder="Choose your server"
+                placeholder={t('placeholders.server')}
                 otherStyles="mt-7"
                 isSelect={true}
                 options={servers}
               />
               <CustomButton 
-                title="Bind your account"
+                title={t('bind-account')}
                 handlePress={submitForm}
                 containerStyles="w-full mt-7"
               />
@@ -197,10 +202,10 @@ const BindAccount = () => {
                 resizeMode="contain"
               />
               <Text className="text-white text-center mt-5">
-                Change your in-game profile picture to the one shown above to verify your account.
+                {t('change-picture-icon')}
               </Text>
               <CustomButton 
-                title="Verify account"
+                title={t('verify-account')}
                 handlePress={verifyAccount}
                 containerStyles="w-full mt-7"
               />

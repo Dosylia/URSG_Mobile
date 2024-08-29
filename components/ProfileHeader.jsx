@@ -4,10 +4,11 @@ import { Linking } from 'react-native';
 import { images } from "../constants";
 import { icons } from "../constants";
 import { router } from 'expo-router';
+import { useTranslation } from 'react-i18next';
 
 const ProfileHeader = ({ userData, isProfile }) => {
+  const { t } = useTranslation();
   const profileImage = images.defaultpicture; 
-
 
   const handleOpenLink = (url) => {
     Linking.openURL(url).catch(err => console.error('Failed to open URL:', err));
@@ -15,7 +16,7 @@ const ProfileHeader = ({ userData, isProfile }) => {
 
   const handleCopyToClipboard = async (text) => {
     Clipboard.setString(text);
-    Alert.alert('Copied to Clipboard', 'Discord has been copied!');
+    Alert.alert(t('copied-clipboard'), t('discord-copied'));
   };
 
   const handlePictureUpdate = () => {
@@ -23,7 +24,7 @@ const ProfileHeader = ({ userData, isProfile }) => {
   };
 
   return (
-    <View className="items-center mb-5">
+    <View className="items-center mb-2">
       <View className="relative">
           <Image
             source={

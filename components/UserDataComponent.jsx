@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 
 const UserDataComponent = ({ sessions, onUserDataChange }) => {
-
   useEffect(() => {
     if (
       sessions.googleSession && Object.keys(sessions.googleSession).length > 0 &&

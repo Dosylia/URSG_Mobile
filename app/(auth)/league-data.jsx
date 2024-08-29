@@ -4,16 +4,17 @@ import { SessionContext } from '../../context/SessionContext';
 import React, { useState, useContext, useEffect } from 'react'
 import { Redirect, router } from 'expo-router';
 import axios from 'axios';
+import { useTranslation } from 'react-i18next';
 
 import { images } from "../../constants";
-import { FormField } from "../../components";
-import { CustomButton } from "../../components";
+import { CustomButton, FormField } from "../../components";
 import championList from  "../../constants/championList";
 import roleList from "../../constants/roleList";
 import rankList from "../../constants/rankList";
 import serverList from "../../constants/serverList";
 
 const LeagueData = () => {
+  const { t } = useTranslation();
   const { sessions, setSession } = useContext(SessionContext);
   const [errors, setErrors] = useState('');
   const [form, setForm] = useState({
@@ -118,7 +119,7 @@ const availableChampionsForMain3 = form.main1 !== 'Aatrox' && form.main2 !== 'Aa
 
 
   return (
-    <SafeAreaView className="bg-darkgrey h-full">
+    <SafeAreaView className="bg-gray-900 h-full">
       <ScrollView>
         <View className="w-full justify-start h-full px-4 my-6">
           <Image 
@@ -126,13 +127,13 @@ const availableChampionsForMain3 = form.main1 !== 'Aatrox' && form.main2 !== 'Aa
             className="w-[100px] h-[50px]"
             resizeMode='contain'
           />
-          <Text className="text-2xl text-white text-semibpmd mt-5 font-psemibold">League of Legends informations</Text>
+          <Text className="text-2xl text-white text-semibpmd mt-5 font-psemibold">{t('lol.title')}</Text>
           {errors ? <Text className="text-red-600 text-xl my-2">{errors}</Text> : null}
           <FormField 
-            title="Main 1"
+            title={t('lol.main1')}
             value={form.main1}
             handleChangeText={(value) => setForm({ ...form, main1: value })}
-            placeholder= "Choose your first main"
+            placeholder= {t('placeholders.main1')}
             otherStyles="mt-7"
             isSelect={true}
             hasImage={true}
@@ -141,10 +142,10 @@ const availableChampionsForMain3 = form.main1 !== 'Aatrox' && form.main2 !== 'Aa
             imageOrigin='champions'
           />
           <FormField 
-            title="Main 2"
+            title={t('lol.main2')}
             value={form.main2}
             handleChangeText={(value) => setForm({ ...form, main2: value })}
-            placeholder= "Choose your second main"
+            placeholder= {t('placeholders.main2')}
             otherStyles="mt-7"
             isSelect={true}
             hasImage={true}
@@ -153,10 +154,10 @@ const availableChampionsForMain3 = form.main1 !== 'Aatrox' && form.main2 !== 'Aa
             imageOrigin='champions'
           />
           <FormField 
-            title="Main 3"
+            title={t('lol.main3')}
             value={form.main3}
             handleChangeText={(value) => setForm({ ...form, main3: value })}
-            placeholder= "Choose your third main"
+            placeholder= {t('placeholders.main3')}
             otherStyles="mt-7"
             isSelect={true}
             hasImage={true}
@@ -165,10 +166,10 @@ const availableChampionsForMain3 = form.main1 !== 'Aatrox' && form.main2 !== 'Aa
             imageOrigin='champions'
           />
             <FormField 
-            title="Rank"
+            title={t('lol.rank')}
             value={form.rank}
             handleChangeText={(value) => setForm({ ...form, rank: value })}
-            placeholder= "Choose your rank"
+            placeholder= {t('placeholders.rank')}
             otherStyles="mt-7"
             isSelect={true}
             hasImage={true}
@@ -177,10 +178,10 @@ const availableChampionsForMain3 = form.main1 !== 'Aatrox' && form.main2 !== 'Aa
             imageOrigin='ranks'
           />
           <FormField 
-            title="Role"
+            title={t('lol.role')}
             value={form.role}
             handleChangeText={(value) => setForm({ ...form, role: value })}
-            placeholder= "Choose your role"
+            placeholder= {t('placeholders.role')}
             otherStyles="mt-7"
             isSelect={true}
             hasImage={true}
@@ -189,16 +190,16 @@ const availableChampionsForMain3 = form.main1 !== 'Aatrox' && form.main2 !== 'Aa
             imageOrigin='roles'
           />
           <FormField 
-            title="Server"
+            title={t('lol.server')}
             value={form.server}
             handleChangeText={(value) => setForm({ ...form, server: value })}
-            placeholder= "Choose your server"
+            placeholder= {t('placeholders.server')}
             otherStyles="mt-7"
             isSelect={true}
             options={servers}
           />
           <CustomButton 
-             title="About your interests"
+             title={t('lol.submit')}
              handlePress={submitForm}
              containerStyles ="w-full mt-7"
           />
