@@ -4,15 +4,16 @@ import { SessionContext } from '../../context/SessionContext';
 import React, { useState, useContext, useEffect } from 'react'
 import { Redirect, router } from 'expo-router';
 import axios from 'axios';
+import { useTranslation } from 'react-i18next';
 
 import { FormField } from "../../components";
 import { CustomButton } from "../../components";
 import championList from  "../../constants/championList";
 import roleList from "../../constants/roleList";
 import rankList from "../../constants/rankList";
-import { useColorScheme } from 'nativewind';
 
 const LookingForData = () => {
+  const { t } = useTranslation();
   const { sessions, setSession } = useContext(SessionContext);
   const [errors, setErrors] = useState('');
   const [form, setForm] = useState({

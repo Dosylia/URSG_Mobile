@@ -46,7 +46,6 @@ const RootLayout = () => {
         }
 
         const savedMode = await AsyncStorage.getItem('mode');
-        // Determine if we need to toggle the color scheme based on the saved mode
         if (savedMode && savedMode !== colorScheme) {
           toggleColorScheme(savedMode);
           console.log(`Mode loaded and applied: ${savedMode}`);

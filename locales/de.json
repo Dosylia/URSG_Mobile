@@ -4,8 +4,8 @@
     "general-settings": "Allgemeine Einstellungen",
     "language": "Sprache",
     "language-change": "Sprache der App ändern",
-    "bind-league": "Ein League of Legends-Konto verknüpfen",
-    "update-socials": "Aktualisiere deine sozialen Netzwerke",
+    "bind-league": "Verknüpfe dein League of Legends",
+    "update-socials": "Gib deine sozialen Netzwerke an",
     "update-profile": "Profil aktualisieren",
     "about-game": "Über League Of Legends",
     "more-game": "Weitere Spiele werden bald hinzugefügt",
@@ -23,9 +23,9 @@
     "lol.submit": "Über deine Interessen",
     "interest": "Deine Interessen",
     "to-swiping": "Zum Swipen",
-    "find-perfect": "Finde dein",
-    "soulmate": "Seelenverwandter mit",
-    "level-up": "Verbessere dein Spiel mit deinem zukünftigen Match",
+    "find-perfect": "Finde deinen",
+    "soulmate": "Seelenverwandten mit",
+    "level-up": "Verbessere dein Spielerlebniss mit deinem zukünftigen duo Partner",
     "join-google": "Mit Google anmelden",
     "no-message": "Derzeit keine Nachrichten.",
     "send-message": "Senden",
@@ -38,11 +38,11 @@
     "about-you": "Über dich",
     "about-them": "Über sie",
     "your-gender": "Dein Geschlecht",
-    "their-gender": "Ihr Geschlecht",
+    "their-gender": "Geschlecht",
     "your-kind-of-gamer": "Dein Spielertyp",
-    "their-kind-of-gamer": "Ihr Spielertyp",
+    "their-kind-of-gamer": "Spielertyp",
     "your-short-bio": "Deine kurze Biografie",
-    "their-short-bio": "Ihre kurze Biografie",
+    "their-short-bio": "Kurze Biografie",
     "you": "Du",
     "type-message": "Nachricht schreiben...",
     "no-friends": "Derzeit keine Freunde.",
@@ -86,7 +86,7 @@
         "twitter": "URL deines Twitter-Accounts",
         "instagram": "URL deines Instagram-Accounts",
         "twitch": "URL deines Twitch-Accounts",
-        "discord": "Benutzername deines Discord-Accounts",
+        "discord": "Dein Discord-Benutzername",
         "username": "Wähle deinen Benutzernamen",
         "gender": "Wähle dein Geschlecht",
         "age": "Dein Alter",
@@ -108,13 +108,13 @@
         "roleLf": "Wähle die gesuchte Rolle"
     },
     "gamer-options": {
-        "chill": "Entspannt / Normales Spiel",
+        "chill": "Entspannter / Normaler Spieler",
         "competition": "Wettbewerb / Ranglistenspiel",
         "competition-chill": "Wettbewerb/Ranglistenspiel und Entspannt"
         },
     "gender-options": {
         "male": "Mann",
         "female": "Frau",
-        "non-binary": "Nicht-binär"
+        "non-binary": "Divers"
     }
 }

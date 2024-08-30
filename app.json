@@ -4,11 +4,11 @@
     "slug": "URSG",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/images/icon-ursg.png",
     "scheme": "com.dosylia.URSG",
     "userInterfaceStyle": "automatic",
     "splash": {
-      "image": "./assets/images/splash.png",
+      "image": "./assets/images/splash-ursg.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -30,14 +30,14 @@
       "userInterfaceStyle": "automatic",
       "package": "com.dosylia.URSG",
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/adaptive-icon-ursg.png",
         "backgroundColor": "#ffffff"
       }
     },
     "web": {
       "bundler": "metro",
       "output": "static",
-      "favicon": "./assets/images/favicon.png"
+      "favicon": "./assets/images/favicon-ursg.ico"
     },
     "plugins": [
       "expo-router",

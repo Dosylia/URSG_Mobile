@@ -69,7 +69,7 @@ const RiotProfileSection = ({ userData, isProfile }) => {
             {isProfile ? t('your-kind-of-gamer') : t('their-kind-of-gamer')}: {kindOfGamer}
           </Text>
           <Text style={{ color: colorScheme === 'dark' ? '#000' : '#fff' }}>
-            {isProfile ? t('your-short-bio') : t('their-short-io')}: {shortBio}
+            {isProfile ? t('your-short-bio') : t('their-short-bio')}: {shortBio}
           </Text>
         </View>
       )}

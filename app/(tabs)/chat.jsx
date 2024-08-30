@@ -22,7 +22,7 @@ const ChatPage = () => {
   const [unreadMessage, setUnreadMessage] = useState({});
   const backgroundColorClass = colorScheme === 'dark' ? 'bg-gray-400' : 'bg-gray-800';
   const placeholderColor = colorScheme === 'dark' ? 'white' : '#bcb0b0';
-  
+
   const scrollViewRef = useRef();
 
   useEffect(() => {
@@ -68,11 +68,11 @@ const ChatPage = () => {
               'Content-Type': 'application/x-www-form-urlencoded',
             },
           });
-  
+
           if (friendsResponse.data.success) {
             const friendlist = friendsResponse.data.friendlist;
             setFriends(friendlist);
-  
+
             if (friendlist.length > 0 && selectedFriend === null) {
               setSelectedFriend(friendlist[0]);
               fetchMessages(userId, friendlist[0].friend_id);
@@ -86,7 +86,7 @@ const ChatPage = () => {
           setIsLoading(false);
         }
       };
-  
+
       fetchChatData();
     }, [])
   );
@@ -100,13 +100,24 @@ const ChatPage = () => {
       });
 
       if (messagesResponse.data.success) {
-        setMessages(messagesResponse.data.messages || []); // Ensure messages is an array
+        const formattedMessages = messagesResponse.data.messages.map((message) => ({
+          ...message,
+          formattedTime: formatTimestamp(message.chat_date),
+        }));
+        setMessages(formattedMessages);
       } else {
-        setErrors(messagesResponse.data.error);
+        console.log(messagesResponse.data.error);
       }
     } catch (error) {
-      setErrors('Error fetching messages');
+      console.log('Error fetching messages');
     }
+  };
+
+  const formatTimestamp = (dateString) => {
+    const utcDate = new Date(dateString);
+    const localOffset = new Date().getTimezoneOffset();
+    const localDate = new Date(utcDate.getTime() + localOffset * 60000 * -1);
+    return localDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   };
 
   const handleSelectFriend = (friend) => {
@@ -116,16 +127,16 @@ const ChatPage = () => {
 
   const handleSendMessage = async () => {
     if (newMessage.trim() === '' || !selectedFriend) return;
-
+  
     try {
       const dataToSend = {
         senderId: userId,
         receiverId: selectedFriend.friend_id,
         message: newMessage,
       };
-
+  
       const jsonData = JSON.stringify(dataToSend);
-
+  
       const response = await fetch('https://ur-sg.com/sendMessageData', {
         method: 'POST',
         headers: {
@@ -133,23 +144,28 @@ const ChatPage = () => {
         },
         body: "param=" + encodeURIComponent(jsonData),
       });
-
+  
       const responseData = await response.json();
-
+  
       if (responseData.success) {
+
+        const currentDate = new Date();
+        
+        const formattedTime = formatTimestamp(currentDate);
+  
         const newMessageObject = {
           chat_id: responseData.newChatId,
           chat_senderId: userId,
           chat_receiverId: selectedFriend.friend_id,
           chat_message: newMessage,
-          chat_date: new Date().toISOString(),
+          chat_date: currentDate.toISOString(),
           chat_status: 'unread',
+          formattedTime: formattedTime,
         };
-
-        setMessages((prevMessages) => [...prevMessages, newMessageObject]); // Safely update messages
+  
+        setMessages((prevMessages) => [...prevMessages, newMessageObject]);
         setNewMessage('');
-
-        // Scroll to the end after sending a message
+  
         scrollViewRef.current?.scrollToEnd({ animated: true });
       } else {
         console.error('Error sending message:', responseData.message);
@@ -171,7 +187,6 @@ const ChatPage = () => {
       });
       const data = response.data;
       if (data.success) {
-        // Transform array into an object with friend_id as keys
         const unreadCountByFriend = {};
         data.unreadCount.forEach(item => {
           unreadCountByFriend[item.chat_senderId] = item.unread_count;
@@ -193,7 +208,6 @@ const ChatPage = () => {
       fetchUnreadMessage();
     }, 20000);
 
-    // Cleanup interval on component unmount
     return () => clearInterval(intervalId);
   }, []); 
 
@@ -212,13 +226,6 @@ const ChatPage = () => {
       scrollViewRef.current?.scrollToEnd({ animated: true });
     }
   }, [messages, selectedFriend]);
-
-  const formatTimestamp = (dateString) => {
-    const utcDate = new Date(dateString);
-    const localOffset = utcDate.getTimezoneOffset();
-    const localDate = new Date(utcDate.getTime() - localOffset * 60000);
-    return localDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-  };
 
   if (isLoading) {
     return (
@@ -241,8 +248,6 @@ const ChatPage = () => {
               >
                 <View className={`p-3 rounded relative ${colorScheme === 'dark' ? 'bg-gray-400' : 'bg-gray-800'}`}>
                   <Text className="text-white">{friend.friend_username}</Text>
-                  
-                  {/* Badge rendering */}
                   {unreadMessage[friend.friend_id] > 0 && (
                     <View className="absolute -top-0 -right-1 w-4 h-4 bg-red-600 rounded-full items-center justify-center z-10">
                       <Text className="text-white text-xs font-bold">{unreadMessage[friend.friend_id]}</Text>
@@ -252,14 +257,12 @@ const ChatPage = () => {
               </TouchableOpacity>
             ))}
           </ScrollView>
-          {/* Chat Messages */}
           <View className="flex-1">
             <ScrollView className="flex-1" ref={scrollViewRef}>
               <UserDataChat userData={selectedFriend} />
               {Array.isArray(messages) && messages.length > 0 ? (
                 messages.map((message) => {
                   const chatId = message.chat_id || `${message.chat_senderId}-${message.chat_date}`;
-                  const formattedTime = formatTimestamp(message.chat_date);
   
                   return (
                     <View
@@ -275,7 +278,7 @@ const ChatPage = () => {
                       <Text className="text-white text-base pb-1">
                         {message.chat_senderId === userId ? t('you') : selectedFriend.friend_username}: {he.decode(message.chat_message)}
                       </Text>
-                      <Text className="text-white text-xs absolute bottom-0 right-0 pr-1 pt-1 opacity-50">{formattedTime}</Text>
+                      <Text className="text-white text-xs absolute bottom-0 right-0 pr-1 pt-1 opacity-50">{message.formattedTime}</Text>
                     </View>
                   );
                 })
@@ -295,7 +298,6 @@ const ChatPage = () => {
           )}
         </View>
       )}
-      {/* New Message Input */}
       {friends.length > 0 && (
         <View className="flex-row items-center">
           <TextInput
@@ -313,7 +315,6 @@ const ChatPage = () => {
           </TouchableOpacity>
         </View>
       )}
-      {/* Error Display */}
       {errors && <Text className="text-red-500 mt-4">{errors}</Text>}
     </View>
   );
