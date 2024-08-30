@@ -8,6 +8,8 @@ module.exports = {
         darkgrey: '#151416',
         mediumgrey: '#302e31',
         lightgrey: '#4f4b52',
+        whitePerso: '#ffffff',
+        blackPerso: '#000000',
       },
       fontFamily: {
         pthin: ["Poppins-Thin", "sans-serif"],

@@ -32,14 +32,17 @@ const languageDetector = {
   },
 };
 
-i18next
+
+const i18n = i18next.createInstance();
+
+i18n
   .use(initReactI18next)
   .use(languageDetector)
   .init({
     compatibilityJSON: 'v3',
-    fallbackLng: 'en',
+    fallbackLng: AsyncStorage.getItem('user-language') ?? 'en',
     resources: languageResources,
-    debug: false,
+    debug: true,
   });
 
-export default i18next;
+export default i18n;

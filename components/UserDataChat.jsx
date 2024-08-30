@@ -4,8 +4,12 @@ import axios from 'axios';
 import { images } from '../constants';
 import { router } from 'expo-router';
 import { SessionContext } from '../context/SessionContext';
+import { useColorScheme } from 'nativewind';
+import { useTranslation } from 'react-i18next';
 
 const UserDataChat = ({ userData }) => {
+  const { t } = useTranslation();
+  const { colorScheme } = useColorScheme();
   const [modalVisible, setModalVisible] = useState(false);
   const { setSession, sessions } = useContext(SessionContext);
   const [errors, setErrors] = useState('');
@@ -64,7 +68,7 @@ const UserDataChat = ({ userData }) => {
   };
 
   return (
-    <View className="flex-row items-center justify-between p-4 mb-2 bg-gray-800 rounded">
+    <View className={`${colorScheme === 'dark' ? 'bg-gray-400' : 'bg-gray-800' } flex-row items-center justify-between p-4 mb-2 rounded`}>
       {/* User Profile Image */}
       <Image 
       source={
@@ -91,11 +95,11 @@ const UserDataChat = ({ userData }) => {
         onRequestClose={() => setModalVisible(false)}
       >
         <View className="flex-1 justify-center items-center bg-black bg-opacity-50">
-          <View className="bg-gray-800 p-6 rounded-lg w-4/5">
-            <Text className="text-white text-lg mb-4">Are you sure you want to block this user?</Text>
+          <View className={`${colorScheme === 'dark' ? 'bg-gray-500' : 'bg-gray-800' }  p-6 rounded-lg w-4/5`}>
+            <Text className="text-white text-lg mb-4">{t('block-user')}</Text>
             <View className="flex-row justify-end">
-              <Button title="Cancel" onPress={() => setModalVisible(false)} color="#aaa" />
-              <Button title="Block" onPress={() => handleBlockUser(sessions.userSession.userId, userData.friend_id)} color="#e74057" />
+              <Button title={t('cancel')} onPress={() => setModalVisible(false)} color="#aaa" />
+              <Button title={t('block')} onPress={() => handleBlockUser(sessions.userSession.userId, userData.friend_id)} color="#e74057" />
             </View>
           </View>
         </View>

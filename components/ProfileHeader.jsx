@@ -5,10 +5,13 @@ import { images } from "../constants";
 import { icons } from "../constants";
 import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
+import { useColorScheme } from 'nativewind';
 
 const ProfileHeader = ({ userData, isProfile }) => {
+  const { colorScheme } = useColorScheme();
   const { t } = useTranslation();
   const profileImage = images.defaultpicture; 
+  const addImage = colorScheme === 'dark' ? icons.addImageDark : icons.addImage;
 
   const handleOpenLink = (url) => {
     Linking.openURL(url).catch(err => console.error('Failed to open URL:', err));
@@ -37,13 +40,13 @@ const ProfileHeader = ({ userData, isProfile }) => {
           {isProfile && (
             <TouchableOpacity onPress={handlePictureUpdate} className="absolute top-0 -right-5">
               <Image 
-              source={icons.addImage} 
+              source={addImage} 
               className="w-6 h-6" />
             </TouchableOpacity>
           )}
         </View>
-      <Text className="text-3xl font-bold mt-4 text-white">{userData?.username || 'Unknown User'}</Text>
-      <Text className="text-lg text-white">{userData?.age || 'N/A'}</Text>
+      <Text className="text-3xl font-bold mt-4 text-white dark:text-blackPerso">{userData?.username || 'Unknown User'}</Text>
+      <Text className="text-lg text-white dark:text-blackPerso">{userData?.age || 'N/A'}</Text>
       <View className="flex-row mt-3 space-x-3">
         {userData?.twitter && (
           <TouchableOpacity onPress={() => handleOpenLink(`https://twitter.com/${userData.twitter}`)}>

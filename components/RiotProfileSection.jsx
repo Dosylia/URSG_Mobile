@@ -5,10 +5,12 @@ import { images } from "../constants";
 import LeagueDataComponent from './LeagueDataComponent';
 import he from 'he';
 import { useTranslation } from 'react-i18next';
+import { useColorScheme } from 'nativewind';
 
 const BASE_PROFILE_ICON_URL = 'https://ddragon.leagueoflegends.com/cdn/14.14.1/img/profileicon/';
 
 const RiotProfileSection = ({ userData, isProfile }) => {
+  const { colorScheme } = useColorScheme();
   const { t } = useTranslation();
   const riotProfilePicture = userData?.sProfileIcon
     ? { uri: `${BASE_PROFILE_ICON_URL}${userData.sProfileIcon}.png` }
@@ -34,10 +36,17 @@ const RiotProfileSection = ({ userData, isProfile }) => {
                 style={{ width: 48, height: 48, borderRadius: 24, marginRight: 12 }}
               />
               <View>
-                <Text style={{ color: 'white', fontWeight: 'bold' }}>{riotName}</Text>
-                <Text style={{ color: 'gray' }}>{server}</Text>
-                <Text style={{ color: 'gray' }}>{rank}</Text>
-                <Text style={{ color: 'gray' }}>Level: {level}</Text>
+              <Text
+                style={{
+                  color: colorScheme === 'dark' ? '#000' : '#fff',
+                  fontWeight: 'bold'
+                }}
+              >
+                {riotName}
+              </Text>
+                <Text style={{ color: colorScheme === 'dark' ? '#353131' : 'gray' }}>{server}</Text>
+                <Text style={{ color: colorScheme === 'dark' ? '#353131' : 'gray' }}>{rank}</Text>
+                <Text style={{ color: colorScheme === 'dark' ? '#353131' : 'gray' }}>Level: {level}</Text>
               </View>
             </View>
           )}
@@ -53,13 +62,13 @@ const RiotProfileSection = ({ userData, isProfile }) => {
             />
           )}
 
-          <Text style={{ color: 'white' }}>
+          <Text style={{ color: colorScheme === 'dark' ? '#000' : '#fff' }}>
             {isProfile ? t('your-gender') : t('their-gender')}: {gender}
           </Text>
-          <Text style={{ color: 'white' }}>
+          <Text style={{ color: colorScheme === 'dark' ? '#000' : '#fff' }}>
             {isProfile ? t('your-kind-of-gamer') : t('their-kind-of-gamer')}: {kindOfGamer}
           </Text>
-          <Text style={{ color: 'white' }}>
+          <Text style={{ color: colorScheme === 'dark' ? '#000' : '#fff' }}>
             {isProfile ? t('your-short-bio') : t('their-short-io')}: {shortBio}
           </Text>
         </View>

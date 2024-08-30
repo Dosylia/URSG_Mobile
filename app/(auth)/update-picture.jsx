@@ -130,7 +130,7 @@ const updatePicture = () => {
   
   if (isLoading) {
     return (
-      <View className="flex-1 justify-center items-center bg-gray-900">
+      <View className="flex-1 justify-center items-center bg-gray-900 dark:bg-whitePerso">
         <ActivityIndicator size="large" color="#e74057" />
       </View>
     );
@@ -141,16 +141,16 @@ const updatePicture = () => {
   };
 
   return (
-    <SafeAreaView className="bg-gray-900 h-full">
+    <SafeAreaView className="bg-gray-900 dark:bg-whitePerso h-full">
       <ScrollView>
-      <View className="flex w-full flex-row items-center bg-gray-900">
+      <View className="flex w-full flex-row items-center bg-gray-900 dark:bg-whitePerso">
         <View className="flex-1" />
         <TouchableOpacity onPress={closePage}>
           <Text className="text-mainred px-6 text-2xl font-extrabold">X</Text>
         </TouchableOpacity>
       </View>
         <View className="w-full justify-start h-full px-4 my-6">
-          <Text className="text-2xl text-white text-semibpmd font-psemibold">
+          <Text className="text-2xl text-white dark:text-blackPerso text-semibpmd font-psemibold">
           {t('update-picture')}
           </Text>
           {errors ? <Text className="text-red-600 text-xl my-2">{errors}</Text> : null}
@@ -163,7 +163,7 @@ const updatePicture = () => {
           )}
 
           <TouchableOpacity onPress={pickImage} className="w-full mt-7">
-            <Text className="text-white text-center">{t('pick-image')}</Text>
+            <Text className="text-white text-center dark:text-blackPerso">{t('pick-image')}</Text>
           </TouchableOpacity>
 
           <CustomButton

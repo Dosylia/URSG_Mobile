@@ -47,6 +47,13 @@
     "type-message": "Nachricht schreiben...",
     "no-friends": "Derzeit keine Freunde.",
     "select-friend": "Wähle einen Freund, um das Gespräch zu beginnen.",
+    "mode": "Modus",
+    "mode-change": "Ändern Sie den App-Modus (Hell/Dunkel)",
+    "dark-mode": "Dunkler Modus",
+    "light-mode": "Heller Modus",
+    "block-user": "Bist du sicher, dass du diesen Benutzer blockieren möchtest?",
+    "cancel": "Abbrechen",
+    "block": "Blockieren",
     "basic-info": {
         "username": "Benutzername",
         "gender": "Geschlecht",
@@ -63,7 +70,7 @@
         "rank": "Wähle deinen Rang",
         "role": "Wähle deine Rolle",
         "server": "Wähle deinen Server",
-        "title": "Deine League of Legends-Informationen"
+        "title": "League of Legends Informationen"
     },
     "lf": {
         "gender": "Gesuchtes Geschlecht",
@@ -99,5 +106,15 @@
         "main3Lf": "Wähle den dritten gesuchten Main",
         "rankLf": "Wähle den gesuchten Rang",
         "roleLf": "Wähle die gesuchte Rolle"
+    },
+    "gamer-options": {
+        "chill": "Entspannt / Normales Spiel",
+        "competition": "Wettbewerb / Ranglistenspiel",
+        "competition-chill": "Wettbewerb/Ranglistenspiel und Entspannt"
+        },
+    "gender-options": {
+        "male": "Mann",
+        "female": "Frau",
+        "non-binary": "Nicht-binär"
     }
 }

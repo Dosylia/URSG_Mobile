@@ -6,8 +6,10 @@ import he from 'he';
 import { SessionContext } from '../../context/SessionContext';
 import { UserDataChat } from '../../components';
 import { useTranslation } from 'react-i18next';
+import { useColorScheme } from 'nativewind';
 
 const ChatPage = () => {
+  const { colorScheme } = useColorScheme();
   const { t } = useTranslation();
   const { sessions } = useContext(SessionContext);
   const { userId } = sessions.userSession;
@@ -18,6 +20,8 @@ const ChatPage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [errors, setErrors] = useState(null);
   const [unreadMessage, setUnreadMessage] = useState({});
+  const backgroundColorClass = colorScheme === 'dark' ? 'bg-gray-400' : 'bg-gray-800';
+  const placeholderColor = colorScheme === 'dark' ? 'white' : '#bcb0b0';
   
   const scrollViewRef = useRef();
 
@@ -98,11 +102,9 @@ const ChatPage = () => {
       if (messagesResponse.data.success) {
         setMessages(messagesResponse.data.messages || []); // Ensure messages is an array
       } else {
-        console.error('Error fetching messages:', messagesResponse.data.error);
         setErrors(messagesResponse.data.error);
       }
     } catch (error) {
-      console.error('Error fetching messages:', error);
       setErrors('Error fetching messages');
     }
   };
@@ -220,14 +222,14 @@ const ChatPage = () => {
 
   if (isLoading) {
     return (
-      <View className="flex-1 justify-center items-center bg-gray-900">
+      <View className="flex-1 justify-center items-center bg-gray-900 dark:bg-whitePerso">
         <ActivityIndicator size="large" color="#e74057" />
       </View>
     );
   }
 
   return (
-    <View className="flex-1 bg-gray-900 p-4">
+    <View className="flex-1 bg-gray-900 p-4 dark:bg-whitePerso">
       {friends.length > 0 ? (
         <>
           <ScrollView horizontal className="flex-row max-h-20">
@@ -237,7 +239,7 @@ const ChatPage = () => {
                 className="mr-3"
                 onPress={() => handleSelectFriend(friend)}
               >
-                <View className="p-3 bg-gray-800 rounded relative">
+                <View className={`p-3 rounded relative ${colorScheme === 'dark' ? 'bg-gray-400' : 'bg-gray-800'}`}>
                   <Text className="text-white">{friend.friend_username}</Text>
                   
                   {/* Badge rendering */}
@@ -262,7 +264,7 @@ const ChatPage = () => {
                   return (
                     <View
                       key={chatId}
-                      className={`mb-2 p-3 rounded ${message.chat_senderId === userId ? 'bg-mainred self-end' : 'bg-gray-800 self-start'}`}
+                      className={`mb-2 p-3 rounded ${message.chat_senderId === userId ? 'bg-mainred self-end' : `${colorScheme === 'dark' ? 'bg-gray-400' : 'bg-gray-800'}   self-start`}`}
                       style={{ 
                         maxWidth: '80%', 
                         alignSelf: message.chat_senderId === userId ? 'flex-end' : 'flex-start',
@@ -278,7 +280,7 @@ const ChatPage = () => {
                   );
                 })
               ) : (
-                <Text className="text-white">{t('no-message')}</Text>
+                <Text className="text-white dark:text-blackPerso">{t('no-message')}</Text>
               )}
             </ScrollView>
           </View>
@@ -300,8 +302,8 @@ const ChatPage = () => {
             value={newMessage}
             onChangeText={setNewMessage}
             placeholder={t('type-message')}
-            placeholderTextColor="#aaa"
-            className="flex-1 bg-gray-800 text-white p-2 rounded-l"
+            placeholderTextColor={placeholderColor}
+            className={`flex-1 ${backgroundColorClass} text-white p-2 rounded-l`}
           />
           <TouchableOpacity 
             onPress={handleSendMessage}

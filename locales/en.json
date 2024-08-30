@@ -27,7 +27,7 @@
     "soulmate": "soulmate with",
     "level-up" : "Level up your game with your future match",
     "join-google": "Join with Google",
-    "no-messages": "No messages yet.",
+    "no-message": "No messages yet.",
     "about-you": "About you",
     "about-them": "About them",
     "your-gender": "Your gender",
@@ -47,6 +47,13 @@
     "looking-for": "Looking for",
     "copied-clipboard": "Copied to clipboard",
     "discord-copied": "Discord username has been copied!",
+    "mode": "Mode",
+    "mode-change": "Change the app mode (Light/Dark)",
+    "dark-mode": "Dark mode",
+    "light-mode": "Light mode",
+    "block-user": "Are you sure you want to block this user?",
+    "cancel": "Cancel",
+    "block": "Block",
     "basic-info": {
         "username": "Username",
         "gender": "Gender",
@@ -99,5 +106,15 @@
         "main3Lf": "Choose third main you are looking for",
         "rankLf": "Choose rank you are looking for",
         "roleLf": "Choose role you are looking for"
+    },
+    "gamer-options": {
+        "chill": "Chill / Normal games",
+        "competition": "Competition / Ranked",
+        "competition-chill": "Competition/Ranked and chill"
+    },
+    "gender-options": {
+        "male": "Male",
+        "female": "Female",
+        "non-binary": "Non-binary"
     }
 }

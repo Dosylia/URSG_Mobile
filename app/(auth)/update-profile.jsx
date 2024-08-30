@@ -209,16 +209,16 @@ const updateProfile = () => {
 
 
   return (
-    <SafeAreaView className="bg-gray-900 h-full">
+    <SafeAreaView className="bg-gray-900 dark:bg-whitePerso h-full">
       <ScrollView>
-      <View className="flex w-full flex-row items-center bg-gray-900">
+      <View className="flex w-full flex-row items-center bg-gray-900 dark:bg-whitePerso">
         <View className="flex-1" />
         <TouchableOpacity onPress={closePage}>
           <Text className="text-mainred px-6 text-2xl font-extrabold">X</Text>
         </TouchableOpacity>
       </View>
         <View className="w-full justify-start h-full px-4 my-6">
-        <Text className="text-2xl text-white text-semibpmd mt-5 font-psemibold">{t('update-profile')}</Text>
+        <Text className="text-2xl text-white dark:text-blackPerso text-semibpmd mt-5 font-psemibold">{t('update-profile')}</Text>
           {errors ? <Text className="text-red-600 text-xl my-2">{errors}</Text> : null}
           <Collapse collapseTitle={t('basic-info.title')}>
         <FormField 

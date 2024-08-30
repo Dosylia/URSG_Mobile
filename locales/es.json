@@ -47,6 +47,13 @@
     "type-message": "Escribe un mensaje...",
     "no-friends": "No hay amigos actualmente.",
     "select-friend": "Selecciona un amigo para comenzar la conversación.",
+    "mode": "Modo",
+    "mode-change": "Cambiar el modo de la aplicación (Claro/Osuro)",
+    "dark-mode": "Modo oscuro",
+    "light-mode": "Modo claro",
+    "block-user": "¿Estás seguro de que quieres bloquear a este usuario?",
+    "cancel": "Cancelar",
+    "block": "Bloquear",
     "basic-info": {
         "username": "Nombre de usuario",
         "gender": "Género",
@@ -99,5 +106,15 @@
         "main3Lf": "Elige el tercer main buscado",
         "rankLf": "Elige el rango buscado",
         "roleLf": "Elige el rol buscado"
+    },
+    "gamer-options": {
+        "chill": "Relajado / Partida normal",
+        "competition": "Competencia / Partida clasificada",
+        "competition-chill": "Competencia/Partida clasificada y Relajado"
+    },
+    "gender-options": {
+        "male": "Hombre",
+        "female": "Mujer",
+        "non-binary": "No binario"
     }
 }

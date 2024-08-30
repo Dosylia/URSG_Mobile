@@ -12,12 +12,16 @@ import { images, icons } from "../constants";
 import axios from 'axios';
 import { SessionContext } from '../context/SessionContext';
 import { useTranslation } from 'react-i18next';
+import { useColorScheme } from 'nativewind';
 
 export default function App() {
+  const { colorScheme } = useColorScheme();
   const { t } = useTranslation();
   const [errors, setErrors] = useState('');
   const [error, setError] = useState();
   const { setSession, sessions } = useContext(SessionContext);;
+
+  const appImage = colorScheme === 'dark' ? images.logo : images.logoWhite;
 
   const configureGoogleSignIn = () => {
     GoogleSignin.configure({
@@ -159,9 +163,9 @@ export default function App() {
   };
  
   return (
-      <SafeAreaView className="bg-gray-900 h-full">
+      <SafeAreaView className="bg-gray-900 h-full dark:bg-whitePerso">
         <ScrollView contentContainerStyle={{ height: "100%" }}>
-        <View className="flex w-full flex-row justify-end items-center bg-gray-900">
+        <View className="flex w-full flex-row justify-end items-center bg-gray-900 dark:bg-whitePerso">
           <TouchableOpacity className="p-2" onPress={handleProfileUpdate}>
             <Image
               source={icons.gear}
@@ -173,7 +177,7 @@ export default function App() {
         </View>
           <View className="w-full flex justify-normal items-center h-full px-4">
             <Image
-              source={images.logoWhite}
+              source={appImage}
               className="w-[150px] h-[100px] mt-5"
               resizeMode='contain'
             />
@@ -183,12 +187,12 @@ export default function App() {
               resizeMode='contain'
             />
             <View className="relative mt-5">
-              <Text className="text-3xl text-white font-bold text-center">
+              <Text className="text-3xl text-white dark:text-blackPerso font-bold text-center">
                 {`${t('find-perfect')} ${"\n"} ${t('soulmate')} ${""} `}
                 <Text className="text-mainred">URSG</Text>
               </Text>
             </View>
-            <Text className="text-center text-white mt-5 font-pregular mb-5">
+            <Text className="text-center text-white dark:text-blackPerso mt-5 font-pregular mb-5">
               {t('level-up')}
             </Text>
             {errors ? <Text className="text-red-600 text-xl my-2">{errors}</Text> : null}

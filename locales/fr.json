@@ -26,7 +26,7 @@
     "find-perfect": "Trouvez votre",
     "soulmate": "âme sœur avec",
     "level-up" : "Améliorez votre jeu avec votre futur match",
-    "join-google": "Connectez vous avec Google",
+    "join-google": "Se connecter avec Google",
     "no-message": "Aucun message actuellement.",
     "send-message": "Envoyer",
     "gender": "Genre",
@@ -47,6 +47,13 @@
     "type-message": "Écrivez un message...",
     "no-friends": "Aucun ami actuellement.",
     "select-friend": "Sélectionnez un ami pour commencer la conversation.",
+    "mode": "Mode",
+    "mode-change": "Changer le mode de l'application (Clair/Sombre)",
+    "dark-mode": "Mode sombre",
+    "light-mode": "Mode clair",
+    "block-user": "Êtes-vous sûr de vouloir bloquer cet utilisateur ?",
+    "cancel": "Annuler",
+    "block": "Bloquer",
     "basic-info": {
         "username": "Nom d'utilisateur",
         "gender": "Genre",
@@ -99,5 +106,15 @@
         "main3Lf": "Choisissez le troisième main recherché",
         "rankLf": "Choisissez le rang recherché",
         "roleLf": "Choisissez le rôle recherché"
+    },
+    "gamer-options": {
+        "chill": "Chill / Partie normale",
+        "competition": "Compétition / Partie classée",
+        "competition-chill": "Compétition/Partie classée and Chill"
+    },
+    "gender-options": {
+        "male": "Homme",
+        "female": "Femme",
+        "non-binary": "Non-binaire"
     }
 }

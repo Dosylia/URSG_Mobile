@@ -5,12 +5,12 @@ import React, { useState, useContext, useEffect } from 'react'
 import { Redirect, router } from 'expo-router';
 import axios from 'axios';
 
-import { images } from "../../constants";
 import { FormField } from "../../components";
 import { CustomButton } from "../../components";
 import championList from  "../../constants/championList";
 import roleList from "../../constants/roleList";
 import rankList from "../../constants/rankList";
+import { useColorScheme } from 'nativewind';
 
 const LookingForData = () => {
   const { sessions, setSession } = useContext(SessionContext);
@@ -134,15 +134,10 @@ const availableChampionsForMain3 = form.main1 !== 'Aatrox' && form.main2 !== 'Aa
   ));
 
   return (
-    <SafeAreaView className="bg-gray-900 h-full">
+    <SafeAreaView className="bg-gray-900 h-full dark:bg-whitePerso">
       <ScrollView>
         <View className="w-full justify-start h-full px-4 my-6">
-          <Image 
-            source={images.logoWhite}
-            className="w-[100px] h-[50px]"
-            resizeMode='contain'
-          />
-          <Text className="text-2xl text-white text-semibpmd mt-5 font-psemibold">{t('interest')}</Text>
+          <Text className="text-2xl text-white dark:text-blackPerso text-semibpmd mt-5 font-psemibold">{t('interest')}</Text>
           {errors ? <Text className="text-red-600 text-xl my-2">{errors}</Text> : null}
           <FormField 
             title={t('lf.gender')}

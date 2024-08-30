@@ -11,10 +11,13 @@ import { ranks } from "../constants";
 import championMapping from "../constants/championMapping";
 import roleMapping from '../constants/roleMaping';
 import rankMapping from '../constants/rankMapping';
+import { useColorScheme } from 'nativewind';
 
 
 
 const FormField = ({ title, value, handleChangeText, placeholder, otherStyles, keyboardType, isSelect, options, hasImage, image, imageOrigin, ...props }) => {
+
+  const { colorScheme } = useColorScheme();
 
   function displayImage(imageOrigin, image) {
     let baseImage;
@@ -55,7 +58,7 @@ const FormField = ({ title, value, handleChangeText, placeholder, otherStyles, k
   }
     return (
           <View className={`space-y-2 ${otherStyles}`}>
-            <Text className="text-base text-gray-100 font-pmedium">{title}</Text>
+            <Text className="text-base text-gray-100 dark:text-blackPerso font-pmedium">{title}</Text>
     
             <View className="w-full h-16 px-4 bg-black-100 rounded-2xl border-2 border-lightgrey focus:border-mainred flex flex-row items-center">
             {isSelect ? (
@@ -64,7 +67,11 @@ const FormField = ({ title, value, handleChangeText, placeholder, otherStyles, k
                   onValueChange={(itemValue) => {
                     handleChangeText(itemValue);
                   }}
-                  style={{ flex: 1, color: '#FFFFFF' , fontSize: 16 }}
+                  style={{
+                    flex: 1,
+                    color: colorScheme === 'light' ? '#FFFFFF' : '#000000',
+                    fontSize: 16,
+                  }}
                 >
                       {options.map((option, index) => (
                       <Picker.Item key={index} label={option.label} value={option.value} />
@@ -72,7 +79,7 @@ const FormField = ({ title, value, handleChangeText, placeholder, otherStyles, k
                 </Picker>
                 ) : (
                 <TextInput
-                  className="flex-1 text-white font-psemibold text-base"
+                  className="flex-1 text-white dark:text-blackPerso font-psemibold text-base"
                   value={value}
                   placeholder={placeholder}
                   placeholderTextColor="#7B7B8B"

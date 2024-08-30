@@ -13,6 +13,7 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
+      "userInterfaceStyle": "automatic",
       "bundleIdentifier": "com.dosylia.URSG",
       "supportsTablet": true,
       "infoPlist": {
@@ -26,6 +27,7 @@
       }
     },
     "android": {
+      "userInterfaceStyle": "automatic",
       "package": "com.dosylia.URSG",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",

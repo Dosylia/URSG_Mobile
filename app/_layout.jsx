@@ -1,13 +1,17 @@
-import { useFonts } from "expo-font";
+import { useFonts } from 'expo-font';
 import { SplashScreen, Stack } from 'expo-router';
-import { useEffect } from "react";
+import { useEffect, useState } from 'react';
 import { SessionProvider } from '../context/SessionContext';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { useColorScheme } from 'nativewind';
+import i18n from '../services/i18next';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
 const RootLayout = () => {
+  const { colorScheme, toggleColorScheme } = useColorScheme();
   const [fontsLoaded, error] = useFonts({
     "Poppins-Black": require("../assets/fonts/Poppins-Black.ttf"),
     "Poppins-Bold": require("../assets/fonts/Poppins-Bold.ttf"),
@@ -20,19 +24,46 @@ const RootLayout = () => {
     "Poppins-Thin": require("../assets/fonts/Poppins-Thin.ttf"),
   });
 
+  const [initialLoadDone, setInitialLoadDone] = useState(false);
+
   useEffect(() => {
-    if (error) throw error;
+    if (error) {
+      console.error("Font loading error:", error);
+      return;
+    }
 
     if (fontsLoaded) {
       SplashScreen.hideAsync();
     }
   }, [fontsLoaded, error]);
 
-  if (!fontsLoaded) {
-    return null;
-  }
+  useEffect(() => {
+    const loadSettings = async () => {
+      try {
+        const lng = await AsyncStorage.getItem('user-language');
+        if (!lng) {
+          i18n.changeLanguage('en');
+        }
 
-  if (!fontsLoaded && !error) {
+        const savedMode = await AsyncStorage.getItem('mode');
+        // Determine if we need to toggle the color scheme based on the saved mode
+        if (savedMode && savedMode !== colorScheme) {
+          toggleColorScheme(savedMode);
+          console.log(`Mode loaded and applied: ${savedMode}`);
+        } else {
+          console.log(`Mode already set: ${colorScheme}`);
+        }
+      } catch (error) {
+        console.error("Error loading settings:", error);
+      } finally {
+        setInitialLoadDone(true);
+      }
+    };
+
+    loadSettings();
+  }, [toggleColorScheme, colorScheme]);
+
+  if (!fontsLoaded || !initialLoadDone) {
     return null;
   }
 
@@ -40,12 +71,11 @@ const RootLayout = () => {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SessionProvider>
         <Stack>
-            <Stack.Screen name="index" options={{ headerShown:false }}/>
+          <Stack.Screen name="index" options={{ headerShown: false }} />
         </Stack>
       </SessionProvider>
     </GestureHandlerRootView>
-  )
-}
+  );
+};
 
-export default RootLayout
-
+export default RootLayout;

@@ -172,7 +172,7 @@ const Swiping = () => {
 
   if (isLoading) {
     return (
-      <View className="flex-1 justify-center items-center bg-gray-900">
+      <View className="flex-1 justify-center items-center bg-gray-900 dark:bg-whitePerso">
         <ActivityIndicator size="large" color="#e74057" />
         <UserDataComponent sessions={sessions} onUserDataChange={setUserData} />
         {allUsers.length > 0 && (
@@ -184,10 +184,10 @@ const Swiping = () => {
 
   return (
     <PanGestureHandler onGestureEvent={onGestureEvent}>
-      <ScrollView className="flex-1 bg-gray-900 p-4">
+      <ScrollView className="flex-1 bg-gray-900 p-4 dark:bg-whitePerso">
         {noMoreUsers ? (
-          <View className="flex-1 h-[500px] justify-center items-center bg-gray-900">
-            <Text className="text-white justify-center items-center">{t('seen-all-profiles')}</Text>
+          <View className="flex-1 h-[500px] justify-center items-center bg-gray-900 dark:bg-whitePerso">
+            <Text className="text-white dark:text-blackPerso justify-center items-center">{t('seen-all-profiles')}</Text>
             <Image source={images.sadBee} className="w-50 h-50" />
           </View>
         ) : otherUser && (

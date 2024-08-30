@@ -152,9 +152,9 @@ const BindAccount = () => {
   };
 
   return (
-    <SafeAreaView className="bg-gray-900 h-full">
+    <SafeAreaView className="bg-gray-900 h-full dark:bg-whitePerso">
       <ScrollView>
-      <View className="flex w-full flex-row items-center bg-gray-900">
+      <View className="flex w-full flex-row items-center bg-gray-900 dark:bg-whitePerso">
         <View className="flex-1" />
         <TouchableOpacity onPress={closePage}>
           <Text className="text-mainred px-6 text-2xl font-extrabold">X</Text>
@@ -201,7 +201,7 @@ const BindAccount = () => {
                 className="w-[50px] h-[50px] mx-auto"
                 resizeMode="contain"
               />
-              <Text className="text-white text-center mt-5">
+              <Text className="text-white text-center mt-5 dark:text-blackPerso">
                 {t('change-picture-icon')}
               </Text>
               <CustomButton 

@@ -188,8 +188,8 @@ const Profile = () => {
   };
 
   return (
-    <ScrollView className="flex-1 bg-gray-900 p-4">
-      <View className="flex w-full flex-row justify-between items-center bg-gray-900">
+    <ScrollView className="flex-1 bg-gray-900 p-4 dark:bg-whitePerso">
+      <View className="flex w-full flex-row justify-between items-center bg-gray-900 dark:bg-whitePerso">
         <TouchableOpacity onPress={handleProfileUpdate}>
           <Image
             source={icons.gear}
@@ -216,8 +216,8 @@ const Profile = () => {
       {!friendId && friendRequests.length > 0 && (
         <View>
           {friendRequests.map((request) => (
-            <View key={request.user_id} className="flex-row justify-between items-center mb-2 p-3 bg-gray-800 rounded">
-              <Text className="text-white">{request.user_username}</Text>
+            <View key={request.user_id} className="flex-row justify-between items-center mb-2 p-3 bg-gray-800 rounded dark:bg-whitePerso">
+              <Text className="text-white dark:text-blackPerso">{request.user_username}</Text>
               <View className="flex-row">
                 <TouchableOpacity 
                   onPress={() => handleAcceptRequest(request.user_id, request.fr_id)} 
@@ -229,7 +229,7 @@ const Profile = () => {
                   onPress={() => handleRefuseRequest(request.user_id, request.fr_id)} 
                   className="bg-gray-600 p-2 rounded"
                 >
-                  <Text className="text-white">{t('accept')}</Text>
+                  <Text className="text-white">{t('refuse')}</Text>
                 </TouchableOpacity>
               </View>
             </View>

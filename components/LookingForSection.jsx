@@ -23,8 +23,8 @@ const LookingForSection = ({ userData }) => {
               rank={userData.rankLf}
             />
           )}
-          <Text className="text-white">{`${t('gender')}: ${genderLf}`}</Text>
-          <Text className="text-white">{`${t('kind-of-gamer')}: ${kindOfGamerLf}`}</Text>
+          <Text className="text-white dark:text-blackPerso">{`${t('gender')}: ${genderLf}`}</Text>
+          <Text className="text-white dark:text-blackPerso">{`${t('kind-of-gamer')}: ${kindOfGamerLf}`}</Text>
         </>
       )}
     </ProfileSection>
