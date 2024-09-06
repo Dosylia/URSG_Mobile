@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "651426259256",
+    "project_id": "ursg-af0e3",
+    "storage_bucket": "ursg-af0e3.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:651426259256:android:2beb91ca0b2eaa1d83a1cd",
+        "android_client_info": {
+          "package_name": "com.dosylia.URSG"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA1Cr3J8_dzyX2dWrsJ_tB0p4YSXdtbOcQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

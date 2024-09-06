@@ -7,7 +7,7 @@ import { SessionContext } from '../../context/SessionContext';
 import { ProfileHeader, UseSwipeAlgorithm } from "../../components";
 import { RiotProfileSection } from "../../components";
 import { UserDataComponent } from "../../components";
-import { images } from "../../constants";
+import { images, icons } from "../../constants";
 import { useTranslation } from 'react-i18next';
 
 const Swiping = () => {
@@ -113,7 +113,9 @@ const Swiping = () => {
           userId: matchingData.user.user_id
         };
         setOtherUser(UserMatched);
-        setNoMoreUsers(false); // Reset the noMoreUsers state
+        setIsLoading(false);
+        setHasSwiped(false);
+        setNoMoreUsers(false);
       } else {
         console.log("User session not yet populated");
       }
@@ -125,6 +127,8 @@ const Swiping = () => {
 
   const handleSwipe = async (direction) => {
     setHasSwiped(true)
+    setOtherUser(null);
+    setIsLoading(true);
     if (!otherUser) return;
 
     const action = direction === 'right' ? 'swipe_yes' : 'swipe_no';
@@ -138,8 +142,11 @@ const Swiping = () => {
       });
 
       // Fetch the next user after the swipe action
-      fetchUserMatching();
-      setHasSwiped(false);
+      const timer = setTimeout(() => {
+        fetchUserMatching();
+      }, 1000); 
+
+      return () => clearTimeout(timer);
     } catch (error) {
       console.error("Error during swipe action:", error);
       setErrors('Error during swipe action');
@@ -154,6 +161,7 @@ const Swiping = () => {
       handleSwipe('left');
     }
   };
+
   useEffect(() => { 
     setErrors(null);
   }, [otherUser]);
@@ -195,12 +203,33 @@ const Swiping = () => {
             <ProfileHeader userData={otherUser} />
             <RiotProfileSection userData={otherUser} isProfile={false} />
             <View style={styles.arrowContainer}>
-            <TouchableOpacity onPress={() => handleSwipe('left')} style={styles.arrowButton}>
-              <Text style={[styles.arrowText, styles.leftArrow]}>{'<'}</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => handleSwipe('right')} style={styles.arrowButton}>
-              <Text style={[styles.arrowText, styles.rightArrow]}>{'>'}</Text>
-            </TouchableOpacity>
+              <TouchableOpacity  
+              onPress={() => {
+              if (!hasSwiped) {
+                setHasSwiped(true);
+                handleSwipe('left');
+                }
+              }}  
+              style={styles.arrowButton}>
+                <Image
+                source={icons.leftArrowSwipe}
+                className="w-8 h-8 mr-5"
+                />
+              </TouchableOpacity>
+              <Text className="text-2xl font-bold text-white dark:text-blackPerso">Swipe</Text>
+              <TouchableOpacity  
+              onPress={() => {
+              if (!hasSwiped) {
+                setHasSwiped(true);
+                handleSwipe('right');
+                }
+              }}  
+              style={styles.arrowButton}>
+                <Image
+                source={icons.rightArrowSwipe}
+                className="w-8 h-8 ml-5"
+                />
+              </TouchableOpacity>
             </View>
           </>
         )}
@@ -214,21 +243,13 @@ const styles = StyleSheet.create({
   arrowContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingHorizontal: 20,
+    alignItems: 'center',
+    paddingHorizontal: 10,
     marginVertical: 20,
   },
   arrowButton: {
     padding: 10,
-  },
-  arrowText: {
-    fontSize: 50,
-  },
-  leftArrow: {
-    color: 'red', 
-  },
-  rightArrow: {
-    color: 'green',
-  },
+  }
 });
 
 export default Swiping;

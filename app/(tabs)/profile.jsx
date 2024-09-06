@@ -17,8 +17,6 @@ const Profile = () => {
   const [friendRequests, setFriendRequests] = useState([]);
   const friendId = sessions?.friendId;
 
-  console.log('Friend ID:', friendId);
-
   const getFriendList = async () => { 
     const { userId } = sessions.userSession;
     axios.post('https://ur-sg.com/getFriendRequestPhone', new URLSearchParams({ userId }).toString(), {
@@ -154,7 +152,6 @@ const Profile = () => {
               rankLf: response.data.user.lf_lolrank,
               roleLf: response.data.user.lf_lolrole
             };
-
             setUserData(formattedData);
           } else {
             console.error('Failed to fetch user data');

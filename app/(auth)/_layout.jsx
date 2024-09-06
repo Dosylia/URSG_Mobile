@@ -1,11 +1,19 @@
-import { Redirect, Stack } from "expo-router";
-import { StatusBar } from "expo-status-bar";
+import { Stack } from "expo-router";
 import React from 'react'
+import { SafeAreaView } from 'react-native';
+import { useColorScheme } from 'nativewind';
 
 const AuthLayout = () => {
+  const { colorScheme } = useColorScheme();
+  const backgroundColorHeader = colorScheme === 'dark' ? '#ffffff' : '#111827';
   return (
-    <>
-        <Stack>
+    <SafeAreaView style={{ flex: 1, paddingTop: 50, backgroundColor: backgroundColorHeader }}>
+        <Stack
+            screenOptions={{
+              headerShown: false, 
+              tabBarShowLabel: false, 
+            }}
+          >
             <Stack.Screen 
               name="basic-info"
               option={{ headerShown: false }}
@@ -23,8 +31,7 @@ const AuthLayout = () => {
               option={{ headerShown: false }}
             />
         </Stack>
-      <StatusBar backgroundColor="#161622" style="light" />
-    </>
+    </SafeAreaView>
   )
 }
 

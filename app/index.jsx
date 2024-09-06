@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import { View, Text, Image, ScrollView, TouchableOpacity } from "react-native";
+import { View, Text, Image, ScrollView, TouchableOpacity, ActivityIndicator } from "react-native";
 import { router, Redirect } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { CustomButton } from "../components";
@@ -7,7 +7,6 @@ import React, { useState, useEffect, useContext } from 'react';
 import {
   GoogleSignin,
 } from "@react-native-google-signin/google-signin";
-
 import { images, icons } from "../constants";
 import axios from 'axios';
 import { SessionContext } from '../context/SessionContext';
@@ -19,6 +18,7 @@ export default function App() {
   const { t } = useTranslation();
   const [errors, setErrors] = useState('');
   const [error, setError] = useState();
+  const [isLoading, setIsLoading] = useState(false);
   const { setSession, sessions } = useContext(SessionContext);;
 
   const appImage = colorScheme === 'dark' ? images.logo : images.logoWhite;
@@ -45,13 +45,15 @@ export default function App() {
       await GoogleSignin.hasPlayServices();
       console.log("Google Play Services are available");
       const userInfo = await GoogleSignin.signIn();
-      setError();
-      submitForm(userInfo); // Call submitForm with userInfo
+      submitForm(userInfo);
     } catch (e) {
+      await GoogleSignin.signOut();
+      console.log('Logged out');
+      setSession('reset');
       console.error("Error during Google sign-in:", e);
       console.error("Error code:", e.code);
       console.error("Error message:", e.message);
-      setError(e);
+      setErrors(e);
     }
   };
 
@@ -82,6 +84,7 @@ export default function App() {
           setErrors(data.message);
           return;
         }
+        setIsLoading(true);
 
         setSession('googleSession', data.googleUser, (updatedSessions) => {
           console.log("Google session after setting:", updatedSessions.googleSession);
@@ -161,6 +164,14 @@ export default function App() {
   const handleProfileUpdate = () => {
     router.push("/(auth)/settings");
   };
+
+  if (isLoading) {
+    return (
+      <View className="flex-1 justify-center items-center bg-gray-900 dark:bg-whitePerso">
+        <ActivityIndicator size="large" color="#e74057" />
+      </View>
+    );
+  }
  
   return (
       <SafeAreaView className="bg-gray-900 h-full dark:bg-whitePerso">

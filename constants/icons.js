@@ -21,6 +21,8 @@ import earth from "../assets/icons/earth.png";
 import sun from "../assets/icons/sun.png";
 import moon from "../assets/icons/moon.png";
 import earthDark from "../assets/icons/earthDark.png";
+import leftArrowSwipe from "../assets/icons/left-arrow-swipe.png";
+import rightArrowSwipe from "../assets/icons/right-arrow-swipe.png";
 
 export default {
   play,
@@ -46,4 +48,6 @@ export default {
   moon,
   earthDark,
   addImageDark,
+  leftArrowSwipe,
+  rightArrowSwipe,
 };

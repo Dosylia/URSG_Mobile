@@ -7,7 +7,7 @@ const ProfileSection = ({ title, children }) => {
   return (
     <View
       className={`p-4 rounded-lg my-2 ${
-        colorScheme === 'dark' ? 'bg-gray-300' : 'bg-mediumgrey'
+        colorScheme === 'dark' ? 'bg-gray-300' : 'bg-gray-800'
       }`}
     >
       <Text className="text-lg font-bold text-mainred mb-3">{title}</Text>

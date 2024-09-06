@@ -19,9 +19,10 @@ const ChatPage = () => {
   const [newMessage, setNewMessage] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [errors, setErrors] = useState(null);
+  const [scrollOnLoad, setScrollOnLoad] = useState(true);
   const [unreadMessage, setUnreadMessage] = useState({});
-  const backgroundColorClass = colorScheme === 'dark' ? 'bg-gray-400' : 'bg-gray-800';
-  const placeholderColor = colorScheme === 'dark' ? 'white' : '#bcb0b0';
+  const backgroundColorClass = colorScheme === 'dark' ? 'bg-gray-300' : 'bg-gray-800';
+  const placeholderColor = colorScheme === 'dark' ? '#2f2f30' : '#bcb0b0';
 
   const scrollViewRef = useRef();
 
@@ -165,8 +166,6 @@ const ChatPage = () => {
   
         setMessages((prevMessages) => [...prevMessages, newMessageObject]);
         setNewMessage('');
-  
-        scrollViewRef.current?.scrollToEnd({ animated: true });
       } else {
         console.error('Error sending message:', responseData.message);
         setErrors(responseData.message);
@@ -222,10 +221,19 @@ const ChatPage = () => {
   }, [userId, selectedFriend]);
 
   useEffect(() => {
-    if (messages && messages.length > 0) {
       scrollViewRef.current?.scrollToEnd({ animated: true });
+  }, [selectedFriend]);
+
+  useEffect(() => {
+    if (scrollOnLoad) {
+      const timer = setTimeout(() => {
+        scrollViewRef.current?.scrollToEnd({ animated: true });
+        setScrollOnLoad(false);
+      }, 500);
+  
+      return () => clearTimeout(timer);
     }
-  }, [messages, selectedFriend]);
+  }, [messages, scrollOnLoad]);
 
   if (isLoading) {
     return (
@@ -246,8 +254,8 @@ const ChatPage = () => {
                 className="mr-3"
                 onPress={() => handleSelectFriend(friend)}
               >
-                <View className={`p-3 rounded relative ${colorScheme === 'dark' ? 'bg-gray-400' : 'bg-gray-800'}`}>
-                  <Text className="text-white">{friend.friend_username}</Text>
+                <View className={`p-3 rounded relative ${colorScheme === 'dark' ? 'bg-gray-300' : 'bg-gray-800'}`}>
+                  <Text className="text-white dark:text-blackPerso">{friend.friend_username}</Text>
                   {unreadMessage[friend.friend_id] > 0 && (
                     <View className="absolute -top-0 -right-1 w-4 h-4 bg-red-600 rounded-full items-center justify-center z-10">
                       <Text className="text-white text-xs font-bold">{unreadMessage[friend.friend_id]}</Text>
@@ -267,7 +275,7 @@ const ChatPage = () => {
                   return (
                     <View
                       key={chatId}
-                      className={`mb-2 p-3 rounded ${message.chat_senderId === userId ? 'bg-mainred self-end' : `${colorScheme === 'dark' ? 'bg-gray-400' : 'bg-gray-800'}   self-start`}`}
+                      className={`mb-2 p-3 rounded ${message.chat_senderId === userId ? 'bg-mainred self-end' : `${colorScheme === 'dark' ? 'bg-gray-300' : 'bg-gray-800'}   self-start`}`}
                       style={{ 
                         maxWidth: '80%', 
                         alignSelf: message.chat_senderId === userId ? 'flex-end' : 'flex-start',
@@ -275,10 +283,10 @@ const ChatPage = () => {
                         flexShrink: 1   
                       }}
                     >
-                      <Text className="text-white text-base pb-1">
+                      <Text className={`text-white text-base pb-1 ${message.chat_senderId === userId ? 'text-white' : 'dark:text-blackPerso'}`}>
                         {message.chat_senderId === userId ? t('you') : selectedFriend.friend_username}: {he.decode(message.chat_message)}
                       </Text>
-                      <Text className="text-white text-xs absolute bottom-0 right-0 pr-1 pt-1 opacity-50">{message.formattedTime}</Text>
+                      <Text className={`text-white ${message.chat_senderId === userId ? 'text-white' : 'dark:text-blackPerso'} text-xs absolute bottom-0 right-0 pr-1 pt-1 opacity-50`}>{message.formattedTime}</Text>
                     </View>
                   );
                 })
@@ -290,7 +298,7 @@ const ChatPage = () => {
         </>
       ) : (
         <View className="flex-1 justify-center items-center">
-          <Text className="text-white text-center">{t('no-friend')}</Text>
+          <Text className="text-white text-center">{t('no-friends')}</Text>
           {selectedFriend && (
             <View className="flex-1 justify-center">
               <Text className="text-white text-center">{t('select-friend')}</Text>

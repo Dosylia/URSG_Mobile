@@ -68,7 +68,7 @@ const UserDataChat = ({ userData }) => {
   };
 
   return (
-    <View className={`${colorScheme === 'dark' ? 'bg-gray-400' : 'bg-gray-800' } flex-row items-center justify-between p-4 mb-2 rounded`}>
+    <View className={`${colorScheme === 'dark' ? 'bg-gray-300' : 'bg-gray-800' } flex-row items-center justify-between p-4 mb-2 rounded`}>
       {/* User Profile Image */}
       <Image 
       source={
@@ -78,7 +78,7 @@ const UserDataChat = ({ userData }) => {
       className="w-10 h-10 rounded-full" />
 
       {/* Username */}
-      <Text className="text-white ml-4" onPress={() => redirectToProfile(userData.friend_id)}>
+      <Text className="text-white ml-4 dark:text-blackPerso" onPress={() => redirectToProfile(userData.friend_id)}>
         {userData.friend_username}
       </Text>
 

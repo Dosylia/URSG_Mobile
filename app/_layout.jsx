@@ -1,17 +1,23 @@
-import { useFonts } from 'expo-font';
-import { SplashScreen, Stack } from 'expo-router';
-import { useEffect, useState } from 'react';
-import { SessionProvider } from '../context/SessionContext';
+import React, { useEffect } from 'react';
+import { StatusBar, Platform } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { Stack } from 'expo-router';
 import { useColorScheme } from 'nativewind';
-import i18n from '../services/i18next';
+import { SessionProvider } from '../context/SessionContext';
+import { DataProvider } from '../context/DataContext';
+import changeNavigationBarColor from 'react-native-navigation-bar-color';
+import { useFonts } from 'expo-font';
+import { SplashScreen } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import i18n from '../services/i18next';
 
-// Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
 const RootLayout = () => {
   const { colorScheme, toggleColorScheme } = useColorScheme();
+  const backgroundColorClass = colorScheme === 'dark' ? '#ffffff' : '#111827';
+  const backgroundColorClassBottom = colorScheme === 'dark' ? '#595b5e' : '#302e31';
+
   const [fontsLoaded, error] = useFonts({
     "Poppins-Black": require("../assets/fonts/Poppins-Black.ttf"),
     "Poppins-Bold": require("../assets/fonts/Poppins-Bold.ttf"),
@@ -24,18 +30,7 @@ const RootLayout = () => {
     "Poppins-Thin": require("../assets/fonts/Poppins-Thin.ttf"),
   });
 
-  const [initialLoadDone, setInitialLoadDone] = useState(false);
-
-  useEffect(() => {
-    if (error) {
-      console.error("Font loading error:", error);
-      return;
-    }
-
-    if (fontsLoaded) {
-      SplashScreen.hideAsync();
-    }
-  }, [fontsLoaded, error]);
+  const [initialLoadDone, setInitialLoadDone] = React.useState(false);
 
   useEffect(() => {
     const loadSettings = async () => {
@@ -60,7 +55,24 @@ const RootLayout = () => {
     };
 
     loadSettings();
-  }, [toggleColorScheme, colorScheme]);
+  }, [colorScheme, toggleColorScheme]);
+
+  useEffect(() => {
+    if (Platform.OS === 'android') {
+      changeNavigationBarColor(backgroundColorClassBottom, true);
+    }
+  }, [backgroundColorClassBottom]);
+
+  useEffect(() => {
+    if (error) {
+      console.error("Font loading error:", error);
+      return;
+    }
+
+    if (fontsLoaded) {
+      SplashScreen.hideAsync();
+    }
+  }, [fontsLoaded, error]);
 
   if (!fontsLoaded || !initialLoadDone) {
     return null;
@@ -68,10 +80,22 @@ const RootLayout = () => {
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
+      <StatusBar
+        barStyle={colorScheme === 'dark' ? 'dark-content' : 'light-content'}
+        backgroundColor={backgroundColorClass}
+        translucent={Platform.OS === 'android'}
+      />
       <SessionProvider>
-        <Stack>
-          <Stack.Screen name="index" options={{ headerShown: false }} />
-        </Stack>
+        <DataProvider>
+          <Stack
+            screenOptions={{
+              headerShown: false,
+              tabBarShowLabel: false,
+            }}
+          >
+            <Stack.Screen name="index" options={{ headerShown: false }} />
+          </Stack>
+        </DataProvider>
       </SessionProvider>
     </GestureHandlerRootView>
   );

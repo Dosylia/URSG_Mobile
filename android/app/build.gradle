@@ -1,6 +1,13 @@
 apply plugin: "com.android.application"
+apply plugin: 'com.google.gms.google-services'
 apply plugin: "org.jetbrains.kotlin.android"
 apply plugin: "com.facebook.react"
+
+dependencies {
+  implementation platform('com.google.firebase:firebase-bom:33.2.0')
+  implementation 'com.google.firebase:firebase-analytics'
+}
+
 
 def projectRoot = rootDir.getAbsoluteFile().getParentFile().getAbsolutePath()
 

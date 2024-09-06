@@ -87,9 +87,11 @@ const Settings = () => {
           <View className="rounded-lg p-2">
             <TouchableOpacity
               onPress={() => {
-                toggleColorScheme('dark');  
                 setVisibleMode(false);
+                if (colorScheme === 'light') {
+                toggleColorScheme('dark');  
                 saveMode('dark');  
+                }
               }}
               className="p-4"
             >
@@ -100,9 +102,11 @@ const Settings = () => {
             <View className={`h-px bg-gray-700 my-2`} />
             <TouchableOpacity
               onPress={() => {
-                toggleColorScheme('light');  
-                setVisibleMode(false);
-                saveMode('light');  
+                setVisibleMode(false); 
+                if (colorScheme === 'dark') {
+                  toggleColorScheme('light');  
+                  saveMode('light');  
+                  }
               }}
               className="p-4"
             >

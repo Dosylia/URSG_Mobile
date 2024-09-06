@@ -2,6 +2,7 @@
   "expo": {
     "name": "URSG",
     "slug": "URSG",
+    "owner": "dosylia",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon-ursg.png",
@@ -23,15 +24,32 @@
               "515525000068-0ci6qe38vc834ei52mpj57ofmhrl1e35.apps.googleusercontent.com"
             ]
           }
-        ]
+        ],
+        "NSUserTrackingUsageDescription": "This identifier will be used to deliver personalized ads to you.",
+        "UIBackgroundModes": ["remote-notification", "fetch"],
+        "CFBundleAllowMixedLocalizations": true
+      },
+      "config": {
+        "googleSignIn": {
+          "reservedClientId": "com.googleusercontent.apps.515525000068-0ci6qe38vc834ei52mpj57ofmhrl1e35"
+        }
       }
     },
     "android": {
       "userInterfaceStyle": "automatic",
+      "useNextNotificationsApi": true,
       "package": "com.dosylia.URSG",
+       "googleServicesFile": "./android/app/google-services.json",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon-ursg.png",
         "backgroundColor": "#ffffff"
+      },
+      "permissions": ["RECEIVE_BOOT_COMPLETED", "VIBRATE"],
+      "config": {
+        "googleSignIn": {
+          "apiKey": "YOUR_API_KEY",
+          "certificateHash": "YOUR_CERTIFICATE_HASH"
+        }
       }
     },
     "web": {
@@ -41,7 +59,8 @@
     },
     "plugins": [
       "expo-router",
-      "@react-native-google-signin/google-signin"
+      "@react-native-google-signin/google-signin",
+      "expo-notifications"
     ],
     "experiments": {
       "typedRoutes": true
