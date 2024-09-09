@@ -32,7 +32,7 @@ export const DataProvider = ({ children }) => {
         const token = await registerForPushNotificationsAsync();
         
         if (!token) {
-          console.warn('No token received from push notification registration.');
+          console.log('No token received from push notification registration.');
           return;
         }
   
