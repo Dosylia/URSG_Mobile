@@ -123,6 +123,7 @@ const ChatPage = () => {
 
   const handleSelectFriend = (friend) => {
     setSelectedFriend(friend);
+    setMessages([]);
     fetchMessages(userId, friend.friend_id);
   };
 

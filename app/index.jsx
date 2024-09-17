@@ -12,6 +12,7 @@ import axios from 'axios';
 import { SessionContext } from '../context/SessionContext';
 import { useTranslation } from 'react-i18next';
 import { useColorScheme } from 'nativewind';
+import { GOOGLE_WEB_CLIENT_ID, GOOGLE_ANDROID_CLIENT_ID, GOOGLE_IOS_CLIENT_ID } from '@env';
 
 export default function App() {
   const { colorScheme } = useColorScheme();
@@ -25,12 +26,9 @@ export default function App() {
 
   const configureGoogleSignIn = () => {
     GoogleSignin.configure({
-      webClientId:
-        "666369513537-fvmdrlsup4oca1ahbojmmc5anpdtj7cv.apps.googleusercontent.com",
-      androidClientId:
-        "666369513537-ct9j3v3f7vl9ml2l5t9nj68pnoqd7jl4.apps.googleusercontent.com",
-      iosClientId: 
-        "515525000068-0ci6qe38vc834ei52mpj57ofmhrl1e35.apps.googleusercontent.com",
+      webClientId: GOOGLE_WEB_CLIENT_ID,
+      androidClientId: GOOGLE_ANDROID_CLIENT_ID,
+      iosClientId: GOOGLE_IOS_CLIENT_ID,
     });
     console.log("Google Sign-In configured");
   };
@@ -165,6 +163,17 @@ export default function App() {
     router.push("/(auth)/settings");
   };
 
+  const handleLogout = async () => {
+    try {
+      await GoogleSignin.signOut();
+      console.log('Logged out');
+      setSession('reset');
+      router.replace("/");
+    } catch (error) {
+      console.error('Error logging out:', error);
+    }
+  };
+
   if (isLoading) {
     return (
       <View className="flex-1 justify-center items-center bg-gray-900 dark:bg-whitePerso">
@@ -176,16 +185,23 @@ export default function App() {
   return (
       <SafeAreaView className="bg-gray-900 h-full dark:bg-whitePerso">
         <ScrollView contentContainerStyle={{ height: "100%" }}>
-        <View className="flex w-full flex-row justify-end items-center bg-gray-900 dark:bg-whitePerso">
-          <TouchableOpacity className="p-2" onPress={handleProfileUpdate}>
-            <Image
-              source={icons.gear}
-              resizeMode="contain"
-              className="w-6 h-6"
-              style={{ transform: [{ rotateY: '180deg' }] }}
-            />
-          </TouchableOpacity>
-        </View>
+        <View className="flex w-full flex-row justify-between items-center bg-gray-900 dark:bg-whitePerso p-5">
+        <TouchableOpacity onPress={handleProfileUpdate}>
+          <Image
+            source={icons.gear}
+            resizeMode="contain"
+            className="w-6 h-6"
+            style={{ transform: [{ rotateY: '180deg' }] }}
+          />
+        </TouchableOpacity>
+        <TouchableOpacity onPress={handleLogout}>
+          <Image
+            source={icons.logout}
+            resizeMode="contain"
+            className="w-6 h-6"
+          />
+        </TouchableOpacity>
+      </View>
           <View className="w-full flex justify-normal items-center h-full px-4">
             <Image
               source={appImage}

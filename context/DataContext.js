@@ -22,7 +22,6 @@ export const DataProvider = ({ children }) => {
   const [unreadMessage, setUnreadMessage] = useState(0);
   const [pendingFriendRequest, setPendingFriendRequest] = useState(0);
   const [badgeCount, setBadgeCount] = useState(0);
-  const [expoPushToken, setExpoPushToken] = useState("");
   
   // Register for push notifications
   useEffect(() => {
@@ -49,11 +48,9 @@ export const DataProvider = ({ children }) => {
         if (response.data.message === 'Success') {
           console.log('Token successfully registered:', response.data);
         } else {
-          console.warn('Failed to register token:', response.data.message);
+          console.log('Failed to register token:', response.data.message);
         }
         
-        console.log("Push token:", token);
-        setExpoPushToken(token);
       } catch (err) {
         console.error("Error registering for push notifications:", err);
       }
@@ -61,6 +58,7 @@ export const DataProvider = ({ children }) => {
   
     registerToken();
   }, [sessions.userSession.userId]);
+
 
   // Function to register push notifications
   async function registerForPushNotificationsAsync() {
@@ -85,18 +83,18 @@ export const DataProvider = ({ children }) => {
       }
 
       if (finalStatus !== "granted") {
-        alert("Failed to get push token for push notification!");
+        console.log("Failed to get push token for push notification!");
         return;
       }
 
       token = (
         await Notifications.getExpoPushTokenAsync({
-          projectId: "94f54469-7266-46df-b5a2-c4628f8d9a8d", // Make sure this projectId is correct for your Expo project
+          projectId: "94f54469-7266-46df-b5a2-c4628f8d9a8d",
         })
       ).data;
       console.log(token);
     } else {
-      alert("Must use physical device for Push Notifications");
+      console.log("Must use physical device for Push Notifications");
     }
 
     return token;
