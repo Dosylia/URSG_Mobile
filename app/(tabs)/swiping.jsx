@@ -192,7 +192,7 @@ const Swiping = () => {
 
   return (
     <PanGestureHandler onGestureEvent={onGestureEvent}>
-      <ScrollView className="flex-1 bg-gray-900 p-4 dark:bg-whitePerso">
+      <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }} className="bg-gray-900 p-4 dark:bg-whitePerso">
         {noMoreUsers ? (
           <View className="flex-1 h-[500px] justify-center items-center bg-gray-900 dark:bg-whitePerso">
             <Text className="text-white dark:text-blackPerso justify-center items-center">{t('seen-all-profiles')}</Text>
@@ -233,7 +233,7 @@ const Swiping = () => {
             </View>
           </>
         )}
-        {errors && <Text className="text-red-500">{errors}</Text>}
+        {/* {errors && <Text className="text-red-500">{errors}</Text>} */}
       </ScrollView>
     </PanGestureHandler>
   );

@@ -23,6 +23,7 @@ import moon from "../assets/icons/moon.png";
 import earthDark from "../assets/icons/earthDark.png";
 import leftArrowSwipe from "../assets/icons/left-arrow-swipe.png";
 import rightArrowSwipe from "../assets/icons/right-arrow-swipe.png";
+import searchBlack from "../assets/icons/searchblack.png";
 
 export default {
   play,
@@ -50,4 +51,5 @@ export default {
   addImageDark,
   leftArrowSwipe,
   rightArrowSwipe,
+  searchBlack,
 };

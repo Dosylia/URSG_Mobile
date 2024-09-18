@@ -20,6 +20,7 @@ const DataContext = createContext();
 export const DataProvider = ({ children }) => {
   const { sessions } = useContext(SessionContext);
   const [unreadMessage, setUnreadMessage] = useState(0);
+  const [unreadMessageFriends, setUnreadMessageFriends] = useState(0);
   const [pendingFriendRequest, setPendingFriendRequest] = useState(0);
   const [badgeCount, setBadgeCount] = useState(0);
   
@@ -129,6 +130,32 @@ export const DataProvider = ({ children }) => {
     }
   };
 
+  const fetchUnreadMessageFriends = async (userId) => {
+    try {
+      const response = await axios.post('https://ur-sg.com/getUnreadMessage',
+        new URLSearchParams({ userId }).toString(), {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+      });
+      const data = response.data;
+
+      if (data.success) {
+        const unreadCountByFriend = {};
+        data.unreadCount.forEach(item => {
+          unreadCountByFriend[item.chat_senderId] = item.unread_count;
+        });
+        setUnreadMessageFriends(unreadCountByFriend);
+      } else {
+        console.log('Failed to fetch unread messages:', data.error);
+        setUnreadMessageFriends({});
+      }
+    } catch (error) {
+      console.error("Error fetching unread messages:", error.message);
+      setUnreadMessageFriends({});
+    }
+  };
+
   const fetchFriendRequest = async (userId) => {
     try {
       const response = await axios.post('https://ur-sg.com/getFriendRequest',
@@ -175,6 +202,7 @@ export const DataProvider = ({ children }) => {
       console.log('Fetching data...');
       fetchFriendRequest(userId);
       fetchUnreadMessage(userId);
+      fetchUnreadMessageFriends(userId);
     };
   
     fetchData();
@@ -185,7 +213,7 @@ export const DataProvider = ({ children }) => {
   }, [sessions.userSession]);
 
   return (
-    <DataContext.Provider value={{ unreadMessage, pendingFriendRequest, badgeCount }}>
+    <DataContext.Provider value={{ unreadMessage, pendingFriendRequest, unreadMessageFriends, badgeCount }}>
       {children}
     </DataContext.Provider>
   );

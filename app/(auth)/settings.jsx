@@ -22,8 +22,14 @@ const Settings = () => {
   const iconMode = colorScheme === 'dark' ? icons.moon : icons.sun;
   
   const closePage = () => {
-    if (sessions.userSession.userId) {
+    if (sessions.userSession.userId && sessions.leagueSession.main1 && sessions.lookingforSession.main1Lf) {
       router.push("/(tabs)/profile");
+    } else if (sessions.userSession.userId && sessions.leagueSession.main1 && !sessions.lookingforSession.main1Lf) {
+      router.push("/lookingfor-data");
+    } else if (sessions.userSession.userId && !sessions.leagueSession.main1) {
+      router.push("/league-data");
+    } else if (sessions.googleSession.email && !sessions.userSession.userId) {
+      router.push("/basic-info");
     } else {
       router.push("/");
     }
@@ -122,7 +128,7 @@ const Settings = () => {
         <View className="flex w-full flex-row items-center bg-gray-900 dark:bg-whitePerso">
           <View className="flex-1" />
           <TouchableOpacity onPress={closePage}>
-            <Text className="text-mainred px-6 text-2xl font-extrabold">X</Text>
+            <Text className="text-mainred px-6 text-3xl font-extrabold">X</Text>
           </TouchableOpacity>
         </View>
         <View className="w-full justify-start h-full px-4 my-6">

@@ -1,4 +1,3 @@
-import { StatusBar } from 'expo-status-bar';
 import { View, Text, Image, ScrollView, TouchableOpacity, ActivityIndicator } from "react-native";
 import { router, Redirect } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -16,6 +15,7 @@ import { GOOGLE_WEB_CLIENT_ID, GOOGLE_ANDROID_CLIENT_ID, GOOGLE_IOS_CLIENT_ID } 
 
 export default function App() {
   const { colorScheme } = useColorScheme();
+  const backgroundColorClass = colorScheme === 'dark' ? '#111827' : '#ffffff';
   const { t } = useTranslation();
   const [errors, setErrors] = useState('');
   const [error, setError] = useState();
@@ -35,6 +35,11 @@ export default function App() {
 
   useEffect(() => {
     configureGoogleSignIn();
+
+    if (sessions.googleSession && Object.keys(sessions.googleSession).length > 0) {
+      console.log("Google session found:", sessions.googleSession);
+      router.push("/swiping");
+    }
   }, []);
 
   const signIn = async () => {
@@ -185,7 +190,7 @@ export default function App() {
   return (
       <SafeAreaView className="bg-gray-900 h-full dark:bg-whitePerso">
         <ScrollView contentContainerStyle={{ height: "100%" }}>
-        <View className="flex w-full flex-row justify-between items-center bg-gray-900 dark:bg-whitePerso p-5">
+        <View className="flex w-full flex-row justify-between items-center bg-gray-900 dark:bg-whitePerso px-4">
         <TouchableOpacity onPress={handleProfileUpdate}>
           <Image
             source={icons.gear}
@@ -205,7 +210,7 @@ export default function App() {
           <View className="w-full flex justify-normal items-center h-full px-4">
             <Image
               source={appImage}
-              className="w-[150px] h-[100px] mt-5"
+              className="w-[150px] h-[100px] mt-3"
               resizeMode='contain'
             />
             <Image
@@ -213,7 +218,7 @@ export default function App() {
               className="max-w-[380px] w-full h-[300px] rounded-md"
               resizeMode='contain'
             />
-            <View className="relative mt-5">
+            <View className="relative mt-4">
               <Text className="text-3xl text-white dark:text-blackPerso font-bold text-center">
                 {`${t('find-perfect')} ${"\n"} ${t('soulmate')} ${""} `}
                 <Text className="text-mainred">URSG</Text>
@@ -230,7 +235,6 @@ export default function App() {
             />
           </View>
         </ScrollView>
-        <StatusBar backgroundColor='#161622' style='light' />
       </SafeAreaView>
   );
 }

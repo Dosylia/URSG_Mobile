@@ -1,3 +1,4 @@
+import Iron from '../assets/ranks/Iron.png';
 import Bronze from '../assets/ranks/Bronze.png';
 import Silver from '../assets/ranks/Silver.png';
 import Gold from '../assets/ranks/Gold.png';
@@ -9,4 +10,4 @@ import GrandMaster from '../assets/ranks/Grand Master.png';
 import Challenger from '../assets/ranks/Challenger.png';
 import Unranked from '../assets/ranks/Unranked.png';
 
-export default { Bronze, Silver, Gold, Platinum, Emerald, Diamond, Master, GrandMaster, Challenger, Unranked };
+export default { Iron, Bronze, Silver, Gold, Platinum, Emerald, Diamond, Master, GrandMaster, Challenger, Unranked };

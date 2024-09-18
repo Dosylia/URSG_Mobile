@@ -1,16 +1,19 @@
-import { View, Text, ScrollView, Image } from 'react-native'
+import { View, Text, ScrollView, Image, TouchableOpacity } from 'react-native'
+import { useFocusEffect } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { SessionContext } from '../../context/SessionContext';
 import React, { useState, useContext, useEffect } from 'react'
 import { Redirect, router } from 'expo-router';
 import axios from 'axios';
 import { useTranslation } from 'react-i18next';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
 
 import { FormField } from "../../components";
 import { CustomButton } from "../../components";
 import championList from  "../../constants/championList";
 import roleList from "../../constants/roleList";
 import rankList from "../../constants/rankList";
+import { icons } from "../../constants";
 
 const LookingForData = () => {
   const { t } = useTranslation();
@@ -41,6 +44,20 @@ const LookingForData = () => {
       console.log("User session not yet populated");
     }
   }, [sessions.userSession]);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      if (sessions.userSession && sessions.userSession.userId) {
+        if (sessions.leagueSession.main1 && sessions.lookingforSession.main1Lf) {
+          console.log("Redirecting to profile");
+          router.push("/(tabs)/profile");
+        } 
+      }
+      return () => {
+        console.log("Screen unfocused or unmounted");
+      };
+    }, [sessions])
+  );
 
 
 
@@ -134,12 +151,39 @@ const availableChampionsForMain3 = form.main1 !== 'Aatrox' && form.main2 !== 'Aa
     { label: rank, value: rank }
   ));
 
+  const closePage = async () => {
+    try {
+      await GoogleSignin.signOut();
+      console.log('Logged out');
+      setSession('reset');
+      router.replace("/");
+    } catch (error) {
+      console.error('Error logging out:', error);
+    }
+  };
+
+  const handleProfileUpdate = () => {
+    router.push("/(auth)/settings");
+  };
+
   return (
     <SafeAreaView className="bg-gray-900 h-full dark:bg-whitePerso">
       <ScrollView>
+        <View className="flex w-full flex-row justify-between items-center bg-gray-900 dark:bg-whitePerso px-5">
+          <TouchableOpacity onPress={handleProfileUpdate}>
+          <Image
+            source={icons.gear}
+            resizeMode="contain"
+            className="w-6 h-6"
+            style={{ transform: [{ rotateY: '180deg' }] }}
+          />
+        </TouchableOpacity>
+          <TouchableOpacity onPress={closePage}>
+            <Text className="text-mainred text-3xl font-extrabold">X</Text>
+          </TouchableOpacity>
+        </View>
         <View className="w-full justify-start h-full px-4 my-6">
           <Text className="text-2xl text-white dark:text-blackPerso text-semibpmd mt-5 font-psemibold">{t('interest')}</Text>
-          {errors ? <Text className="text-red-600 text-xl my-2">{errors}</Text> : null}
           <FormField 
             title={t('lf.gender')}
             value={form.gender}
@@ -218,6 +262,7 @@ const availableChampionsForMain3 = form.main1 !== 'Aatrox' && form.main2 !== 'Aa
             image={form.role}
             imageOrigin='roles'
           />
+          {errors ? <Text className="text-red-600 text-xl my-2">{errors}</Text> : null}
           <CustomButton 
              title={t('to-swiping')}
              handlePress={submitForm} // Handle sending data to database and router.push("/swiping")

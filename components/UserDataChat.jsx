@@ -94,7 +94,7 @@ const UserDataChat = ({ userData }) => {
         visible={modalVisible}
         onRequestClose={() => setModalVisible(false)}
       >
-        <View className="flex-1 justify-center items-center bg-black bg-opacity-50">
+        <View className="flex-1 justify-center items-center bg-gray-900 dark:bg-white bg-opacity-50">
           <View className={`${colorScheme === 'dark' ? 'bg-gray-500' : 'bg-gray-800' }  p-6 rounded-lg w-4/5`}>
             <Text className="text-white text-lg mb-4">{t('block-user')}</Text>
             <View className="flex-row justify-end">

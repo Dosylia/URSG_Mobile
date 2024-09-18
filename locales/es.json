@@ -54,6 +54,9 @@
     "block-user": "¿Estás seguro de que quieres bloquear a este usuario?",
     "cancel": "Cancelar",
     "block": "Bloquear",
+    "back-to-friends": "Volver a amigos",
+    "friends-list": "Lista de amigos",
+    "search-friends": "Buscar amigos...",
     "basic-info": {
         "username": "Nombre de usuario",
         "gender": "Género",

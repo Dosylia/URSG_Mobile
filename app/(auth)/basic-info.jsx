@@ -1,14 +1,17 @@
-import { View, Text, ScrollView, Image } from 'react-native'
+import { View, Text, ScrollView, Image, TouchableOpacity } from 'react-native'
+import { useFocusEffect } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import React, { useState, useContext, useEffect } from 'react'
 import { SessionContext } from '../../context/SessionContext';
 import { Redirect, router } from 'expo-router';
 import axios from 'axios';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
 
 import { FormField } from "../../components";
 import { CustomButton } from "../../components";
 import { useTranslation } from 'react-i18next';
 import { useColorScheme } from 'nativewind';
+import { icons } from "../../constants";
 
 
 const BasicInfo = () => {
@@ -25,18 +28,38 @@ const BasicInfo = () => {
     shortBio: ''
   });
 
+  useFocusEffect(
+    React.useCallback(() => {
+      if (sessions.userSession && sessions.userSession.userId) {
+        if (sessions.leagueSession.main1 && sessions.lookingforSession.main1Lf) {
+          console.log("Redirecting to profile");
+          router.push("/(tabs)/profile");
+        } else if (sessions.leagueSession.main1 && !sessions.lookingforSession.main1Lf) {
+          console.log("Redirecting to Looking for data");
+          router.push("/lookingfor-data");
+        } else if (!sessions.leagueSession.main1) {
+          console.log("Redirecting to League data");
+          router.push("/league-data");
+        }
+      }
+      return () => {
+        console.log("Screen unfocused or unmounted");
+      };
+    }, [sessions])
+  );
+
   useEffect(() => {
     if (sessions.googleSession && sessions.googleSession.googleId) {
       console.log("Google session found:", sessions.googleSession);
       setForm(prevForm => ({
         ...prevForm,
         googleId: sessions.googleSession.googleUserId,
-        // Optionally, you can prepopulate other fields if necessary
       }));
     } else {
       console.log("Google session not yet populated");
     }
   }, [sessions.googleSession]);
+  
 
 
   function submitForm() { // Add google data from Session created in previous step
@@ -116,12 +139,39 @@ const BasicInfo = () => {
     { label: 'League of Legends', value: 'League of Legends' },
   ];
 
+  const closePage = async () => {
+    try {
+      await GoogleSignin.signOut();
+      console.log('Logged out');
+      setSession('reset');
+      router.replace("/");
+    } catch (error) {
+      console.error('Error logging out:', error);
+    }
+  };
+
+  const handleProfileUpdate = () => {
+    router.push("/(auth)/settings");
+  };
+
   return (
     <SafeAreaView className="bg-gray-900 h-full dark:bg-whitePerso">
       <ScrollView>
+      <View className="flex w-full flex-row justify-between items-center bg-gray-900 dark:bg-whitePerso px-5">
+          <TouchableOpacity onPress={handleProfileUpdate}>
+          <Image
+            source={icons.gear}
+            resizeMode="contain"
+            className="w-6 h-6"
+            style={{ transform: [{ rotateY: '180deg' }] }}
+          />
+        </TouchableOpacity>
+          <TouchableOpacity onPress={closePage}>
+            <Text className="text-mainred text-3xl font-extrabold">X</Text>
+          </TouchableOpacity>
+        </View>
         <View className="w-full justify-start h-full px-4 my-6">
           <Text className="text-2xl text-white dark:text-blackPerso text-semibpmd mt-5 font-psemibold">{t('basic-info.title')}</Text>
-          {errors ? <Text className="text-red-600 text-xl my-2">{errors}</Text> : null}
           <FormField 
             title={t('basic-info.username')}
             value={form.username}
@@ -172,6 +222,7 @@ const BasicInfo = () => {
             handleChangeText={(e) => setForm({ ...form, shortBio: e })}
             otherStyles="mt-7"
           />
+          {errors ? <Text className="text-red-600 text-xl my-2">{errors}</Text> : null}
           <CustomButton 
              title={t('about-game')}
              handlePress={submitForm}

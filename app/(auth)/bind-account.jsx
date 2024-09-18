@@ -157,7 +157,7 @@ const BindAccount = () => {
       <View className="flex w-full flex-row items-center bg-gray-900 dark:bg-whitePerso">
         <View className="flex-1" />
         <TouchableOpacity onPress={closePage}>
-          <Text className="text-mainred px-6 text-2xl font-extrabold">X</Text>
+          <Text className="text-mainred text-3xl font-extrabold">X</Text>
         </TouchableOpacity>
       </View>
         <View className="w-full justify-start h-full px-4 my-6">

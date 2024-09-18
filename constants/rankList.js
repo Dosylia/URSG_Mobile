@@ -1,4 +1,5 @@
 const rankList = [
+  "Iron",
   "Bronze",
   "Silver",
   "Gold",
