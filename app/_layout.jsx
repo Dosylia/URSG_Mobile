@@ -5,6 +5,7 @@ import { Stack } from 'expo-router';
 import { useColorScheme } from 'nativewind';
 import { SessionProvider } from '../context/SessionContext';
 import { DataProvider } from '../context/DataContext';
+import { FriendListProvider } from '../context/FriendListContext';
 import changeNavigationBarColor from 'react-native-navigation-bar-color';
 import { useFonts } from 'expo-font';
 import { SplashScreen } from 'expo-router';
@@ -87,14 +88,16 @@ const RootLayout = () => {
       />
       <SessionProvider>
         <DataProvider>
-          <Stack
-            screenOptions={{
-              headerShown: false,
-              tabBarShowLabel: false,
-            }}
-          >
-            <Stack.Screen name="index" options={{ headerShown: false }} />
-          </Stack>
+          <FriendListProvider>
+            <Stack
+              screenOptions={{
+                headerShown: false,
+                tabBarShowLabel: false,
+              }}
+            >
+              <Stack.Screen name="index" options={{ headerShown: false }} />
+            </Stack>
+          </FriendListProvider>
         </DataProvider>
       </SessionProvider>
     </GestureHandlerRootView>

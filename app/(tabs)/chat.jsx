@@ -10,6 +10,7 @@ import { useTranslation } from 'react-i18next';
 import { useColorScheme } from 'nativewind';
 import { images, icons } from "../../constants";
 import { useData } from '../../context/DataContext';
+import { useFriendList } from '../../context/FriendListContext'; 
 import he from 'he';
 
 const ChatPage = () => {
@@ -31,43 +32,41 @@ const ChatPage = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const { unreadMessageFriends } = useData();
   const [scrollOnLoad, setScrollOnLoad] = useState(true);
+  const [isBlocked, setIsBlocked] = useState(false);
+  const { friendList } = useFriendList();
 
   const scrollViewRef = useRef();
 
   useEffect(() => {
-    const fetchChatData = async () => {
-      try {
-        const friendsResponse = await axios.post('https://ur-sg.com/getFriendlist', new URLSearchParams({ userId }).toString(), {
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-          },
-        });
-
-        if (friendsResponse.data.success) {
-          const friendlist = friendsResponse.data.friendlist;
-          setFriends(friendlist);
-
-          const savedFriendId = await AsyncStorage.getItem('selectedFriendId');
-          if (savedFriendId) {
-            const lastFriend = friendlist.find(f => f.friend_id === savedFriendId);
-            if (lastFriend) {
-              handleSelectFriend(lastFriend);
-            }
-          } else if (friendlist.length > 0) {
-            setFriendPage(true); // Show friends list
-          }
-        } else {
-          setErrors(friendsResponse.data.error);
-        }
-      } catch (error) {
-        setErrors('Error fetching friends');
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
     fetchChatData();
-  }, []);
+  }, [friendList]);
+
+  const fetchChatData = async () => {
+    setFriends(friendList);
+  
+    const savedFriendId = await AsyncStorage.getItem('selectedFriendId');
+    if (savedFriendId) {
+      const lastFriend = friendList.find(f => f.friend_id === savedFriendId);
+      if (lastFriend) {
+        handleSelectFriend(lastFriend);
+      }
+    } else if (friendList.length > 0) {
+      setFriendPage(true);
+    }
+  
+    setIsLoading(false);
+  };
+
+
+  const handleBlockUser = (blockStatus) => {
+    setIsBlocked(blockStatus);
+
+    if (blockStatus) {
+      fetchChatData();  
+      setFriendPage(true); 
+      setChatPage(false);
+    }
+  };
 
   const fetchMessages = async (userId, friendId) => {
     try {
@@ -100,8 +99,8 @@ const ChatPage = () => {
 
   const handleSelectFriend = async (friend) => {
     setSelectedFriend(friend);
-    setFriendPage(false); // Hide friends list
-    setChatPage(true); // Show chat page
+    setFriendPage(false);
+    setChatPage(true);
     setMessages([]);
     await AsyncStorage.setItem('selectedFriendId', String(friend.friend_id));
     fetchMessages(userId, friend.friend_id);
@@ -246,7 +245,7 @@ const ChatPage = () => {
                     containerStyles="w-full mb-2"
                   />
               </TouchableOpacity>
-              <UserDataChat userData={selectedFriend} />
+              <UserDataChat userData={selectedFriend} onBlock={handleBlockUser} />
             </View>
             {messages.map((message) => (
               <View

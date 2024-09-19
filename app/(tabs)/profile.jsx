@@ -9,6 +9,7 @@ import { SessionContext } from '../../context/SessionContext';
 import { ProfileHeader, RiotProfileSection, LookingForSection, CustomButton, UserDataComponent } from "../../components";
 import { icons } from "../../constants";
 import { useTranslation } from 'react-i18next';
+import { useFriendList } from '../../context/FriendListContext'; 
 
 const Profile = () => {
   const { t } = useTranslation();
@@ -16,8 +17,9 @@ const Profile = () => {
   const [userData, setUserData] = useState(null);
   const [friendRequests, setFriendRequests] = useState([]);
   const friendId = sessions?.friendId;
+  const { refreshFriendList } = useFriendList();
 
-  const getFriendList = async () => { 
+  const getFriendRequest = async () => { 
     const { userId } = sessions.userSession;
     axios.post('https://ur-sg.com/getFriendRequestPhone', new URLSearchParams({ userId }).toString(), {
       headers: {
@@ -50,6 +52,7 @@ const Profile = () => {
   };
 
   const handleAcceptRequest = async (friendId, frId) => {
+    const { userId } = sessions.userSession;
     try {
       const response = await axios.post('https://ur-sg.com/acceptFriendRequestPhone', new URLSearchParams({ friendId, frId }).toString(), {
         headers: {
@@ -58,6 +61,7 @@ const Profile = () => {
       });
       if (response.data.message === 'Success') {
         console.log('Friend request accepted:', response.data.message);
+        refreshFriendList(userId);
         setFriendRequests(prevRequests => {
           console.log('Previous requests:', prevRequests);
           const updatedRequests = prevRequests.filter(request => request.fr_id !== response.data.fr_id);
@@ -98,9 +102,9 @@ const Profile = () => {
 
   useFocusEffect(
     useCallback(() => {
-      getFriendList();
+      getFriendRequest();
       const interval = setInterval(() => {
-        getFriendList(); 
+        getFriendRequest();
       }, 20000);
 
       return () => {

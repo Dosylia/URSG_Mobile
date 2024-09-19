@@ -6,14 +6,16 @@ import { router } from 'expo-router';
 import { SessionContext } from '../context/SessionContext';
 import { useColorScheme } from 'nativewind';
 import { useTranslation } from 'react-i18next';
+import { useFriendList } from '../context/FriendListContext'; 
 
-const UserDataChat = ({ userData }) => {
+const UserDataChat = ({ userData, onBlock }) => {
   const { t } = useTranslation();
   const { colorScheme } = useColorScheme();
   const [modalVisible, setModalVisible] = useState(false);
   const { setSession, sessions } = useContext(SessionContext);
   const [errors, setErrors] = useState('');
   const profileImage = images.defaultpicture; 
+  const { refreshFriendList } = useFriendList();
   
   const openBlockPopup = () => {
     setModalVisible(true);
@@ -39,7 +41,8 @@ const UserDataChat = ({ userData }) => {
         if (data.message !== 'Success') {
           setErrors(data.message);
         } else {
-          router.push(`/swiping`);
+          refreshFriendList(userId);
+          onBlock(true);
         }
       })
       .catch(error => {
