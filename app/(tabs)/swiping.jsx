@@ -80,7 +80,7 @@ const Swiping = () => {
   
         const userId = sessions.userSession.userId;
         const userMatchingResponse = await axios.post('https://ur-sg.com/getUserMatching', 
-          `userId=${encodeURIComponent(userId)}`,  // Correctly format the data
+          `userId=${encodeURIComponent(userId)}`,
           {
             headers: {
               'Content-Type': 'application/x-www-form-urlencoded'
@@ -91,7 +91,7 @@ const Swiping = () => {
         const matchingData = userMatchingResponse.data;
         console.log('Matching data:', matchingData);
         if (!matchingData.success) {
-          if (matchingData.error === 'No matching users found') {
+          if (matchingData.error === 'No matching users found') { 
             setNoMoreUsers(true);
           }
           setErrors(matchingData.error);
@@ -143,8 +143,8 @@ const Swiping = () => {
 
       // Fetch the next user after the swipe action
       const timer = setTimeout(() => {
-        fetchUserMatching();
-      }, 1000); 
+        fetchUserMatching(); 
+      }, 500); 
 
       return () => clearTimeout(timer);
     } catch (error) {
@@ -195,7 +195,7 @@ const Swiping = () => {
       <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }} className="bg-gray-900 p-4 dark:bg-whitePerso">
         {noMoreUsers ? (
           <View className="flex-1 h-[500px] justify-center items-center bg-gray-900 dark:bg-whitePerso">
-            <Text className="text-white dark:text-blackPerso justify-center items-center">{t('seen-all-profiles')}</Text>
+            <Text className="text-white dark:text-blackPerso justify-center items-center mb-3 text-xl">{t('seen-all-profiles')}</Text>
             <Image source={images.sadBee} className="w-50 h-50" />
           </View>
         ) : otherUser && (

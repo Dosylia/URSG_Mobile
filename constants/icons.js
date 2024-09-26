@@ -24,6 +24,7 @@ import earthDark from "../assets/icons/earthDark.png";
 import leftArrowSwipe from "../assets/icons/left-arrow-swipe.png";
 import rightArrowSwipe from "../assets/icons/right-arrow-swipe.png";
 import searchBlack from "../assets/icons/searchblack.png";
+import soulHard from "../assets/icons/soulhard.png";
 
 export default {
   play,
@@ -52,4 +53,5 @@ export default {
   leftArrowSwipe,
   rightArrowSwipe,
   searchBlack,
+  soulHard
 };

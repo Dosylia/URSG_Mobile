@@ -72,22 +72,32 @@ const UserDataChat = ({ userData, onBlock }) => {
 
   return (
     <View className={`${colorScheme === 'dark' ? 'bg-gray-300' : 'bg-gray-800' } flex-row items-center justify-between p-4 mb-2 rounded`}>
+      
       {/* User Profile Image */}
-      <Image 
-      source={
-        userData.friend_picture
-          ? { uri: `https://ur-sg.com/public/upload/${userData.friend_picture}` }
-          : profileImage}  
-      className="w-10 h-10 rounded-full" />
+      <TouchableOpacity 
+        onPress={() => redirectToProfile(userData.friend_id)} 
+        className="active:opacity-75 active:scale-95 border border-mainred rounded-full"
+      >
+        <Image 
+          source={
+            userData.friend_picture
+              ? { uri: `https://ur-sg.com/public/upload/${userData.friend_picture}` }
+              : profileImage
+          }  
+          className="w-10 h-10 rounded-full"
+        />
+      </TouchableOpacity>
 
       {/* Username */}
-      <Text className="text-white ml-4 dark:text-blackPerso" onPress={() => redirectToProfile(userData.friend_id)}>
+      <Text 
+        className="text-white ml-4 dark:text-blackPerso active:opacity-75 active:scale-95 "
+        onPress={() => redirectToProfile(userData.friend_id)}>
         {userData.friend_username}
       </Text>
 
       {/* 3-dot Icon */}
-      <TouchableOpacity onPress={openBlockPopup} className="ml-auto">
-        <Text className="text-mainred text-xl">⋮</Text>
+      <TouchableOpacity onPress={openBlockPopup} className="ml-auto px-4">
+        <Text className="text-mainred text-3xl">⋮</Text>
       </TouchableOpacity>
 
       {/* Block User Modal */}

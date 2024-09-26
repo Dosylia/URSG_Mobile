@@ -23,6 +23,8 @@ const UserDataComponent = ({ sessions, onUserDataChange }) => {
         instagram : sessions.userSession.instagram,
         twitch : sessions.userSession.twitch,
         twitter : sessions.userSession.twitter,
+        currency : sessions.userSession.currency,
+        isVip : sessions.userSession.isVip,
         main1: sessions.leagueSession.main1,
         main2: sessions.leagueSession.main2,
         main3: sessions.leagueSession.main3,

@@ -6,6 +6,7 @@ import { router } from 'expo-router';
 import axios from 'axios';
 import { Platform } from 'react-native';
 import { useTranslation } from 'react-i18next';
+import { images } from "../../constants";
 
 import { CustomButton } from "../../components";
 import * as ImagePicker from 'expo-image-picker';
@@ -17,7 +18,9 @@ const updatePicture = () => {
   const [image, setImage] = useState(null);
   const [fileName, setFileName] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [imagePicked, setImagePicked] = useState(false);
   const username = sessions?.userSession.username;
+  const profileImage = images.defaultpicture; 
 
   const requestPermissions = async () => {
     if (Platform.OS !== 'web') {
@@ -50,6 +53,7 @@ const updatePicture = () => {
         if (uri && fileName) {
           console.log("Image URI:", uri);
           console.log("Filename:", fileName);
+          setImagePicked(true);
           setImage(uri);
           setFileName(fileName);
         } else {
@@ -155,16 +159,35 @@ const updatePicture = () => {
           </Text>
           {errors ? <Text className="text-red-600 text-xl my-2">{errors}</Text> : null}
 
-          {image && (
-            <Image
-              source={{ uri: image }}
-              className="w-36 h-36 rounded-full mt-5"
-            />
-          )}
-
-          <TouchableOpacity onPress={pickImage} className="w-full mt-7">
-            <Text className="text-white text-center dark:text-blackPerso">{t('pick-image')}</Text>
+          <TouchableOpacity 
+            onPress={pickImage} 
+            className="w-full mt-7 flex-row items-center justify-start ml-5 mb-5"
+          >
+            {imagePicked && image ? (
+              <Image
+                source={{ uri: image }}
+                className="w-36 h-36 rounded-full mt-5 mr-2"
+              />
+            ) : (
+              <Image
+                source={
+                  sessions.userSession.picture
+                    ? { uri: `https://ur-sg.com/public/upload/${sessions.userSession.picture}` }
+                    : profileImage
+                }
+                className="w-36 h-36 rounded-full mt-5 mr-2 border-2 border-mainred"
+              />
+            )}
+            <Text 
+              className="text-mainred text-xl font-semibold ml-4"
+            >
+              {t('pick-image')}
+            </Text>
           </TouchableOpacity>
+
+          <Text className="text-white dark:text-blackPerso text-lg mt-5">
+            {t('update-picture-info')}
+          </Text>
 
           <CustomButton
             title={t('change-picture')}

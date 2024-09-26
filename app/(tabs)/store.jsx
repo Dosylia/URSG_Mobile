@@ -1,0 +1,222 @@
+import React, { useState, useCallback, useContext } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
+import { View, Text, Image, ScrollView, TouchableOpacity } from 'react-native';
+import { Picker } from '@react-native-picker/picker';
+import { SessionContext } from '../../context/SessionContext';
+import { router } from 'expo-router';
+import axios from 'axios';
+import { icons } from '../../constants';
+import { useTranslation } from 'react-i18next';
+import { useColorScheme } from 'nativewind';
+
+const StoreAndLeaderboard = () => {
+  const { t } = useTranslation();
+  const { colorScheme } = useColorScheme();
+  const [selectedCategory, setSelectedCategory] = useState('all');
+  const [items, setItems] = useState([]);
+  const [filteredItems, setFilteredItems] = useState(items);
+  const [allUsers, setAllUsers] = useState([]);
+  const [activePage, setActivePage] = useState('store');
+  const [itemMessages, setItemMessages] = useState({}); 
+  const { sessions, setSession } = useContext(SessionContext);
+  const { userId } = sessions.userSession;
+
+  const fetchAllUsers = async () => {
+    try {
+      if (sessions.userSession && sessions.userSession.userId) {
+        console.log("User session found:", sessions.userSession);
+        const allUsersResponse = await axios.post('https://ur-sg.com/getAllUsers', {
+          allUsers: 'allUsers'
+        }, {
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+          }
+        });
+        const allUsersData = allUsersResponse.data;
+        if (allUsersData.message !== 'Success') return;
+        setAllUsers(allUsersData.allUsers);
+      }
+    } catch (error) {
+      console.error('Error fetching users:', error);
+    }
+  };
+
+  const fetchItems = async () => {
+    try {
+      if (sessions.userSession && sessions.userSession.userId) {
+        console.log("User session found:", sessions.userSession);
+        const itemsResponse = await axios.post('https://ur-sg.com/getItems', {
+          items: 'items'
+        }, {
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+          }
+        });
+        const itemsData = itemsResponse.data;
+        if (itemsData.message !== 'Success') return;
+        setItems(itemsData.items);
+        setFilteredItems(itemsData.items);
+      }
+    } catch (error) {
+      console.error('Error fetching items:', error);
+    }
+  };
+
+  const handleBuyItem = async (itemId, itemCategory) => {
+    console.log('Buying item:', itemId, itemCategory);
+    const dataToSend = {
+      itemId,
+      userId,
+    };
+
+    const jsonData = JSON.stringify(dataToSend);
+
+    try {
+      let response;
+      if (itemCategory === 'role') {
+        response = await axios.post('https://ur-sg.com/buyRole', `param=${encodeURIComponent(jsonData)}`, {
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+          }
+        });
+      } else {
+        response = await axios.post('https://ur-sg.com/buyItem', `param=${encodeURIComponent(jsonData)}`, {
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+          }
+        });
+      }
+      console.log('Success:', response.data);
+      setItemMessages(prevMessages => ({
+        ...prevMessages,
+        [itemId]: response.data.message
+      }));
+    } catch (error) {
+      console.error('Error:', error);
+      setItemMessages(prevMessages => ({
+        ...prevMessages,
+        [itemId]: 'Purchase failed. Please try again.'
+      }));
+    }
+  };
+
+  const handleFilterChange = (category) => {
+    setSelectedCategory(category);
+    setFilteredItems(category === 'all' ? items : items.filter(item => item.items_category === category));
+  };
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchAllUsers();
+      fetchItems();
+      return () => clearTimeout();
+    }, [])
+  );
+
+  const redirectToProfile = (friendId) => {
+    setSession('friendId', friendId);
+    router.push(`/profile`);
+  };
+
+  const capitalizeFirstLetter = (string) => {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+};
+
+  return (
+    <ScrollView className="p-4 bg-gray-900 dark:bg-whitePerso">
+      {/* Page Header with Navigation between Store and Leaderboard */}
+      <View className="flex-row justify-around bg-mainred p-4 rounded-xl">
+        <TouchableOpacity onPress={() => setActivePage('store')}>
+          <Text className={`text-2xl ${activePage === 'store' ? 'text-white border-b-2 border-white' : 'text-white'}`}>
+            Store
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => setActivePage('leaderboard')}>
+          <Text className={`text-2xl ${activePage === 'leaderboard' ? 'text-white border-b-2 border-white' : 'text-white'}`}>
+            Leaderboard
+          </Text>
+        </TouchableOpacity>
+      </View>
+
+      {/* Conditionally Render Store or Leaderboard */}
+      {activePage === 'store' ? (
+        <View className="my-4">
+          {/* Category Filter */}
+            <View className="items-center my-4">
+                <Text className="text-xl mb-2 text-white dark:text-blackPerso">Filter by category:</Text>
+                <Picker
+                    selectedValue={selectedCategory}
+                    onValueChange={handleFilterChange}
+                    className="w-64 border border-mainred rounded"
+                    style={{ 
+                        width: 200, 
+                        color: colorScheme === 'dark' ? 'black' : 'white'
+                    }}
+                    dropdownIconColor={colorScheme === 'dark' ? 'black' : 'white'} 
+                >
+                    <Picker.Item label="All Categories" value="all" />
+                    {Array.from(new Set(filteredItems.map(item => item.items_category))).map(category => (
+                        <Picker.Item label={capitalizeFirstLetter(category)} value={category} key={category} />
+                    ))}
+                </Picker>
+            </View>
+
+          {/* Item Grid */}
+          <View className="flex-row flex-wrap justify-center gap-4 w-[100%]">
+            {filteredItems.map(item => (
+              <View key={item.items_id} className={`${colorScheme === 'dark' ? 'bg-gray-300' : 'bg-gray-800' } p-4 rounded-lg shadow w-[100%`}>
+                <Image
+                  source={{ uri: item.items_picture ? `https://ur-sg.com//public/images/store/${item.items_picture}` : 'https://ur-sg.com//public/images/store/defaultpicture.jpg' }}
+                  className="h-40 w-full object-cover"
+                />
+                <View className="mt-2">
+                  <Text className="text-2xl text-mainred">{item.items_name}</Text>
+                  <Text className="text-lg text-white dark:text-blackPerso">
+                    {item.items_price * (userId ? 0.8 : 1)} <Image source={icons.soulHard} className="w-4 h-4" />
+                  </Text>
+                  <Text className="text-white dark:text-blackPerso">{item.items_desc.replace(/[\.:](\s|$)/g, '\n')}</Text>
+
+                  {/* Display the message for the item */}
+                  {itemMessages[item.items_id] && (
+                    <Text className="mt-2 text-center text-sm text-mainred">{itemMessages[item.items_id]}</Text>
+                  )}
+
+                  <TouchableOpacity
+                    className="mt-4 bg-mainred text-white text-xl p-2 rounded-full"
+                    onPress={() => handleBuyItem(item.items_id, item.items_category)}
+                  >
+                    <Text className="text-white text-center">Buy</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            ))}
+          </View>
+        </View>
+      ) : (
+        <View className="my-4">
+          {/* Leaderboard Section */}
+          <View className={`${colorScheme === 'dark' ? 'bg-gray-300' : 'bg-gray-800' } p-4 rounded-lg shadow`}>
+            <Text className="text-center text-2xl font-bold mb-4 text-mainred">Leaderboard</Text>
+            <View>
+              {[...new Map(allUsers.map(user => [user.user_id, user])).values()].map((user, index) => (
+                <View className="flex-row justify-between items-center py-2 border-b border-gray-300" key={user.user_id}>
+                    <Text className="text-white dark:text-blackPerso w-8 text-center">{index + 1}</Text>
+                    <TouchableOpacity 
+                        onPress={() => redirectToProfile(user.user_id)} 
+                        className=""
+                    >
+                        <Text className="text-white dark:text-blackPerso flex-1 text-center">{user.user_username}</Text>
+                    </TouchableOpacity>
+                    <Text className="text-white dark:text-blackPerso flex-1 text-center">{user.user_currency} <Image source={icons.soulHard} className="w-4 h-4 inline" /></Text>
+                    <Text className="text-white dark:text-blackPerso w-24 text-center">{user.user_isVip ? 'Premium' : 'Regular'}</Text>
+                </View>
+              ))}
+            </View>
+          </View>
+        </View>
+      )}
+    </ScrollView>
+  );
+};
+
+export default StoreAndLeaderboard;

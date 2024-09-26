@@ -22,12 +22,14 @@ const { sessions } = useContext(SessionContext);
       });
       
       if (friendsResponse.data.success) {
+        console.log('Friend list refreshed:', friendsResponse.data.friendlist);
         setFriendList(friendsResponse.data.friendlist);
       } else {
-        console.error('Failed to refresh friend list:', friendsResponse.data.error);
+        console.log('Failed to refresh friend list:', friendsResponse.data.error);
+        setFriendList([]);
       }
     } catch (error) {
-      console.error('Error fetching friend list:', error);
+      console.log('Error fetching friend list:', error);
     }
   };
 

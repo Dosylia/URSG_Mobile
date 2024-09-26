@@ -22,6 +22,7 @@ export const DataProvider = ({ children }) => {
   const [unreadMessage, setUnreadMessage] = useState(0);
   const [unreadMessageFriends, setUnreadMessageFriends] = useState(0);
   const [pendingFriendRequest, setPendingFriendRequest] = useState(0);
+  const [currency, setCurrency] = useState(0);
   const [badgeCount, setBadgeCount] = useState(0);
   
   // Register for push notifications
@@ -156,6 +157,26 @@ export const DataProvider = ({ children }) => {
     }
   };
 
+  const getCurrency = async (userId) => {
+    try {
+      const response = await axios.post('https://ur-sg.com/getCurrency',
+        new URLSearchParams({ userId }).toString(), {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+      });
+      const data = response.data;
+
+      if (data.message == "Success") {
+        setCurrency(data.currency.user_currency);
+      } else {
+        console.log('Failed to fetch currency:', data.error);
+      }
+    } catch (error) {
+      console.error("Error fetching currency:", error.message);
+    }
+  };
+
   const fetchFriendRequest = async (userId) => {
     try {
       const response = await axios.post('https://ur-sg.com/getFriendRequest',
@@ -167,6 +188,7 @@ export const DataProvider = ({ children }) => {
       const data = response.data;
       if (data.success) {
         const pendingCount = data.pendingCount.pendingFriendRequest || 0;
+        console.log('Pending friend request:', pendingCount);
         setPendingFriendRequest(pendingCount);
       } else {
         console.log('Failed to fetch friend requests:', data.error);
@@ -203,6 +225,7 @@ export const DataProvider = ({ children }) => {
       fetchFriendRequest(userId);
       fetchUnreadMessage(userId);
       fetchUnreadMessageFriends(userId);
+      getCurrency(userId);
     };
   
     fetchData();
@@ -213,7 +236,7 @@ export const DataProvider = ({ children }) => {
   }, [sessions.userSession]);
 
   return (
-    <DataContext.Provider value={{ unreadMessage, pendingFriendRequest, unreadMessageFriends, badgeCount }}>
+    <DataContext.Provider value={{ unreadMessage, pendingFriendRequest, unreadMessageFriends, badgeCount, currency }}>
       {children}
     </DataContext.Provider>
   );

@@ -25,15 +25,24 @@ const TabIcon = ({ icon, color, name, focused, badgeCount }) => {
       </Text>
     </View>
   );
-};
+}; 
+
+const formatCurrency = (value) =>{
+  if (value >= 1000) {
+      return Math.floor(value / 1000) + 'k';
+  }
+  return value;
+}
 
 const TabsLayout = () => {
   const { colorScheme } = useColorScheme();
-  const { unreadMessage, pendingFriendRequest } = useData();
+  const { unreadMessage, pendingFriendRequest, currency } = useData();
   const backgroundColorClass = colorScheme === 'dark' ? '#595b5e' : '#302e31';
   const borderCorlor = colorScheme === 'dark' ? '#7f8287' : '#232533';
   const tabColor = colorScheme === 'dark' ? '#ffffff' : '#CDCDE0';
   const backgroundColorHeader = colorScheme === 'dark' ? '#ffffff' : '#111827';
+
+  console.log('Currency in TabsLayout:', currency);
 
   return (
     <SafeAreaView style={{ flex: 1, paddingTop: 50, backgroundColor: backgroundColorHeader }}>
@@ -78,6 +87,28 @@ const TabsLayout = () => {
                 focused={focused}
                 badgeCount={unreadMessage}
               />
+            ),
+          }}
+        />
+        <Tabs.Screen
+          name="store"
+          options={{
+            title: 'store',
+            headerShown: false,
+            tabBarIcon: ({ color, focused }) => (
+              <View className="items-center justify-center gap-2 relative">
+              <View className="relative">
+                <Image
+                  source={icons.soulHard}
+                  resizeMode="contain"
+                  style={{ tintColor: color, width: 30, height: 30 }}
+                  className="w-6 h-6"
+                />
+              </View>
+              <Text className={`${focused ? 'font-semibold' : 'font-normal'} text-xs`} style={{ color: color }}>
+                {formatCurrency(currency)}
+              </Text>
+            </View>
             ),
           }}
         />

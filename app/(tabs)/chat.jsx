@@ -163,13 +163,22 @@ const ChatPage = () => {
     if (scrollOnLoad) {
       const timer = setTimeout(() => {
         scrollViewRef.current?.scrollToEnd({ animated: true });
-        console.log('Scrolling to end');
         setScrollOnLoad(false);
       }, 500);
   
       return () => clearTimeout(timer);
     }
   }, [messages, scrollOnLoad]);
+
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      if (selectedFriend) {
+        fetchMessages(userId, selectedFriend.friend_id);
+      }
+    }, 5000);
+
+    return () => clearInterval(intervalId);
+  }, [userId, selectedFriend]);
 
   useEffect(() => {
     scrollViewRef.current?.scrollToEnd({ animated: true });
@@ -189,54 +198,70 @@ const ChatPage = () => {
 
   return (
     <View className="flex-1 bg-gray-900 p-4 dark:bg-whitePerso">
-      {friendPage && friends.length > 0 && (
-        <View className="flex-1">
-          <ScrollView>
-            <Text className="text-mainred text-3xl mb-2 font-bold">{t('friends-list')}</Text>
-            {filteredFriends.map((friend) => (
-              <TouchableOpacity
-                key={friend.fr_id}
-                className="my-2"
-                onPress={() => handleSelectFriend(friend)}
-              >
-                <View className={`p-3 rounded relative flex-row items-center ${colorScheme === 'dark' ? 'bg-gray-300' : 'bg-gray-800'}`}>
-                  <Image 
-                    source={
-                      friend.friend_picture
-                        ? { uri: `https://ur-sg.com/public/upload/${friend.friend_picture}` }
-                        : profileImage}  
-                    className="w-10 h-10 rounded-full mr-2"
-                  />
-                  <Text className="text-white dark:text-blackPerso flex-1">{friend.friend_username}</Text>
-                  {unreadMessageFriends[friend.friend_id] > 0 && (
-                    <View className="w-4 h-4 bg-red-600 rounded-full items-center justify-center">
-                      <Text className="text-white text-xs font-bold">{unreadMessageFriends[friend.friend_id]}</Text>
-                    </View>
-                  )}
-                </View>
-              </TouchableOpacity>
-            ))}
-          </ScrollView>
-          {/* Search bar */}
-          <View className={`flex-row items-center p-2 ${colorScheme === 'dark' ? 'bg-gray-300' : 'bg-gray-800'} mt-3`}>
-            <TextInput
-              placeholder={t('search-friends')}
-              placeholderTextColor={colorScheme === 'dark' ? '#2f2f30' : '#ffffff'}
-              value={searchQuery}
-              onChangeText={setSearchQuery}
-              className="flex-1 text-white dark:text-blackPerso p-2 rounded-l"
-            />
+      {friendPage && (
+        friends.length > 0 ? (
+          <View className="flex-1">
+            <ScrollView>
+              <Text className="text-mainred text-3xl mb-2 font-bold">{t('friends-list')}</Text>
+              {filteredFriends.map((friend) => (
+                <TouchableOpacity
+                  key={friend.fr_id}
+                  className="my-2"
+                  onPress={() => handleSelectFriend(friend)}
+                >
+                  <View className={`p-3 rounded relative flex-row items-center ${colorScheme === 'dark' ? 'bg-gray-300' : 'bg-gray-800'}`}>
+                    <Image 
+                      source={
+                        friend.friend_picture
+                          ? { uri: `https://ur-sg.com/public/upload/${friend.friend_picture}` }
+                          : profileImage}  
+                      className="w-10 h-10 rounded-full mr-4"
+                    />
+                    <Text className="text-white dark:text-blackPerso flex-1 text-xl">{friend.friend_username}</Text>
+                    {unreadMessageFriends[friend.friend_id] > 0 && (
+                      <View className="w-4 h-4 bg-red-600 rounded-full items-center justify-center">
+                        <Text className="text-white text-xs font-bold">{unreadMessageFriends[friend.friend_id]}</Text>
+                      </View>
+                    )}
+                  </View>
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
+            {/* Search bar */}
+            <View className={`flex-row items-center p-2 ${colorScheme === 'dark' ? 'bg-gray-300' : 'bg-gray-800'} mt-3`}>
+              <TextInput
+                placeholder={t('search-friends')}
+                placeholderTextColor={colorScheme === 'dark' ? '#2f2f30' : '#ffffff'}
+                value={searchQuery}
+                onChangeText={setSearchQuery}
+                className="flex-1 text-white dark:text-blackPerso p-2 rounded-l"
+              />
+              <Image
+                source={colorScheme === 'dark' ? icons.searchBlack : icons.search}
+                className="w-6 h-6 ml-2"
+              />
+            </View>
+          </View>
+        ) : (
+          <View className="flex-1 justify-center items-center">
+            <Text className="text-white dark:text-blackPerso text-center mb-5 text-2xl ">{t('no-friends')}</Text>
             <Image
-              source={colorScheme === 'dark' ? icons.searchBlack : icons.search}
-              className="w-6 h-6 ml-2"
+              source={images.sadBee}
+              className="w-50 h-50 rounded-md mb-5"
+              resizeMode="contain"
+            />
+            <CustomButton
+              title={t('to-swiping')}
+              handlePress={() => router.push('/swiping')}
+              containerStyles="w-full mt-7"
             />
           </View>
-        </View>
+        )
       )}
 
       {chatPage && (
         <>
-          <ScrollView ref={scrollViewRef} contentContainerStyle={{ flexGrow: 1 }} stickyHeaderIndices={[0]}>
+          <ScrollView ref={scrollViewRef} contentContainerStyle={{ flexGrow: 1 }} stickyHeaderIndices={[0]} onContentSizeChange={() => scrollViewRef.current?.scrollToEnd({ animated: true })}>
             <View className="sticky top-0 bg-gray-900 dark:bg-whitePerso z-10">
               <TouchableOpacity>
                 <CustomButton
