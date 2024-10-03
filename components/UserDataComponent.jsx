@@ -5,7 +5,8 @@ const UserDataComponent = ({ sessions, onUserDataChange }) => {
     if (
       sessions.googleSession && Object.keys(sessions.googleSession).length > 0 &&
       sessions.userSession && Object.keys(sessions.userSession).length > 0 &&
-      sessions.leagueSession && Object.keys(sessions.leagueSession).length > 0 &&
+      (sessions.leagueSession && Object.keys(sessions.leagueSession).length > 0 || 
+       sessions.valorantSession && Object.keys(sessions.valorantSession).length > 0) &&
       sessions.lookingforSession && Object.keys(sessions.lookingforSession).length > 0
     ) {
       const newUserData = {
@@ -36,9 +37,20 @@ const UserDataComponent = ({ sessions, onUserDataChange }) => {
         sRank : sessions.leagueSession.sRank,
         sLevel : sessions.leagueSession.sLevel,
         sProfileIcon : sessions.leagueSession.sProfileIcon,
+        valmain1: sessions.valorantSession.main1,
+        valmain2: sessions.valorantSession.main2,
+        valmain3: sessions.valorantSession.main3,
+        valrank: sessions.valorantSession.rank,
+        valrole: sessions.valorantSession.role,
+        valserver: sessions.valorantSession.server,
         genderLf: sessions.lookingforSession.lfGender,
         kindOfGamerLf: sessions.lookingforSession.lfKingOfGamer,
         gameLf: sessions.lookingforSession.lfGame,
+        valmain1Lf: sessions.lookingforSession.valmain1Lf,
+        valmain2Lf: sessions.lookingforSession.valmain2Lf,
+        valmain3Lf: sessions.lookingforSession.valmain3Lf,
+        valrankLf: sessions.lookingforSession.valrankLf,
+        valroleLf: sessions.lookingforSession.valroleLf,
         main1Lf: sessions.lookingforSession.main1Lf,
         main2Lf: sessions.lookingforSession.main2Lf,
         main3Lf: sessions.lookingforSession.main3Lf,

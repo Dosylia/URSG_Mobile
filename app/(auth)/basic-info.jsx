@@ -96,7 +96,11 @@ const BasicInfo = () => {
           setSession('userSession', data.user, (updatedSessions) => {
             console.log("User session after setting:", updatedSessions.userSession);
           });
-          router.push("/league-data");
+          if (data.user.game === 'League of Legends') {
+            router.push("/league-data");
+            } else {
+              router.push("/valorant-data");
+            }
           }
         })
         .catch(error => {
@@ -137,6 +141,7 @@ const BasicInfo = () => {
 
   const gameOptions = [
     { label: 'League of Legends', value: 'League of Legends' },
+    { label: 'Valorant', value: 'Valorant' },
   ];
 
   const closePage = async () => {

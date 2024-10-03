@@ -168,6 +168,7 @@ export const DataProvider = ({ children }) => {
       const data = response.data;
 
       if (data.message == "Success") {
+        console.log('Currency successfully fetched!')
         setCurrency(data.currency.user_currency);
       } else {
         console.log('Failed to fetch currency:', data.error);

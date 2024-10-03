@@ -42,8 +42,6 @@ const TabsLayout = () => {
   const tabColor = colorScheme === 'dark' ? '#ffffff' : '#CDCDE0';
   const backgroundColorHeader = colorScheme === 'dark' ? '#ffffff' : '#111827';
 
-  console.log('Currency in TabsLayout:', currency);
-
   return (
     <SafeAreaView style={{ flex: 1, paddingTop: 50, backgroundColor: backgroundColorHeader }}>
       <Tabs

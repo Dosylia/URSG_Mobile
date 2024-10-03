@@ -13,6 +13,9 @@ import { CustomButton } from "../../components";
 import championList from  "../../constants/championList";
 import roleList from "../../constants/roleList";
 import rankList from "../../constants/rankList";
+import championValorantList from  "../../constants/championValorantList";
+import roleValorantList from "../../constants/roleValorantList";
+import rankValorantList from "../../constants/rankValorantList";
 import { icons } from "../../constants";
 
 const LookingForData = () => {
@@ -23,13 +26,13 @@ const LookingForData = () => {
     userId: '',
     gender: 'Male',
     kindOfGamer: 'Chill',
-    game: 'League of Legends',
-    main1: 'Aatrox',
-    main2: 'Aatrox',
-    main3: 'Aatrox',
+    game: sessions.userSession.game,
+    main1: sessions.userSession.game === 'League of Legends' ? 'Aatrox' : 'Astra',
+    main2: sessions.userSession.game === 'League of Legends' ? 'Aatrox' : 'Astra',
+    main3: sessions.userSession.game === 'League of Legends' ? 'Aatrox' : 'Astra',
     rank: 'Bronze',
-    role: 'ADCarry'
-  })
+    role: sessions.userSession.game === 'League of Legends' ? 'ADCarry' : 'Controller'
+  });
 
   useEffect(() => {
     if (sessions.userSession && sessions.userSession.userId) {
@@ -133,23 +136,47 @@ const LookingForData = () => {
     { label: t('gender-options.non-binary'), value: 'Non binary' },
   ];
 
+  let availableChampionsForMain1 = championList;
+  let availableChampionsForMain2 = championList;
+  let availableChampionsForMain3 = championList;
+  let roles = roleList;
+  let ranks = rankList;
 
-  const availableChampionsForMain1 = championList;
-  const availableChampionsForMain2 = form.main1 !== 'Aatrox' ? 
-  championList.filter(champion => champion !== form.main1) : 
-  championList;
-const availableChampionsForMain3 = form.main1 !== 'Aatrox' && form.main2 !== 'Aatrox' ? 
-  championList.filter(champion => champion !== form.main1 && champion !== form.main2) : 
-  championList;
+  if (sessions.userSession.game === 'League of Legends') {
+    availableChampionsForMain1 = championList;
+    availableChampionsForMain2 = form.main1 !== 'Aatrox' ? 
+    championList.filter(champion => champion !== form.main1) : 
+    championList;
+  availableChampionsForMain3 = form.main1 !== 'Aatrox' && form.main2 !== 'Aatrox' ? 
+    championList.filter(champion => champion !== form.main1 && champion !== form.main2) : 
+    championList;
+  
+  
+    roles = roleList.map((role) => (
+      { label: role, value: role }
+    ));
+  
+    ranks = rankList.map((rank) => (
+      { label: rank, value: rank }
+    ));
+  } else {
+    availableChampionsForMain1 = championValorantList;
+    availableChampionsForMain2 = form.main1 !== 'Astra' ? 
+    championValorantList.filter(champion => champion !== form.main1) : 
+    championValorantList;
+  availableChampionsForMain3 = form.main1 !== 'Astra' && form.main2 !== 'Astra' ? 
+    championValorantList.filter(champion => champion !== form.main1 && champion !== form.main2) : 
+    championValorantList;
+  
+    roles = roleValorantList.map((role) => (
+      { label: role, value: role }
+    ));
+  
+    ranks = rankValorantList.map((rank) => (
+      { label: rank, value: rank }
+    ));
+  }
 
-
-  const roles = roleList.map((role) => (
-    { label: role, value: role }
-  ));
-
-  const ranks = rankList.map((rank) => (
-    { label: rank, value: rank }
-  ));
 
   const closePage = async () => {
     try {
@@ -206,37 +233,37 @@ const availableChampionsForMain3 = form.main1 !== 'Aatrox' && form.main2 !== 'Aa
             title={t('lf.main1')}
             value={form.main1}
             handleChangeText={(value) => setForm({ ...form, main1: value })}
-            placeholder= {t('placeholders.main1Lf')}
+            placeholder={sessions.userSession.game === 'League of Legends' ? t('placeholders.main1Lf') : t('placeholders.agent1')}
             otherStyles="mt-7"
             isSelect={true}
             hasImage={true}
             options={availableChampionsForMain1.map(champion => ({ label: champion, value: champion }))}
             image={form.main1}
-            imageOrigin='champions'
+            imageOrigin={sessions.userSession.game === 'League of Legends' ? 'champions' : 'championsValorant'}
           />
           <FormField 
             title={t('lf.main2')}
             value={form.main2}
             handleChangeText={(value) => setForm({ ...form, main2: value })}
-            placeholder={t('placeholders.main2Lf')}
+            placeholder={sessions.userSession.game === 'League of Legends' ? t('placeholders.main2Lf') : t('placeholders.agent2')}
             otherStyles="mt-7"
             isSelect={true}
             hasImage={true}
             options={availableChampionsForMain2.map(champion => ({ label: champion, value: champion }))}
             image={form.main2}
-            imageOrigin='champions'
+            imageOrigin={sessions.userSession.game === 'League of Legends' ? 'champions' : 'championsValorant'}
           />
           <FormField 
             title={t('lf.main3')}
             value={form.main3}
             handleChangeText={(value) => setForm({ ...form, main3: value })}
-            placeholder={t('placeholders.main3Lf')}
+            placeholder={sessions.userSession.game === 'League of Legends' ? t('placeholders.main3Lf') : t('placeholders.agent3')}
             otherStyles="mt-7"
             isSelect={true}
             hasImage={true}
             options={availableChampionsForMain3.map(champion => ({ label: champion, value: champion }))}
             image={form.main3}
-            imageOrigin='champions'
+            imageOrigin={sessions.userSession.game === 'League of Legends' ? 'champions' : 'championsValorant'}
           />
             <FormField 
             title={t('lf.rank')}
@@ -248,7 +275,7 @@ const availableChampionsForMain3 = form.main1 !== 'Aatrox' && form.main2 !== 'Aa
             hasImage={true}
             options={ranks}
             image={form.rank}
-            imageOrigin='ranks'
+            imageOrigin={sessions.userSession.game === 'League of Legends' ? 'ranks' : 'ranksValorant'}
           />
           <FormField 
             title={t('lf.role')}
@@ -260,7 +287,7 @@ const availableChampionsForMain3 = form.main1 !== 'Aatrox' && form.main2 !== 'Aa
             hasImage={true}
             options={roles}
             image={form.role}
-            imageOrigin='roles'
+            imageOrigin={sessions.userSession.game === 'League of Legends' ? 'roles' : 'rolesValorant'}
           />
           {errors ? <Text className="text-red-600 text-xl my-2">{errors}</Text> : null}
           <CustomButton 

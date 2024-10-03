@@ -38,12 +38,13 @@ const UseSwipeAlgorithm = ({ reshapedUserData, allUsers }) => {
             lol_main3: obj.lol_main3,
             lol_rank: obj.lol_rank,
             lol_role: obj.lol_role,
-            usersServerValorant: obj.usersServerValorant,
-            usersMainValorant1: obj.usersMainValorant1,
-            usersMainValorant2: obj.usersMainValorant2,
-            usersMainValorant3: obj.usersMainValorant3,
-            usersRankValorant: obj.usersRankValorant,
-            usersRoleValorant: obj.usersRoleValorant,
+            valorant_server: obj.valorant_server,
+            valorant_id: obj.valorant_id,
+            valorant_main1: obj.valorant_main1,
+            valorant_main2: obj.valorant_main2,
+            valorant_main3: obj.valorant_main3,
+            valorant_rank: obj.valorant_rank,
+            valorant_role: obj.valorant_mole,
             lf_gender: obj.lf_gender,
             lf_kindofgamer: obj.lf_kindofgamer,
             lf_game: obj.lf_game,
@@ -52,11 +53,11 @@ const UseSwipeAlgorithm = ({ reshapedUserData, allUsers }) => {
             lf_lolmain3: obj.lf_lolmain3,
             lf_lolrank: obj.lf_lolrank,
             lf_lolrole: obj.lf_lolrole,
-            usersMainValorant1Lf: obj.usersMainValorant1Lf,
-            usersMainValorant2Lf: obj.usersMainValorant2Lf,
-            usersMainValorant3Lf: obj.usersMainValorant3Lf,
-            usersRankValorantLf: obj.usersRankValorantLf,
-            usersRoleValorantLf: obj.usersRoleValorantLf
+            lf_valmain1: obj.lf_valmain1,
+            lf_valmain2: obj.lf_valmain2,
+            lf_valmain3: obj.lf_valmain3,
+            lf_valrank: obj.lf_valrank,
+            lf_valrole: obj.lf_valrole
           }));
     
         setProfileList(profiles);
@@ -74,12 +75,13 @@ const UseSwipeAlgorithm = ({ reshapedUserData, allUsers }) => {
             lol_main3: reshapedUserData.lol_main3,
             lol_rank: reshapedUserData.lol_rank,
             lol_role: reshapedUserData.lol_role,
-            usersServerValorant: reshapedUserData.usersServerValorant,
-            usersMainValorant1: reshapedUserData.usersMainValorant1,
-            usersMainValorant2: reshapedUserData.usersMainValorant2,
-            usersMainValorant3: reshapedUserData.usersMainValorant3,
-            usersRankValorant: reshapedUserData.usersRankValorant,
-            usersRoleValorant: reshapedUserData.usersRoleValorant,
+            valorant_server: reshapedUserData.valorant_server,
+            valorant_id: reshapedUserData.valorant_id,
+            valorant_main1: reshapedUserData.valorant_main1,
+            valorant_main2: reshapedUserData.valorant_main2,
+            valorant_main3: reshapedUserData.valorant_main3,
+            valorant_rank: reshapedUserData.valorant_rank,
+            valorant_role: reshapedUserData.valorant_mole,
             lf_gender: reshapedUserData.lf_gender,
             lf_kindofgamer: reshapedUserData.lf_kindofgamer,
             lf_game: reshapedUserData.lf_game,
@@ -88,11 +90,11 @@ const UseSwipeAlgorithm = ({ reshapedUserData, allUsers }) => {
             lf_lolmain3: reshapedUserData.lf_lolmain3,
             lf_lolrank: reshapedUserData.lf_lolrank,
             lf_lolrole: reshapedUserData.lf_lolrole,
-            usersMainValorant1Lf: reshapedUserData.usersMainValorant1Lf,
-            usersMainValorant2Lf: reshapedUserData.usersMainValorant2Lf,
-            usersMainValorant3Lf: reshapedUserData.usersMainValorant3Lf,
-            usersRankValorantLf: reshapedUserData.usersRankValorantLf,
-            usersRoleValorantLf: reshapedUserData.usersRoleValorantLf
+            lf_valmain1: reshapedUserData.lf_valmain1,
+            lf_valmain2: reshapedUserData.lf_valmain2,
+            lf_valmain3: reshapedUserData.lf_valmain3,
+            lf_valrank: reshapedUserData.lf_valrank,
+            lf_valrole: reshapedUserData.lf_valrole
           };
     
         setUserProfile(user);

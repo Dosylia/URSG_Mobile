@@ -11,9 +11,11 @@ import axios from 'axios';
 import { SessionContext } from '../context/SessionContext';
 import { useTranslation } from 'react-i18next';
 import { useColorScheme } from 'nativewind';
-import { GOOGLE_WEB_CLIENT_ID, GOOGLE_ANDROID_CLIENT_ID, GOOGLE_IOS_CLIENT_ID } from '@env';
 
 export default function App() {
+  const webClientId = process.env.EXPO_GOOGLE_WEB_CLIENT_ID;
+  const androidClientId = process.env.EXPO_GOOGLE_ANDROID_CLIENT_ID;
+  const iosClientId = process.env.EXPO_GOOGLE_IOS_CLIENT_ID;
   const { colorScheme } = useColorScheme();
   const backgroundColorClass = colorScheme === 'dark' ? '#111827' : '#ffffff';
   const { t } = useTranslation();
@@ -26,9 +28,9 @@ export default function App() {
 
   const configureGoogleSignIn = () => {
     GoogleSignin.configure({
-      webClientId: GOOGLE_WEB_CLIENT_ID,
-      androidClientId: GOOGLE_ANDROID_CLIENT_ID,
-      iosClientId: GOOGLE_IOS_CLIENT_ID,
+      webClientId: webClientId,
+      androidClientId: androidClientId,
+      iosClientId: iosClientId,
     });
     console.log("Google Sign-In configured");
   };
@@ -100,24 +102,47 @@ export default function App() {
   
 
           if (data.userExists) {
-            if (data.leagueUserExists) {
-              setSession('leagueSession', data.leagueUser, (updatedSessions) => {
-                console.log("League user session after setting:", updatedSessions.leagueSession);
-            });
-
-              if (data.lookingForUserExists) {
-                setSession('lookingforSession', data.lookingForUser, (updatedSessions) => {
-                  console.log("Looking for session after setting:", updatedSessions.lookingforSession);
+            if (data.user.game === 'League of Legends') {
+              if (data.leagueUserExists) {
+                setSession('leagueSession', data.leagueUser, (updatedSessions) => {
+                  console.log("League user session after setting:", updatedSessions.leagueSession);
               });
-                console.log("Navigating to /swiping");
-                router.push("/swiping");
+  
+                if (data.lookingForUserExists) {
+                  setSession('lookingforSession', data.lookingForUser, (updatedSessions) => {
+                    console.log("Looking for session after setting:", updatedSessions.lookingforSession);
+                });
+                  console.log("Navigating to /swiping from League side");
+                  router.push("/swiping");
+                } else {
+                  console.log("Navigating to /lookingfor-data");
+                  router.push("/lookingfor-data");
+                }
               } else {
-                console.log("Navigating to /lookingfor-data");
-                router.push("/lookingfor-data");
+                console.log("Navigating to /league-data");
+                router.push("/league-data");
               }
             } else {
-              console.log("Navigating to /league-data");
-              router.push("/league-data");
+              if (data.valorantUserExists) {
+                console.log("Valorant user exists", data.valorantUser);
+                setSession('valorantSession', data.valorantUser, (updatedSessions) => {
+                  console.log("Valorant user session after setting:", updatedSessions.valorantSession);
+              });
+  
+                if (data.lookingForUserExists) {
+                  setSession('lookingforSession', data.lookingForUser, (updatedSessions) => {
+                    console.log("Looking for session after setting:", updatedSessions.lookingforSession);
+                });
+                  console.log("Navigating to /swiping from Valorant side");
+                  router.push("/swiping");
+                } else {
+                  console.log("Navigating to /lookingfor-data");
+                  router.push("/lookingfor-data");
+                }
+              } else {
+                console.log("Navigating to /valorant-data");
+                router.push("/valorant-data");
+              }
             }
           } else {
             console.log("Navigating to /basic-info");
@@ -149,20 +174,20 @@ export default function App() {
     }
   }
 
-  if (
-    sessions.googleSession && Object.keys(sessions.googleSession).length > 0 &&
-    sessions.userSession && Object.keys(sessions.userSession).length > 0 &&
-    sessions.leagueSession && Object.keys(sessions.leagueSession).length > 0 &&
-    sessions.lookingforSession && Object.keys(sessions.lookingforSession).length > 0
-  ) {
-    console.log("Google session found:", sessions.googleSession);
-    console.log("User session found:", sessions.userSession);
-    console.log("League session found:", sessions.leagueSession);
-    console.log("Looking for session found:", sessions.lookingforSession);
-    return <Redirect href="/swiping" />;
-  } else {
-    console.log("Not all sessions found:", sessions);
-  }
+  // if (
+  //   sessions.googleSession && Object.keys(sessions.googleSession).length > 0 &&
+  //   sessions.userSession && Object.keys(sessions.userSession).length > 0 &&
+  //   sessions.leagueSession && Object.keys(sessions.leagueSession).length > 0 &&
+  //   sessions.lookingforSession && Object.keys(sessions.lookingforSession).length > 0
+  // ) {
+  //   console.log("Google session found:", sessions.googleSession);
+  //   console.log("User session found:", sessions.userSession);
+  //   console.log("League session found:", sessions.leagueSession);
+  //   console.log("Looking for session found:", sessions.lookingforSession);
+  //   return <Redirect href="/swiping" />;
+  // } else {
+  //   console.log("Not all sessions found:", sessions);
+  // }
 
   const handleProfileUpdate = () => {
     router.push("/(auth)/settings");

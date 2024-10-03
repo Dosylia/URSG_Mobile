@@ -3,14 +3,17 @@ import React from 'react'
 import { Picker } from '@react-native-picker/picker';
 
 
-import { champions } from "../constants";
+import { champions, championsValorant } from "../constants";
 import { images } from "../constants";
-import { roles } from "../constants";
-import { ranks } from "../constants";
+import { roles, rolesValorant } from "../constants";
+import { ranks, ranksValorant } from "../constants";
 
 import championMapping from "../constants/championMapping";
 import roleMapping from '../constants/roleMaping';
 import rankMapping from '../constants/rankMapping';
+import championValorantMapping from '../constants/championValorantMapping';
+import roleValorantMapping from '../constants/roleValorantMapping';
+import rankValorantMapping from '../constants/rankValorantMapping';
 import { useColorScheme } from 'nativewind';
 
 
@@ -35,6 +38,18 @@ const FormField = ({ title, value, handleChangeText, placeholder, otherStyles, k
       baseImage = ranks;
       optionKey = rankMapping[image];
       valueKey = rankMapping[options[0].value];
+    } else if (imageOrigin == 'championsValorant') {
+      baseImage = championsValorant;
+      optionKey = championValorantMapping[image];
+      valueKey = championValorantMapping[options[0].value];
+    } else if (imageOrigin == 'rolesValorant') {
+      baseImage = rolesValorant;
+      optionKey = roleValorantMapping[image];
+      valueKey = roleValorantMapping[options[0].value];
+    } else if (imageOrigin == 'ranksValorant') {
+      baseImage = ranksValorant;
+      optionKey = rankValorantMapping[image];
+      valueKey = rankValorantMapping[options[0].value];
     } else {
       baseImage = images;
     }

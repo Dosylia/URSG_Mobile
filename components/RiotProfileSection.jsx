@@ -3,6 +3,7 @@ import { View, Text, Image } from 'react-native';
 import ProfileSection from './ProfileSection';
 import { images } from "../constants";
 import LeagueDataComponent from './LeagueDataComponent';
+import ValorantDataComponent from './ValorantDataComponent';
 import he from 'he';
 import { useTranslation } from 'react-i18next';
 import { useColorScheme } from 'nativewind';
@@ -51,8 +52,8 @@ const RiotProfileSection = ({ userData, isProfile }) => {
             </View>
           )}
 
-          {/* League Data Component */}
-          {userData.main1 && userData.main2 && userData.main3 && userData.role && userData.rank && (
+        {userData.game === "League of Legends" ? (
+          userData.main1 && userData.main2 && userData.main3 && userData.role && userData.rank && (
             <LeagueDataComponent
               main1={userData.main1}
               main2={userData.main2}
@@ -60,7 +61,18 @@ const RiotProfileSection = ({ userData, isProfile }) => {
               role={userData.role}
               rank={userData.rank}
             />
-          )}
+          )
+        ) : (
+          userData.valmain1 && userData.valmain2 && userData.valmain3 && userData.valrole && userData.valrank && (
+            <ValorantDataComponent
+              main1={userData.valmain1}
+              main2={userData.valmain2}
+              main3={userData.valmain3}
+              role={userData.valrole}
+              rank={userData.valrank}
+            />
+          )
+        )}
 
           <Text style={{ color: colorScheme === 'dark' ? '#000' : '#fff' }}>
             {isProfile ? t('your-gender') : t('their-gender')}: {gender}

@@ -1,5 +1,4 @@
-import React, { useState, useCallback, useContext } from 'react';
-import { useFocusEffect } from '@react-navigation/native';
+import React, { useState, useContext, useEffect } from 'react';
 import { View, Text, Image, ScrollView, TouchableOpacity } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { SessionContext } from '../../context/SessionContext';
@@ -87,10 +86,18 @@ const StoreAndLeaderboard = () => {
         });
       }
       console.log('Success:', response.data);
-      setItemMessages(prevMessages => ({
-        ...prevMessages,
-        [itemId]: response.data.message
-      }));
+
+      if (response.data.success) {
+        setItemMessages(prevMessages => ({
+          ...prevMessages,
+          [itemId]: response.data.message
+        }));
+      } else {
+        setItemMessages(prevMessages => ({
+          ...prevMessages,
+          [itemId]: response.data.message
+        }));
+      }
     } catch (error) {
       console.error('Error:', error);
       setItemMessages(prevMessages => ({
@@ -105,13 +112,10 @@ const StoreAndLeaderboard = () => {
     setFilteredItems(category === 'all' ? items : items.filter(item => item.items_category === category));
   };
 
-  useFocusEffect(
-    useCallback(() => {
-      fetchAllUsers();
-      fetchItems();
-      return () => clearTimeout();
-    }, [])
-  );
+  useEffect(() => {
+    fetchAllUsers();
+    fetchItems();
+  }, []);
 
   const redirectToProfile = (friendId) => {
     setSession('friendId', friendId);
@@ -162,32 +166,31 @@ const StoreAndLeaderboard = () => {
             </View>
 
           {/* Item Grid */}
-          <View className="flex-row flex-wrap justify-center gap-4 w-[100%]">
+          <View className="flex-row flex-wrap justify-center gap-4 w-full">
             {filteredItems.map(item => (
-              <View key={item.items_id} className={`${colorScheme === 'dark' ? 'bg-gray-300' : 'bg-gray-800' } p-4 rounded-lg shadow w-[100%`}>
+              <View key={item.items_id} className={`${colorScheme === 'dark' ? 'bg-gray-300' : 'bg-gray-800'} p-4 rounded-lg shadow w-full min-h-[200px] flex flex-col`}>
                 <Image
                   source={{ uri: item.items_picture ? `https://ur-sg.com//public/images/store/${item.items_picture}` : 'https://ur-sg.com//public/images/store/defaultpicture.jpg' }}
-                  className="h-40 w-full object-cover"
+                  className="h-40 object-cover w-full"
                 />
-                <View className="mt-2">
+                <View className="mt-2 w-full flex-1">
                   <Text className="text-2xl text-mainred">{item.items_name}</Text>
                   <Text className="text-lg text-white dark:text-blackPerso">
-                    {item.items_price * (userId ? 0.8 : 1)} <Image source={icons.soulHard} className="w-4 h-4" />
+                    {item.items_price * (sessions.userSession.isVip ? 0.8 : 1)} <Image source={icons.soulHard} className="w-4 h-4" />
                   </Text>
                   <Text className="text-white dark:text-blackPerso">{item.items_desc.replace(/[\.:](\s|$)/g, '\n')}</Text>
-
-                  {/* Display the message for the item */}
-                  {itemMessages[item.items_id] && (
-                    <Text className="mt-2 text-center text-sm text-mainred">{itemMessages[item.items_id]}</Text>
-                  )}
-
-                  <TouchableOpacity
-                    className="mt-4 bg-mainred text-white text-xl p-2 rounded-full"
-                    onPress={() => handleBuyItem(item.items_id, item.items_category)}
-                  >
-                    <Text className="text-white text-center">Buy</Text>
-                  </TouchableOpacity>
                 </View>
+
+                {itemMessages[item.items_id] && (
+                  <Text className="mt-2 text-center text-sm text-mainred">{itemMessages[item.items_id]}</Text>
+                )}
+
+                <TouchableOpacity
+                  className="mt-4 bg-mainred text-white text-xl p-2 rounded-full"
+                  onPress={() => handleBuyItem(item.items_id, item.items_category)}
+                >
+                  <Text className="text-white text-center">Buy</Text>
+                </TouchableOpacity>
               </View>
             ))}
           </View>
@@ -198,17 +201,19 @@ const StoreAndLeaderboard = () => {
           <View className={`${colorScheme === 'dark' ? 'bg-gray-300' : 'bg-gray-800' } p-4 rounded-lg shadow`}>
             <Text className="text-center text-2xl font-bold mb-4 text-mainred">Leaderboard</Text>
             <View>
-              {[...new Map(allUsers.map(user => [user.user_id, user])).values()].map((user, index) => (
+            {[...new Map(allUsers.map(user => [user.user_id, user])).values()]
+              .sort((a, b) => b.user_currency - a.user_currency) // Sort by user_currency in descending order
+              .map((user, index) => (
                 <View className="flex-row justify-between items-center py-2 border-b border-gray-300" key={user.user_id}>
-                    <Text className="text-white dark:text-blackPerso w-8 text-center">{index + 1}</Text>
-                    <TouchableOpacity 
-                        onPress={() => redirectToProfile(user.user_id)} 
-                        className=""
-                    >
-                        <Text className="text-white dark:text-blackPerso flex-1 text-center">{user.user_username}</Text>
-                    </TouchableOpacity>
-                    <Text className="text-white dark:text-blackPerso flex-1 text-center">{user.user_currency} <Image source={icons.soulHard} className="w-4 h-4 inline" /></Text>
-                    <Text className="text-white dark:text-blackPerso w-24 text-center">{user.user_isVip ? 'Premium' : 'Regular'}</Text>
+                  <Text className="text-white dark:text-blackPerso w-8 text-center">{index + 1}</Text>
+                  <TouchableOpacity 
+                    onPress={() => redirectToProfile(user.user_id)} 
+                    className=""
+                  >
+                    <Text className="text-white dark:text-blackPerso flex-1 text-center">{user.user_username}</Text>
+                  </TouchableOpacity>
+                  <Text className="text-white dark:text-blackPerso flex-1 text-center">{user.user_currency} <Image source={icons.soulHard} className="w-4 h-4 inline" /></Text>
+                  <Text className="text-white dark:text-blackPerso w-24 text-center">{user.user_isVip ? 'Premium' : 'Regular'}</Text>
                 </View>
               ))}
             </View>

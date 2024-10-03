@@ -33,6 +33,12 @@ const Swiping = () => {
     lol_main3: userData?.main3,
     lol_rank: userData?.rank,
     lol_role: userData?.role,
+    valorant_server: userData?.server,
+    valorant_server_main1: userData?.valmain1,
+    valorant_server_main2: userData?.valmain2,
+    valorant_server_main3: userData?.valmain3,
+    valorant_server_rank: userData?.valrank,
+    valorant_server_role: userData?.valrole,
     lf_gender: userData?.genderLf,
     lf_kindofgamer: userData?.kindOfGamerLf,
     lf_game: userData?.gameLf,
@@ -41,6 +47,11 @@ const Swiping = () => {
     lf_lolmain3: userData?.main3Lf,
     lf_lolrank: userData?.rankLf,
     lf_lolrole: userData?.roleLf,
+    lf_valmain1: userData?.valmain1Lf,
+    lf_valmain2: userData?.valmain2Lf,
+    lf_valmain3: userData?.valmain3Lf,
+    lf_valrank: userData?.valrankLf,
+    lf_valrole: userData?.valroleLf,
   };
 
   const fetchAllUsers = async () => {

@@ -124,39 +124,71 @@ const Profile = () => {
       })
         .then(response => {
           if (response.data.message === 'Success') {
-            const formattedData = {
-              username: response.data.user.user_username,
-              gender: response.data.user.user_gender,
-              age: response.data.user.user_age,
-              kindOfGamer: response.data.user.user_kindOfGamer,
-              game: response.data.user.user_game,
-              shortBio: response.data.user.user_shortBio,
-              picture: response.data.user.user_picture,
-              discord: response.data.user.user_discord,
-              instagram: response.data.user.user_instagram,
-              twitch: response.data.user.user_twitch,
-              twitter: response.data.user.user_twitter,
-              main1: response.data.user.lol_main1,
-              main2: response.data.user.lol_main2,
-              main3: response.data.user.lol_main3,
-              rank: response.data.user.lol_rank,
-              role: response.data.user.lol_role,
-              server: response.data.user.lol_server,
-              account: response.data.user.lol_account,
-              sUsername: response.data.user.lol_sUsername,
-              sRank: response.data.user.lol_sRank,
-              sLevel: response.data.user.lol_sLevel,
-              sProfileIcon: response.data.user.lol_sProfileIcon,
-              genderLf: response.data.user.lf_gender,
-              kindOfGamerLf: response.data.user.lf_kindofgamer,
-              gameLf: response.data.user.lf_game,
-              main1Lf: response.data.user.lf_lolmain1,
-              main2Lf: response.data.user.lf_lolmain2,
-              main3Lf: response.data.user.lf_lolmain3,
-              rankLf: response.data.user.lf_lolrank,
-              roleLf: response.data.user.lf_lolrole
-            };
-            setUserData(formattedData);
+            if (response.data.user.user_game === "League of Legends") {
+              const formattedData = {
+                username: response.data.user.user_username,
+                gender: response.data.user.user_gender,
+                age: response.data.user.user_age,
+                kindOfGamer: response.data.user.user_kindOfGamer,
+                game: response.data.user.user_game,
+                shortBio: response.data.user.user_shortBio,
+                picture: response.data.user.user_picture,
+                discord: response.data.user.user_discord,
+                instagram: response.data.user.user_instagram,
+                twitch: response.data.user.user_twitch,
+                twitter: response.data.user.user_twitter,
+                main1: response.data.user.lol_main1,
+                main2: response.data.user.lol_main2,
+                main3: response.data.user.lol_main3,
+                rank: response.data.user.lol_rank,
+                role: response.data.user.lol_role,
+                server: response.data.user.lol_server,
+                account: response.data.user.lol_account,
+                sUsername: response.data.user.lol_sUsername,
+                sRank: response.data.user.lol_sRank,
+                sLevel: response.data.user.lol_sLevel,
+                sProfileIcon: response.data.user.lol_sProfileIcon,
+                genderLf: response.data.user.lf_gender,
+                kindOfGamerLf: response.data.user.lf_kindofgamer,
+                gameLf: response.data.user.lf_game,
+                main1Lf: response.data.user.lf_lolmain1,
+                main2Lf: response.data.user.lf_lolmain2,
+                main3Lf: response.data.user.lf_lolmain3,
+                rankLf: response.data.user.lf_lolrank,
+                roleLf: response.data.user.lf_lolrole
+              };
+
+              setUserData(formattedData);
+            } else {
+              const formattedData = {
+                username: response.data.user.user_username,
+                gender: response.data.user.user_gender,
+                age: response.data.user.user_age,
+                kindOfGamer: response.data.user.user_kindOfGamer,
+                game: response.data.user.user_game,
+                shortBio: response.data.user.user_shortBio,
+                picture: response.data.user.user_picture,
+                discord: response.data.user.user_discord,
+                instagram: response.data.user.user_instagram,
+                twitch: response.data.user.user_twitch,
+                twitter: response.data.user.user_twitter,
+                main1: response.data.user.val_main1,
+                main2: response.data.user.val_main2,
+                main3: response.data.user.val_main3,
+                rank: response.data.user.val_rank,
+                role: response.data.user.val_role,
+                genderLf: response.data.user.lf_gender,
+                kindOfGamerLf: response.data.user.lf_kindofgamer,
+                gameLf: response.data.user.lf_game,
+                main1Lf: response.data.user.lf_valmain1,
+                main2Lf: response.data.user.lf_valmain2,
+                main3Lf: response.data.user.lf_valmain3,
+                rankLf: response.data.user.lf_valrank,
+                roleLf: response.data.user.lf_valrole
+              };
+
+              setUserData(formattedData);
+            }
           } else {
             console.error('Failed to fetch user data');
           }
@@ -246,7 +278,7 @@ const Profile = () => {
             containerStyles="w-full mt-7"
           />
           <CustomButton 
-            title={t('bind-league')}
+            title={t('bind-riot')}
             handlePress={() => router.push("/(auth)/bind-account")}
             containerStyles="w-full mt-7"
           />

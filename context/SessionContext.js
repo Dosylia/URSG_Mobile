@@ -7,43 +7,59 @@ export const SessionProvider = ({ children }) => {
     googleSession: {},
     userSession: {},
     leagueSession: {},
+    valorantSession: {},
     lookingforSession: {},
     friendId: null // Ensure this is set as a primitive
   });
 
   const setSession = (type, data, callback) => {
     console.log(`Setting session: ${type}`, data);
-
+  
     setSessions(prevSessions => {
       let updatedSessions;
-
-      // Reset all sessions if 'type' is 'reset'
+  
       if (type === 'reset') {
         updatedSessions = {
           googleSession: {},
           userSession: {},
           leagueSession: {},
+          valorantSession: {},
           lookingforSession: {},
           friendId: null
         };
       } else if (type === 'friendId') {
-        // Handle updating the friendId separately
         updatedSessions = {
           ...prevSessions,
           [type]: data
         };
       } else {
-        // Handle updating individual session types
-        updatedSessions = {
-          ...prevSessions,
-          [type]: {
-            ...prevSessions[type], // Preserve existing data for the session type
-            ...data                // Merge with new data
-          }
-        };
+        // If updating leagueSession or valorantSession, also update the `game` field in userSession
+        if (type === 'leagueSession' || type === 'valorantSession') {
+          const gameName = type === 'leagueSession' ? 'League of Legends' : 'Valorant';
+          
+          updatedSessions = {
+            ...prevSessions,
+            [type]: {
+              ...prevSessions[type],
+              ...data
+            },
+            userSession: {
+              ...prevSessions.userSession,
+              game: gameName // Set the game field based on the session type
+            }
+          };
+        } else {
+          updatedSessions = {
+            ...prevSessions,
+            [type]: {
+              ...prevSessions[type],
+              ...data
+            }
+          };
+        }
       }
-
-      console.log('Updated sessions:', updatedSessions);
+  
+      console.log(`Updated sessions ${type}:`, updatedSessions);
       if (callback) callback(updatedSessions);
       return updatedSessions;
     });
