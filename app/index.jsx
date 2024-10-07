@@ -68,8 +68,10 @@ export default function App() {
     const fullName = userInfo.user.name;
     const givenName = userInfo.user.givenName;
     const familyName = userInfo.user.familyName;
-    const imageUrl = userInfo.user.photo;
+    const imageUrl = userInfo.user.photo ? userInfo.user.photo : 'defaultpicture';
     const email = userInfo.user.email;
+
+    console.log("User info:", userInfo);
 
     if (googleId && fullName && givenName && familyName && imageUrl && email) {
       const userData = { googleId, fullName, givenName, familyName, imageUrl, email };
@@ -171,6 +173,9 @@ export default function App() {
         }
         setErrors('Error submitting form');
       });
+    } else {
+      console.error("Missing user data:", userInfo);
+      setErrors('Missing user data');
     }
   }
 

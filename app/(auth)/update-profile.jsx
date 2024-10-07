@@ -71,6 +71,7 @@ const updateProfile = () => {
         .then(response => {
           if (response.data.message === 'Success') {
             const user = response.data.user;
+            console.log('user : ', user);
             const isLoL = form.game === "League of Legends";
             const isFilled = isLoL
               ? user.lol_main1 && user.lf_lolmain1 

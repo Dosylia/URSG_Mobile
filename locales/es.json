@@ -62,6 +62,8 @@
     "remove-frame": "Eliminar marco",
     "use-frame": "Usar marco",
     "no-frame-yet": "Aún no tienes ningún marco de foto de perfil.",
+    "filter": "Filto",
+    "filter-change": "Cambia el filtro de la aplicación (Sin filtro/Estricto)",
     "basic-info": {
         "username": "Nombre de usuario",
         "gender": "Género",

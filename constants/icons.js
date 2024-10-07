@@ -25,6 +25,10 @@ import leftArrowSwipe from "../assets/icons/left-arrow-swipe.png";
 import rightArrowSwipe from "../assets/icons/right-arrow-swipe.png";
 import searchBlack from "../assets/icons/searchblack.png";
 import soulHard from "../assets/icons/soulhard.png";
+import filter from "../assets/icons/filter.png";
+import filterDark from "../assets/icons/filterDark.png";
+import lolLogo from "../assets/icons/lol-logo.png";
+import valorantLogo from "../assets/icons/Valorant.png";
 
 export default {
   play,
@@ -53,5 +57,9 @@ export default {
   leftArrowSwipe,
   rightArrowSwipe,
   searchBlack,
-  soulHard
+  soulHard,
+  filter,
+  filterDark,
+  lolLogo,
+  valorantLogo,
 };

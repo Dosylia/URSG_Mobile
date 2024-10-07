@@ -8,6 +8,7 @@ import LookingForSection from "./LookingForSection";
 import UserDataChat from "./UserDataChat";
 import UseSwipeAlgorithm  from "./UseSwipingAlgoritm";
 import Collapse from "./Collapse";
+import ValorantDataComponent from "./ValorantDataComponent";
 
 export {
     CustomButton,
@@ -19,5 +20,6 @@ export {
     LookingForSection,
     UserDataChat,
     UseSwipeAlgorithm,
-    Collapse
+    Collapse,
+    ValorantDataComponent
   };

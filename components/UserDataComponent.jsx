@@ -26,6 +26,7 @@ const UserDataComponent = ({ sessions, onUserDataChange }) => {
         twitter : sessions.userSession.twitter,
         currency : sessions.userSession.currency,
         isVip : sessions.userSession.isVip,
+        hasChatFilter : sessions.userSession.hasChatFilter,
         main1: sessions.leagueSession.main1,
         main2: sessions.leagueSession.main2,
         main3: sessions.leagueSession.main3,

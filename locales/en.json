@@ -62,6 +62,8 @@
     "remove-frame": "Remove frame",
     "use-frame": "Use frame",
     "no-frame-yet": "You don't have any profile picture frame yet.",
+    "filter": "Filter",
+    "filter-change": "Change the filter of the app (No filter/Strict)",
     "basic-info": {
         "username": "Username",
         "gender": "Gender",

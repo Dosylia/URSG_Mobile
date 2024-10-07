@@ -33,12 +33,12 @@ const Swiping = () => {
     lol_main3: userData?.main3,
     lol_rank: userData?.rank,
     lol_role: userData?.role,
-    valorant_server: userData?.server,
-    valorant_server_main1: userData?.valmain1,
-    valorant_server_main2: userData?.valmain2,
-    valorant_server_main3: userData?.valmain3,
-    valorant_server_rank: userData?.valrank,
-    valorant_server_role: userData?.valrole,
+    valorant_server: userData?.valserver,
+    valorant_main1: userData?.valmain1,
+    valorant_main2: userData?.valmain2,
+    valorant_main3: userData?.valmain3,
+    valorant_rank: userData?.valrank,
+    valorant_role: userData?.valrole,
     lf_gender: userData?.genderLf,
     lf_kindofgamer: userData?.kindOfGamerLf,
     lf_game: userData?.gameLf,
@@ -100,29 +100,54 @@ const Swiping = () => {
         );
   
         const matchingData = userMatchingResponse.data;
-        console.log('Matching data:', matchingData);
+        // console.log('Matching data:', matchingData);
         if (!matchingData.success) {
-          if (matchingData.error === 'No matching users found') { 
-            setNoMoreUsers(true);
-          }
+          setNoMoreUsers(true);
           setErrors(matchingData.error);
           return;
         }
-  
-        const UserMatched = {
-          username: matchingData.user.user_username,
-          age: matchingData.user.user_age,
-          main1: matchingData.user.lol_main1,
-          main2: matchingData.user.lol_main2,
-          main3: matchingData.user.lol_main3,
-          rank: matchingData.user.lol_rank,
-          role: matchingData.user.lol_role,
-          gender: matchingData.user.user_gender,
-          kindOfGamer: matchingData.user.user_kindOfGamer,
-          shortBio: matchingData.user.user_shortBio,
-          picture: matchingData.user.user_picture,
-          userId: matchingData.user.user_id
-        };
+        
+        let UserMatched = {};
+        const user = matchingData.user;
+        console.log('User matching:', user);
+        if (user.user_game === 'League of Legends') {
+          UserMatched = {
+            username: matchingData.user.user_username,
+            game: matchingData.user.user_game,
+            age: matchingData.user.user_age,
+            main1: matchingData.user.lol_main1,
+            main2: matchingData.user.lol_main2,
+            main3: matchingData.user.lol_main3,
+            rank: matchingData.user.lol_rank,
+            role: matchingData.user.lol_role,
+            server: matchingData.user.lol_server,
+            gender: matchingData.user.user_gender,
+            kindOfGamer: matchingData.user.user_kindOfGamer,
+            shortBio: matchingData.user.user_shortBio,
+            picture: matchingData.user.user_picture,
+            userId: matchingData.user.user_id
+          };
+        } else {
+          UserMatched = {
+            username: matchingData.user.user_username,
+            game: matchingData.user.user_game,
+            age: matchingData.user.user_age,
+            valmain1: matchingData.user.valorant_main1,
+            valmain2: matchingData.user.valorant_main2,
+            valmain3: matchingData.user.valorant_main3,
+            valrank: matchingData.user.valorant_rank,
+            valrole: matchingData.user.valorant_role,
+            valserver: matchingData.user.valorant_server,
+            gender: matchingData.user.user_gender,
+            kindOfGamer: matchingData.user.user_kindOfGamer,
+            shortBio: matchingData.user.user_shortBio,
+            picture: matchingData.user.user_picture,
+            userId: matchingData.user.user_id
+          };
+
+          console.log('User matched Valorant:', UserMatched);
+        }
+
         setOtherUser(UserMatched);
         setIsLoading(false);
         setHasSwiped(false);
@@ -131,7 +156,7 @@ const Swiping = () => {
         console.log("User session not yet populated");
       }
     } catch (error) {
-      handleAxiosError(error);
+      console.log('Error during fetchUserMatching:', error);
     }
   };
   

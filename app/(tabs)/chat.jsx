@@ -8,9 +8,11 @@ import { SessionContext } from '../../context/SessionContext';
 import { UserDataChat, CustomButton } from '../../components';
 import { useTranslation } from 'react-i18next';
 import { useColorScheme } from 'nativewind';
-import { images, icons } from "../../constants";
+import { images, icons, emotes } from "../../constants";
+import badWordsList from '../../constants/chatFilter';
 import { useData } from '../../context/DataContext';
 import { useFriendList } from '../../context/FriendListContext'; 
+import { Modal } from 'react-native';
 import he from 'he';
 
 const ChatPage = () => {
@@ -34,6 +36,7 @@ const ChatPage = () => {
   const [scrollOnLoad, setScrollOnLoad] = useState(true);
   const [isBlocked, setIsBlocked] = useState(false);
   const { friendList } = useFriendList();
+  const [isEmotePickerVisible, setIsEmotePickerVisible] = useState(false);
 
   const scrollViewRef = useRef();
 
@@ -89,6 +92,57 @@ const ChatPage = () => {
       console.log('Error fetching messages');
     }
   };
+
+  const chatfilter = (textToFilter) => {
+    const allBadWords = badWordsList.flatMap(([, badWords]) => badWords);
+
+    const badWordsRegex = new RegExp(allBadWords.join('|'), 'gi');
+
+    const filteredText = textToFilter.replace(badWordsRegex, (match) => {
+        return '*'.repeat(match.length);
+    });
+
+    return filteredText;
+}
+
+function renderEmotes(message) {
+  const emoteMap = {
+    ':surprised-cat:': emotes.surprisedCat,
+    ':cat-smile:': emotes.catSmile,
+    ':cat-cute:': emotes.catcute,
+    ':goofy-ah-cat:': emotes.goofyAhCat,
+    ':cat-surprised:': emotes.catSurprised,
+    ':cat-liked:': emotes.catliked,
+    ':cat-sus:': emotes.catSus,
+    ':cat-bruh:': emotes.catbruh,
+    ':cat-licking:': emotes.catlicking,
+  };
+
+  return message.split(/(:[a-zA-Z0-9]+(?:-[a-zA-Z0-9]+)*:)/g).map((part, index) => {
+    const cleanedPart = part.replace(/::.*$/g, ''); 
+    if (emoteMap[cleanedPart]) {
+      return (
+        <Image
+          key={`${cleanedPart}-${index}`}
+          source={emoteMap[cleanedPart]}
+          style={{ width: 30, height: 30 }}
+          resizeMode="contain"
+        />
+      );
+    }
+    return <Text key={`${part}-${index}`}>{part}</Text>;
+  });
+}
+
+
+const toggleEmotePicker = () => {
+  setIsEmotePickerVisible(!isEmotePickerVisible);
+};
+
+const addEmoteToMessage = (emoteCode) => {
+  setNewMessage(newMessage + emoteCode);
+  setIsEmotePickerVisible(false); 
+};
 
   const formatTimestamp = (dateString) => {
     const utcDate = new Date(dateString);
@@ -196,6 +250,12 @@ const ChatPage = () => {
     friend.friend_username.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  const convertCamelToDashCase = (camelCaseKey) => {
+    return camelCaseKey
+      .replace(/([a-z])([A-Z])/g, '$1-$2')
+      .toLowerCase(); 
+  };
+
   return (
     <View className="flex-1 bg-gray-900 p-4 dark:bg-whitePerso">
       {friendPage && (
@@ -218,6 +278,10 @@ const ChatPage = () => {
                       className="w-10 h-10 rounded-full mr-4"
                     />
                     <Text className="text-white dark:text-blackPerso flex-1 text-xl">{friend.friend_username}</Text>
+                    <Image
+                      source={friend.friend_game === 'League of Legends' ? icons.lolLogo : icons.valorantLogo}
+                      className="w-12 h-12 ml-2"
+                    />
                     {unreadMessageFriends[friend.friend_id] > 0 && (
                       <View className="w-4 h-4 bg-red-600 rounded-full items-center justify-center">
                         <Text className="text-white text-xs font-bold">{unreadMessageFriends[friend.friend_id]}</Text>
@@ -279,14 +343,39 @@ const ChatPage = () => {
                 style={{ maxWidth: '80%', paddingHorizontal: 10 }}
               >
                 <Text className={`text-white text-base pb-1 ${message.chat_senderId === userId ? 'text-white' : 'dark:text-blackPerso'}`}>
-                  {message.chat_senderId === userId ? t('you') : selectedFriend.friend_username}: {he.decode(message.chat_message)}
+                {message.chat_senderId === userId ? t('you') : selectedFriend.friend_username}: 
+                {sessions.userSession.hasChatFilter 
+                    ? renderEmotes(chatfilter(he.decode(message.chat_message))) 
+                    : renderEmotes(he.decode(message.chat_message))}
                 </Text>
                 <Text className={`text-white ${message.chat_senderId === userId ? 'text-white' : 'dark:text-blackPerso'} text-xs absolute bottom-0 right-0 pr-1 pt-1 opacity-50`}>{message.formattedTime}</Text>
               </View>
             ))}
           </ScrollView>
 
+          <Modal visible={isEmotePickerVisible} transparent={true} animationType="slide">
+            <View className="flex-1 justify-center items-center">
+              <View className="w-3/4 p-5 bg-gray-800 rounded-lg">
+                <Text className="text-white text-center mb-4">Select an Emote</Text>
+                <ScrollView>
+                  <View className="flex-row flex-wrap justify-around">
+                    {Object.keys(emotes).map((emoteKey) => (
+                      <TouchableOpacity key={emoteKey} onPress={() => addEmoteToMessage(`:${convertCamelToDashCase(emoteKey)}:`)}>
+                        <Image source={emotes[emoteKey]} style={{ width: 50, height: 50 }} />
+                      </TouchableOpacity>
+                    ))}
+                  </View>
+                </ScrollView>
+                <CustomButton title="Close" handlePress={toggleEmotePicker} />
+              </View>
+            </View>
+          </Modal>
+
           <View className="flex-row items-center">
+            {/* Emote Button */}
+          <TouchableOpacity onPress={toggleEmotePicker}>
+            <Image source={emotes.catSmile} className="w-8 h-8 mr-2" />
+          </TouchableOpacity>
             <TextInput
               value={newMessage}
               onChangeText={setNewMessage}

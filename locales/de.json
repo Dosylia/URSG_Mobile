@@ -62,6 +62,8 @@
     "remove-frame": "Rahmen entfernen",
     "use-frame": "Rahmen verwenden",
     "no-frame-yet": "Sie haben noch keinen Profilbilderrahmen.",
+    "filter": "Filter",
+    "filter-change": "Ändern Sie den Filter der App (Kein Filter/Streng)",
     "basic-info": {
         "username": "Benutzername",
         "gender": "Geschlecht",

@@ -220,6 +220,47 @@ const Profile = () => {
     router.push("/(auth)/settings");
   };
 
+  // function bindAccount() {
+  //   const clientId = process.env.EXO_RIOT_CLIENT_ID;
+
+  //   axios.post(`https://auth.riotgames.com/authorize?redirect_uri=https://ur-sg.com/riotAccountPhone&client_id=${clientId}&response_type=code&scope=openid`, {
+  //   }, {
+  //     headers: {
+  //       'Content-Type': 'application/x-www-form-urlencoded'
+  //     }
+  //   })
+  //     .then(response => {
+  //       if (response.data.message === 'Success') {
+  //         bindAccountCode(response.data.code);
+  //       } else {
+  //         console.error('Failed to fetch user data');
+  //       }
+  //     })
+  //     .catch(error => console.error('Error fetching user data:', error));
+  // }
+
+  // function bindAccountCode(code) {
+  //   const dataToSend = {
+  //     code: code,
+  //     userId : sessions.userSession.userId
+  //   }
+  //   axios.post('https://ur-sg.com/RiotCodePhone', {
+  //     dataToSend: JSON.stringify(dataToSend)
+  //   }, {
+  //     headers: {
+  //       'Content-Type': 'application/x-www-form-urlencoded'
+  //     }
+  //   })
+  //     .then(response => {
+  //       if (response.data.message === 'Success') {
+  //         console.log('Riot account binded');
+  //       } else {
+  //         console.error('Failed to bind Riot account');
+  //       }
+  //     })
+  //     .catch(error => console.error('Error binding Riot account:', error));
+  // }
+
   return (
     <ScrollView className="flex-1 bg-gray-900 p-4 dark:bg-whitePerso">
       <View className="flex w-full flex-row justify-between items-center bg-gray-900 dark:bg-whitePerso">

@@ -15,92 +15,92 @@ const UseSwipeAlgorithm = ({ reshapedUserData, allUsers }) => {
             this.speciality = speciality;
         }
     }
-    
+
     class Champion_Valo {
         constructor(name, champion_class) {
             this.name = name;
             this.champion_class = champion_class;
         }
-    
+
     }
 
     useEffect(() => {
         // Transform usersAllData into Profile instances
         const profiles = allUsers.map(obj => ({
-            user_id: obj.user_id,
-            user_gender: obj.user_gender,
-            user_age: obj.user_age,
-            user_kindOfGamer: obj.user_kindOfGamer,
-            user_game: obj.user_game,
-            lol_server: obj.lol_server,
-            lol_main1: obj.lol_main1,
-            lol_main2: obj.lol_main2,
-            lol_main3: obj.lol_main3,
-            lol_rank: obj.lol_rank,
-            lol_role: obj.lol_role,
-            valorant_server: obj.valorant_server,
+            userid: obj.user_id,
+            gender: obj.user_gender,
+            age: obj.user_age,
+            gamerkind: obj.user_kindOfGamer,
+            game: obj.user_game,
+            serverLol: obj.lol_server,
+            mainLol1: obj.lol_main1,
+            mainLol2: obj.lol_main2,
+            mainLol3: obj.lol_main3,
+            rankLol: obj.lol_rank,
+            roleLol: obj.lol_role,
+            serverValo: obj.valorant_server,
             valorant_id: obj.valorant_id,
-            valorant_main1: obj.valorant_main1,
-            valorant_main2: obj.valorant_main2,
-            valorant_main3: obj.valorant_main3,
-            valorant_rank: obj.valorant_rank,
-            valorant_role: obj.valorant_mole,
-            lf_gender: obj.lf_gender,
-            lf_kindofgamer: obj.lf_kindofgamer,
-            lf_game: obj.lf_game,
-            lf_lolmain1: obj.lf_lolmain1,
-            lf_lolmain2: obj.lf_lolmain2,
-            lf_lolmain3: obj.lf_lolmain3,
-            lf_lolrank: obj.lf_lolrank,
-            lf_lolrole: obj.lf_lolrole,
-            lf_valmain1: obj.lf_valmain1,
-            lf_valmain2: obj.lf_valmain2,
-            lf_valmain3: obj.lf_valmain3,
-            lf_valrank: obj.lf_valrank,
-            lf_valrole: obj.lf_valrole
-          }));
-    
+            mainValo1: obj.valorant_main1,
+            mainValo2: obj.valorant_main2,
+            mainValo3: obj.valorant_main3,
+            rankValo: obj.valorant_rank,
+            roleValo: obj.valorant_mole,
+            lookingGender: obj.lf_gender,
+            lookingGamerkind: obj.lf_kindofgamer,
+            lookingGame: obj.lf_game,
+            lookingMainLol1: obj.lf_lolmain1,
+            lookingMainLol2: obj.lf_lolmain2,
+            lookingMainLol3: obj.lf_lolmain3,
+            lookingRankLol: obj.lf_lolrank,
+            lookingRoleLol: obj.lf_lolrole,
+            lookingMainValo1: obj.lf_valmain1,
+            lookingMainValo2: obj.lf_valmain2,
+            lookingMainValo3: obj.lf_valmain3,
+            lookingRankValo: obj.lf_valrank,
+            lookingRoleValo: obj.lf_valrole
+        }));
+
         setProfileList(profiles);
-    
+        // console.log('User data algo:', reshapedUserData)
         // Set the current user's profile
         const user = {
-            user_id: reshapedUserData.user_id,
-            user_gender: reshapedUserData.user_gender,
-            user_age: reshapedUserData.user_age,
-            user_kindOfGamer: reshapedUserData.user_kindOfGamer,
-            user_game: reshapedUserData.user_game,
-            lol_server: reshapedUserData.lol_server,
-            lol_main1: reshapedUserData.lol_main1,
-            lol_main2: reshapedUserData.lol_main2,
-            lol_main3: reshapedUserData.lol_main3,
-            lol_rank: reshapedUserData.lol_rank,
-            lol_role: reshapedUserData.lol_role,
-            valorant_server: reshapedUserData.valorant_server,
+            userid: reshapedUserData.user_id,
+            gender: reshapedUserData.user_gender,
+            age: reshapedUserData.user_age,
+            gamerkind: reshapedUserData.user_kindOfGamer,
+            game: reshapedUserData.user_game,
+            serverLol: reshapedUserData.lol_server,
+            mainLol1: reshapedUserData.lol_main1,
+            mainLol2: reshapedUserData.lol_main2,
+            mainLol3: reshapedUserData.lol_main3,
+            rankLol: reshapedUserData.lol_rank,
+            roleLol: reshapedUserData.lol_role,
+            serverValo: reshapedUserData.valorant_server,
             valorant_id: reshapedUserData.valorant_id,
-            valorant_main1: reshapedUserData.valorant_main1,
-            valorant_main2: reshapedUserData.valorant_main2,
-            valorant_main3: reshapedUserData.valorant_main3,
-            valorant_rank: reshapedUserData.valorant_rank,
-            valorant_role: reshapedUserData.valorant_mole,
-            lf_gender: reshapedUserData.lf_gender,
-            lf_kindofgamer: reshapedUserData.lf_kindofgamer,
-            lf_game: reshapedUserData.lf_game,
-            lf_lolmain1: reshapedUserData.lf_lolmain1,
-            lf_lolmain2: reshapedUserData.lf_lolmain2,
-            lf_lolmain3: reshapedUserData.lf_lolmain3,
-            lf_lolrank: reshapedUserData.lf_lolrank,
-            lf_lolrole: reshapedUserData.lf_lolrole,
-            lf_valmain1: reshapedUserData.lf_valmain1,
-            lf_valmain2: reshapedUserData.lf_valmain2,
-            lf_valmain3: reshapedUserData.lf_valmain3,
-            lf_valrank: reshapedUserData.lf_valrank,
-            lf_valrole: reshapedUserData.lf_valrole
-          };
-    
-        setUserProfile(user);
-      }, []);
+            mainValo1: reshapedUserData.valorant_main1,
+            mainValo2: reshapedUserData.valorant_main2,
+            mainValo3: reshapedUserData.valorant_main3,
+            rankValo: reshapedUserData.valorant_rank,
+            roleValo: reshapedUserData.valorant_mole,
+            lookingGender: reshapedUserData.lf_gender,
+            lookingGamerkind: reshapedUserData.lf_kindofgamer,
+            lookingGame: reshapedUserData.lf_game,
+            lookingMainLol1: reshapedUserData.lf_lolmain1,
+            lookingMainLol2: reshapedUserData.lf_lolmain2,
+            lookingMainLol3: reshapedUserData.lf_lolmain3,
+            lookingRankLol: reshapedUserData.lf_lolrank,
+            lookingRoleLol: reshapedUserData.lf_lolrole,
+            lookingMainValo1: reshapedUserData.lf_valmain1,
+            lookingMainValo2: reshapedUserData.lf_valmain2,
+            lookingMainValo3: reshapedUserData.lf_valmain3,
+            lookingRankValo: reshapedUserData.lf_valrank,
+            lookingRoleValo: reshapedUserData.lf_valrole
+        };
 
-      useEffect(() => {
+        setUserProfile(user);
+    }, []);
+
+    useEffect(() => {
         const loadChampionsLol = async () => {
             try {
                 const response = await fetch('https://ur-sg.com/public/js/Champions.txt');
@@ -109,7 +109,7 @@ const UseSwipeAlgorithm = ({ reshapedUserData, allUsers }) => {
                 }
                 const text = await response.text();
                 const lines = text.split('\n'); // Split text into lines
-    
+
                 const champions = lines.map(line => {
                     const [name, lane, championtype, damagetype, speciality] = line.split(";");
                     return new Champion(name, lane, championtype, damagetype, speciality.replace(/\r/g, ''));
@@ -128,7 +128,7 @@ const UseSwipeAlgorithm = ({ reshapedUserData, allUsers }) => {
                 }
                 const text = await response.text();
                 const lines = text.split('\n'); // Split text into lines
-    
+
                 const valoChampions = lines.map(line => {
                     const [name, champion_class] = line.split(";");
                     return new Champion_Valo(name, champion_class);
@@ -142,9 +142,9 @@ const UseSwipeAlgorithm = ({ reshapedUserData, allUsers }) => {
         loadChampionsLol();
         loadChampionsValo();
     }, []);
-    
+
     //Here are all the matching functions for the algorythm
-    
+
     //More simple champion matching functions since the other one went crazy
     function champion_match_new(
         userMain1,
@@ -166,7 +166,7 @@ const UseSwipeAlgorithm = ({ reshapedUserData, allUsers }) => {
         const userLookingMains = [userLookingMain1, userLookingMain2, userLookingMain3];
         const matchMains = [matchMain1, matchMain2, matchMain3];
         const matchLookingMains = [matchLookingMain1, matchLookingMain2, matchLookingMain3];
-    
+
         // Compare the arrays 
         function findMatches(mainArray, lookingArray) {
             mainArray.forEach(champ => {
@@ -178,11 +178,11 @@ const UseSwipeAlgorithm = ({ reshapedUserData, allUsers }) => {
         //match the main user looking for to the match user mains
         findMatches(userMains, matchLookingMains);
         findMatches(matchMains, userLookingMains);
-    
+
         // Return the score
         return score;
     }
-    
+
     //Very complex Champion Matching League
     function champion_match(
         userMain1,
@@ -200,11 +200,11 @@ const UseSwipeAlgorithm = ({ reshapedUserData, allUsers }) => {
     ) {
         const championsInUse = [0, 1, 2, 3, 4, 5];
         const lookingForChamps = [0, 1, 2, 3, 4, 5];
-    
-    
+
+
         for (let i = 0; i < champion_list.length; i++) {
             const Champion = champion_list[i];
-    
+
             if (Champion.name === userMain1) {
                 championsInUse[0] = Champion;
             } if (Champion.name === userMain2) {
@@ -230,26 +230,26 @@ const UseSwipeAlgorithm = ({ reshapedUserData, allUsers }) => {
             } if (Champion.name === matchLookingMain3) {
                 lookingForChamps[5] = Champion
             }
-    
+
         }
         const user_champions = championsInUse.slice(0, 3); // Select the first three champions
         const comparison_champions = championsInUse.slice(3); // Select the second three champions
         const user_lookingFor = lookingForChamps.slice(0, 3);// Select the first three champions
         const match_lookingFor = lookingForChamps.slice(3);// Select the second three champions
-    
+
         let score = 0;
-    
+
         for (let i = 0; i < user_lookingFor.length; i++) {
             const champion_user = user_lookingFor[i]
             for (let j = 0; j < comparison_champions.length; j++) {
                 const champion_match = comparison_champions[j]
-    
+
                 if (champion_user.name === champion_match.name) {
                     score += 20
                 }
             }
         }
-    
+
         for (let i = 0; i < match_lookingFor.length; i++) {
             const champion_user = match_lookingFor[i]
             for (let j = 0; j < user_champions.length; j++) {
@@ -259,39 +259,39 @@ const UseSwipeAlgorithm = ({ reshapedUserData, allUsers }) => {
                 }
             }
         }
-    
-    
-    
+
+
+
         for (let i = 0; i < comparison_champions.length; i++) {
             const champion = comparison_champions[i];
             for (let j = 0; j < user_champions.length; j++) {
                 const user_champion = user_champions[j];
-    
+
                 if (user_champion.name === champion.name) {
                     continue
                 }
                 // Compare lane
                 score += compare_lane(champion.lane, user_champion.lane)
-    
+
                 // Compare class
                 score += compare_class(champion.championtype, user_champion.championtype)
-    
+
                 // Compare damage type
                 score += compare_damagetype(champion.damagetype, user_champion.damagetype)
-    
+
                 // Compare specialty
                 score += compare_speciallty(champion.speciality, user_champion.speciality)
-    
-    
-    
+
+
+
             }
         }
-    
+
         return score;
     }
-    
+
     function compare_lane(champion_lane, user_lane) {
-    
+
         const lane_Scores = {
             'top-mid': 0.7,
             'top-jungle': 0.8,
@@ -314,10 +314,10 @@ const UseSwipeAlgorithm = ({ reshapedUserData, allUsers }) => {
             'support-mid': 0.8,
             'support-adc': 1
         };
-    
+
         // Create lane combination string
         const laneCombination = `${champion_lane}-${user_lane}`;
-    
+
         // Check if lane combination exists in laneScores object
         if (laneCombination in lane_Scores) {
             return lane_Scores[laneCombination];
@@ -326,29 +326,29 @@ const UseSwipeAlgorithm = ({ reshapedUserData, allUsers }) => {
             const split_user = user_lane.split('/')
             var divider = 0
             var score = 0
-    
+
             split_champion.forEach(element_champ => {
                 split_user.forEach(element_user => {
-    
+
                     const laneCombination = `${element_champ}-${element_user}`;
-    
+
                     if (laneCombination in lane_Scores) {
                         divider++
                         score += lane_Scores[laneCombination]
-    
+
                     }
                 })
             }
-    
+
             )
             if (score != 0) { score = score / divider }
             return score
         }
-    
+
     }
-    
+
     function compare_class(champion_class, user_class) {
-    
+
         class_synergy = {
             'bruiser-bruiser': 0.8,
             'bruiser-control mage': 0.6,
@@ -547,18 +547,18 @@ const UseSwipeAlgorithm = ({ reshapedUserData, allUsers }) => {
             'fighter-tank/bruiser': 0.9,
             'fighter-fighter': 0.9,
         }
-    
-    
+
+
         const classCombination = `${champion_class}-${user_class}`;
-    
+
         if (classCombination in class_synergy) {
             return class_synergy[classCombination];
         }
-    
+
         return 0;
-    
+
     }
-    
+
     function compare_damagetype(champion_dmgtype, user_dmgtype) {
         const dmgtype_Scores = {
             'AD-AD': 0.5,
@@ -568,17 +568,17 @@ const UseSwipeAlgorithm = ({ reshapedUserData, allUsers }) => {
             'AD + AP-AD': 1,
             'AD + AP-AP': 1
         };
-    
+
         const dmgCombination = `${champion_dmgtype}-${user_dmgtype}`;
-    
+
         if (dmgCombination in dmgtype_Scores) {
             return dmgtype_Scores[dmgCombination];
         }
-    
+
         return 0;
-    
+
     }
-    
+
     function compare_speciallty(champion_ability, user_ability) {
         var score = 0
         const abilityScores = {
@@ -627,7 +627,7 @@ const UseSwipeAlgorithm = ({ reshapedUserData, allUsers }) => {
             'crowd control+mobile+CC': 0.9,
             'crowd control+mobile+utility': 0.7
         }
-    
+
         if (champion_ability in abilityScores) {
             score += abilityScores[champion_ability];
         }
@@ -637,9 +637,9 @@ const UseSwipeAlgorithm = ({ reshapedUserData, allUsers }) => {
         if (score != 0) {
             return score / 2
         } else return 0
-    
+
     }
-    
+
     // Other Matching Functions for Lol
     function matchRankLol(matchRank, matchRankLooking, userRank, userRankLooking) {
         // const rankScore = {
@@ -657,111 +657,66 @@ const UseSwipeAlgorithm = ({ reshapedUserData, allUsers }) => {
         // if (user_rank === "Any") {
         //     return 50
         // }
-    
+
         // if (match_rank in rankScore && user_rank in rankScore) {
         //     const score1 = rankScore[match_rank];
         //     const score2 = rankScore[user_rank];
         //     var score = 0
-    
+
         //     if (score1 >= score2) {
         //         score = Math.abs(score1 - score2) * 5;
         //     } else if (score1 < score2) {
         //         score = Math.abs(score1 - score2) * 5;
         //     }
-    
+
         //     return 50 - score
         // }
-    
+
         var tmpScore = 0
         if (matchRank === userRankLooking) {
             tmpScore += 50
         }
-    
+
         if (matchRankLooking === userRank) {
             tmpScore += 50
         }
-    
-    
+
+
         return tmpScore
-    
+
     }
-    
+
     function matchAge(match_age, user_age) {
-    
-    
+
+
         const minAge = user_age / 2 + 7
         const maxAge = (user_age - 7) * 2
-    
+
         var score = 0
-    
+
         if (match_age > minAge) {
             score += 20;
         }
-    
+
         if (match_age < maxAge) {
             score += 20;
         }
-    
-    
+
+
         return score;
     }
-    
-    function matchGame(profile_game, profile_looking, user_game, user_lookingFor) {
-    
-        if (
-            (profile_game === "both" || user_game === "both") && profile_looking === user_lookingFor
-        ) {
-            return user_lookingFor;
+
+    function matchGame(profile_game, user_game) {
+
+        if (profile_game === user_game) {
+            return profile_game
         }
-    
-        if (profile_game === user_game && profile_looking === user_lookingFor) {
-            return user_game;
-        }
-    
-        return "No match";
-    
-        // Find the intersection of the two sets to get the common games
-        // const commonGames = new Set([...userGamesSet].filter(game => profileGamesSet.has(game)));
-    
-        // if (user_lookingFor.includes("both") && user_lookingFor.includes("both")) {
-        //     return "both"
-        // }
-    
-        // if ((user_lookingFor.includes("Valorant") && profile_game.includes("Valorant")) || (user_lookingFor.includes("League of Legends") && profile_game.includes("League of Legends"))) {
-        //     if (user_game.includes("Valorant") && profile_looking.includes("Valorant")) {
-        //         return "both"
-        //     }
-        // }
-    
-        // if (user_lookingFor.includes("Valorant") && profile_game.includes("Valorant")) {
-        //     if (user_game.includes("Valorant") && profile_looking.includes("Valorant")) {
-        //         return "Valorant"
-        //     }
-        // }
-    
-        // if (user_lookingFor.includes("Valorant") && profile_game.includes("both")) {
-        //     if (user_game.includes("both") && profile_looking.includes("Valorant")) {
-        //         return "Valorant"
-        //     }
-        // }
-    
-    
-        // if (user_lookingFor.includes("League of Legends") && profile_game.includes("League of Legends")) {
-        //     if (user_game.includes("League of Legends") && profile_looking.includes("League of Legends")) {
-        //         return "League of Legends"
-        //     }
-        // }
-        // if (user_lookingFor.includes("League of Legends") && profile_game.includes("both")) {
-        //     if (user_game.includes("both") && profile_looking.includes("League of Legends")) {
-        //         return "League of Legends"
-        //     }
-        // }
-    
-    
-        // return "No Match"
+
+        return ""
+
     }
-    
-    // Matching functions Valorant
+
+    // Matching functions Valorant 
     function matchRankValo(match_rank, user_rank) {
         const rankScore = {
             'Iron': 1,
@@ -787,11 +742,11 @@ const UseSwipeAlgorithm = ({ reshapedUserData, allUsers }) => {
                 return 20
             } else { return 0 }
         }
-    
-    
+
+
     }
-    
-    //Valorant Champion Matching
+
+    //Valorant Champion Matching (not in use currently. Probably redundant)
     function championValorant(
         userMain1,
         userMain2,
@@ -806,13 +761,13 @@ const UseSwipeAlgorithm = ({ reshapedUserData, allUsers }) => {
         matchLookingMain2,
         matchLookingMain3,
     ) {
-    
+
         const championsInUse = [0, 1, 2, 3, 4, 5];
         const lookingForChamps = [0, 1, 2, 3, 4, 5];
-    
+
         for (let i = 0; i < champion_valo.length; i++) {
             const Champion = champion_valo[i];
-    
+
             if (Champion.name === userMain1) {
                 championsInUse[0] = Champion;
             } if (Champion.name === userMain2) {
@@ -839,15 +794,15 @@ const UseSwipeAlgorithm = ({ reshapedUserData, allUsers }) => {
                 lookingForChamps[5] = Champion
             }
         }
-    
+
         const user_champions = championsInUse.slice(0, 3); // Select the first three champions
         const comparison_champions = championsInUse.slice(3); // Select the second three champions
         const user_lookingFor = lookingForChamps.slice(0, 3);// Select the first three champions
         const match_lookingFor = lookingForChamps.slice(3);// Select the second three champions
-    
+
         let score = 0;
-    
-    
+
+
         for (let i = 0; i < comparison_champions.length; i++) {
             const champion = comparison_champions[i];
             for (let j = 0; j < user_champions.length; j++) {
@@ -855,18 +810,18 @@ const UseSwipeAlgorithm = ({ reshapedUserData, allUsers }) => {
                 score += calculateAgentSynergy(champion, user_champion)
             }
         }
-    
+
         for (let i = 0; i < user_lookingFor.length; i++) {
             const champion_user = user_lookingFor[i]
             for (let j = 0; j < comparison_champions.length; j++) {
                 const champion_match = comparison_champions[j]
-    
+
                 if (champion_user.name === champion_match.name) {
                     score += 20
                 }
             }
         }
-    
+
         for (let i = 0; i < match_lookingFor.length; i++) {
             const champion_user = match_lookingFor[i]
             for (let j = 0; j < user_champions.length; j++) {
@@ -876,18 +831,18 @@ const UseSwipeAlgorithm = ({ reshapedUserData, allUsers }) => {
                 }
             }
         }
-    
-    
+
+
         // Function to calculate synergy score between two agents
         function calculateAgentSynergy(champion, user_champion) {
             // Role compatibility score
             const roleScore = calculateRoleCompatibility(champion.champion_class, user_champion.champion_class);
-    
+
             // Calculate overall synergy score
             const synergyScore = roleScore
             return synergyScore;
         }
-    
+
         // Function to calculate role compatibility score
         function calculateRoleCompatibility(role1, role2) {
             // Assign weights to role compatibility scores based on importance
@@ -897,72 +852,98 @@ const UseSwipeAlgorithm = ({ reshapedUserData, allUsers }) => {
                 Sentinel: 0.6,
                 Initiator: 0.7,
             };
-    
+
             // Check if roles are the same
             if (role1 === role2) {
                 return roleWeights[role1];
             }
-    
+
             // Return lower weight for different roles
             return Math.min((roleWeights[role1], roleWeights[role2]) * 10);
         }
-    
-    
+
+
         return score
     }
-    
-    
+
+    //General Matching functions
+    const matchServer = (profile_server, user_profile_server) => {
+        var score = 0
+        //Match Server
+        if (profile_server !== user_profile_server) {
+            score -= 500
+        }
+        return score
+    }
+
+    const matchKindOfGamer = (user_profile_gamerkind, user_profile_lookingGamerkind, profile_gamerkind, profile_lookingGamerkind) => {
+        //Match kind of gamer
+        var score = 0
+        if (user_profile_lookingGamerkind === "Competition and Chill") {
+            score += 40
+        } else if (user_profile_lookingGamerkind === profile_gamerkind) {
+            score += 40
+        } else if (profile_gamerkind === "Competition and Chill") {
+            score += 40
+        }
+
+        if (profile_lookingGamerkind === "Competition and Chill") {
+            score += 40
+        } else if (user_profile_lookingGamerkind === profile_gamerkind) {
+            score += 40
+        } else if (user_profile_gamerkind === "Competition and Chill") {
+            score += 40
+        }
+        return score
+    }
+
+
+    const matchRole = (profile_role, profile_lookingRole, user_profile_role, user_profile_lookingRole) => {
+        //Same role gives negative points and if role fits the looking for role it gives points
+        var score = 0
+        if (profile_role === user_profile_role) {
+            score += -70
+        }
+        if (profile_role === user_profile_lookingRole || profile_role === "Fill") {
+            score += 70
+        }
+        if (profile_lookingRole === user_profile_role || user_profile_role === "Fill") {
+            score += 70
+        }
+        return score
+    }
+
+    const matchGender = (profile_gender, profile_lookingGender, user_profile_gender, user_profile_lookingGender) => {
+        //Sort by the gender they selected
+        var score = 0
+        if (profile_gender === user_profile_lookingGender) {
+            score += 60
+        } else if (user_profile_lookingGender === "All") {
+            score += 40
+        } else {
+            score -= 40
+        }
+        if (profile_lookingGender === user_profile_gender) {
+            score += 60
+        } else if (profile_lookingGender === "All") {
+            score += 40
+        } else {
+            score -= 40
+        }
+        return score
+    }
+
+
     //All Matching
     function match_profiles(profile_list, user_profile) {
         for (let i = 0; i < profile_list.length; i++) {
             const profile = profile_list[i];
             var finalScore = 0
             // Match games
-            // const game = matchGame(profile.game, profile.lookingGame, user_profile.game, user_profile.lookingGame)
-            const game = "League of Legends"
+            const game = matchGame(profile.game, user_profile.game)
             switch (game) {
                 case "League of Legends":
                     finalScore += champion_match_new(
-                        user_profile.lol_main1,
-                        user_profile.lol_main2,
-                        user_profile.lol_main3,
-                        user_profile.lf_lolmain1,
-                        user_profile.lf_lolmain2,
-                        user_profile.lf_lolmain3,
-                        profile.lol_main1,
-                        profile.lol_main2,
-                        profile.lol_main3,
-                        profile.lf_lolmain1,
-                        profile.lf_lolmain2,
-                        profile.lf_lolmain3,
-    
-                    );
-    
-                    //Matching for rank
-                    finalScore += matchRankLol(profile.rankLol, user_profile.rankLol)
-                    break;
-                case "Valorant":
-                    finalScore += championValorant(
-                        user_profile.mainValo1,
-                        user_profile.mainValo2,
-                        user_profile.mainValo3,
-                        user_profile.lookingMainValo1,
-                        user_profile.lookingMainValo2,
-                        user_profile.lookingMainValo3,
-                        profile.mainValo1,
-                        profile.mainValo2,
-                        profile.mainValo3,
-                        profile.lookingMainValo1,
-                        profile.lookingMainValo2,
-                        profile.lookingMainValo3,
-    
-                    );
-                    //Matching for rank
-                    finalScore += matchRankValo(profile.rankValo, user_profile.rankValo)
-                    break
-                case "both":
-    
-                    finalScore += champion_match(
                         user_profile.mainLol1,
                         user_profile.mainLol2,
                         user_profile.mainLol3,
@@ -975,10 +956,23 @@ const UseSwipeAlgorithm = ({ reshapedUserData, allUsers }) => {
                         profile.lookingMainLol1,
                         profile.lookingMainLol2,
                         profile.lookingMainLol3,
-    
                     );
-    
-                    finalScore += championValorant(
+
+                    //Matching for rank
+                    finalScore += matchRankLol(profile.rankLol, user_profile.rankLol)
+
+                    //----------------------------------------------
+                    // General Matching functions now
+                    //----------------------------------------------
+                    finalScore += matchServer(profile.server, user_profile.server)
+                    finalScore += matchKindOfGamer(user_profile.gamerkind, user_profile.lookingGamerkind, profile.gamerkind, profile.lookingGamerkind)
+                    finalScore += matchRole(profile.roleLol, profile.lookingRoleLol, user_profile.roleLol, user_profile.lookingRoleLol)
+                    finalScore += matchGender(profile.gender, profile.lookingGender, user_profile.gender, user_profile.lookingGender)
+                    finalScore += matchAge(profile.age, user_profile.age)
+                    break;
+
+                case "Valorant":
+                    finalScore += champion_match_new(
                         user_profile.mainValo1,
                         user_profile.mainValo2,
                         user_profile.mainValo3,
@@ -991,78 +985,39 @@ const UseSwipeAlgorithm = ({ reshapedUserData, allUsers }) => {
                         profile.lookingMainValo1,
                         profile.lookingMainValo2,
                         profile.lookingMainValo3,
-    
+
                     );
                     //Matching for rank
-                    finalScore += matchRankLol(profile.lol_rank, user_profile.lol_rank)
-                    // finalScore += matchRankValo(profile.rankValo, user_profile.rankValo)
-                    finalScore = finalScore / 2
+                    finalScore += matchRankValo(profile.rankValo, user_profile.rankValo)
+
+                    //----------------------------------------------
+                    // General Matching functions now
+                    //----------------------------------------------
+                    finalScore += matchServer(profile.server, user_profile.server)
+                    finalScore += matchKindOfGamer(user_profile.gamerkind, user_profile.lookingGamerkind, profile.gamerkind, profile.lookingGamerkind)
+                    finalScore += matchRole(profile.roleValo, profile.lookingRoleValo, user_profile.roleValo, user_profile.lookingRoleValo)
+                    finalScore += matchGender(profile.gender, profile.lookingGender, user_profile.gender, user_profile.lookingGender)
+                    finalScore += matchAge(profile.age, user_profile.age)
+
                     break
-    
+                case "":
+                    profile.score = -5000
+                    continue
             }
-    
-            //Match Server
-            if (profile.lol_server !== user_profile.lol_server) {
-                finalScore -= 500
-            }
-            //Match kind of gamer
-            if (user_profile.lf_kindofgamer === "Competition and Chill") {
-                finalScore += 40
-            } else if (user_profile.lf_kindofgamer === profile.user_kindOfGamer) {
-                finalScore += 40
-            } else if (profile.user_kindOfGamer === "Competition and Chill") {
-                finalScore += 40
-            }
-    
-            if (profile.lf_kindofgamer === "Competition and Chill") {
-                finalScore += 40
-            } else if (user_profile.lf_kindofgamer === profile.user_kindOfGamer) {
-                finalScore += 40
-            } else if (user_profile.lf_kindofgamer === "Competition and Chill") {
-                finalScore += 40
-            }
-    
-            //Same role gives negative points and if role fits the looking for role it gives points
-            if (profile.lol_role === user_profile.lol_role) {
-                finalScore += -70
-            }
-            if (profile.lol_role === user_profile.lf_lolrole || profile.lol_role === "Fill") {
-                finalScore += 70
-            }
-            if (profile.lf_lolrole === user_profile.lol_role || user_profile.lol_role === "Fill") {
-                finalScore += 70
-            }
-    
-            //Sort by the gender they selected
-            if (profile.user_gender === user_profile.lf_gender) {
-                finalScore += 60
-            } else if (user_profile.lf_gender === "All") {
-                finalScore += 40
-            } else {
-                finalScore -= 40
-            }
-            if (profile.lf_gender === user_profile.user_gender) {
-                finalScore += 60
-            } else if (profile.lf_gender === "All") {
-                finalScore += 40
-            } else {
-                finalScore -= 40
-            }
-    
-            //Matching for age
-            finalScore += matchAge(profile.user_age, user_profile.user_age)
             profile.score = finalScore
-    
         }
+        // console.log("Profiles : ", profile_list.sort((a, b) => b.score - a.score))
         return profile_list.sort((a, b) => b.score - a.score);
     }
-    
+
     //function to send data to php
-    
+
     function sendDataToPHP(dataToSend) {
         // Stringify the array of objects
         const jsonData = JSON.stringify(dataToSend);
-    
+
+        console.log('Algo data sent to back end : ', dataToSend)
+
         // Create a new fetch request
         fetch('https://ur-sg.com/algoData', {
             method: 'POST',
@@ -1083,28 +1038,24 @@ const UseSwipeAlgorithm = ({ reshapedUserData, allUsers }) => {
                 console.error('Error:', error);
             });
     }
-    
-    
+
+
     //Now everything should be prepared to run the algorythm
     if (championValo && championList) {
-    
+
         const matched_profiles = match_profiles(profileList, userProfile).filter((obj) => {
-            return userProfile.user_id !== obj.user_id;
+            return userProfile.userid !== obj.userid;
         });
 
-        // console.log("Matched profiles:", matched_profiles.user_id)
-        // console.log("all users profiles:",profileList.user_id)
-        // console.log("main user profile:",userProfile.user_id)
-    
         sendDataToPHP(matched_profiles.map((obj) => {
             const dataToSend = ({
-                user_id: userProfile.user_id,
-                user_matching: obj.user_id,
+                user_id: userProfile.userid,
+                user_matching: obj.userid,
                 score: obj.score,
             })
             return dataToSend
         }))
-    
+
     }
 };
 

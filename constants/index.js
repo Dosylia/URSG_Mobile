@@ -6,5 +6,6 @@ import ranks from "./ranks";
 import ranksValorant from "./ranksValorant";
 import rolesValorant from "./rolesValorant";
 import championsValorant from "./championsValorant";
+import emotes from "./emotes";
 
-export { icons, images, champions, roles, ranks, ranksValorant, rolesValorant, championsValorant };
+export { icons, images, champions, roles, ranks, ranksValorant, rolesValorant, championsValorant, emotes};

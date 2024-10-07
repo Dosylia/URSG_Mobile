@@ -9,27 +9,41 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { icons } from "../../constants";
 import { SessionContext } from '../../context/SessionContext';
 import { useColorScheme } from 'nativewind';
+import axios from 'axios';
 
 
 const Settings = () => {
   const { colorScheme, toggleColorScheme } = useColorScheme();
-  const { sessions } = useContext(SessionContext);
+  const { sessions, setSession } = useContext(SessionContext);
   const { t } = useTranslation();
   const [visible, setVisible] = useState(false);
   const [visibleMode, setVisibleMode] = useState(false);
+  const [visibleFilter, setVisibleFilter] = useState(false);
 
   const iconLanguage = colorScheme === 'dark' ? icons.earthDark : icons.earth;
   const iconMode = colorScheme === 'dark' ? icons.moon : icons.sun;
+  const iconFilter = colorScheme === 'dark' ? icons.filterDark : icons.filter;
   
   const closePage = () => {
-    if (sessions.userSession.userId && sessions.leagueSession.main1 && sessions.lookingforSession.main1Lf) {
-      router.push("/(tabs)/profile");
-    } else if (sessions.userSession.userId && sessions.leagueSession.main1 && !sessions.lookingforSession.main1Lf) {
-      router.push("/lookingfor-data");
-    } else if (sessions.userSession.userId && !sessions.leagueSession.main1) {
-      router.push("/league-data");
-    } else if (sessions.googleSession.email && !sessions.userSession.userId) {
+    const { userSession, leagueSession, valorantSession, lookingforSession, googleSession } = sessions;
+  
+    if (userSession.userId) {
+      if ((leagueSession.main1 && lookingforSession.main1Lf) || (valorantSession.main1 && lookingforSession.valmain1Lf)) {
+        router.push("/(tabs)/profile");
+  
+      } else if ((leagueSession.main1 || valorantSession.main1) && (!lookingforSession.main1Lf || !lookingforSession.valmain1Lf)) {
+        router.push("/lookingfor-data");
+
+      } else if (valorantSession.main1 && !leagueSession.main1) {
+        router.push("/valorant-data");
+  
+      } else if (!leagueSession.main1 && valorantSession.main1) {
+        router.push("/league-data");
+      }
+      
+    } else if (googleSession.email && !userSession.userId) {
       router.push("/basic-info");
+  
     } else {
       router.push("/");
     }
@@ -48,6 +62,42 @@ const Settings = () => {
       console.error("Error saving mode:", error);
     }
   };
+
+  const SwitchChatFilter = async (mode) => {
+    const dataToSend = {
+        userId: sessions.userSession.userId,
+        status: mode,
+    };
+
+    // Create a JSON string of the data
+    const jsonData = JSON.stringify(dataToSend);
+
+    try {
+        const response = await axios.post('https://ur-sg.com/chatFilterSwitch', `param=${encodeURIComponent(jsonData)}`, {
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+        });
+
+        console.log('Success:', response.data);
+
+        if (response.data.message === "Success") {
+            setVisibleFilter(false); 
+
+            // Directly toggle based on incoming mode
+            const newChatFilterStatus = mode === 1 ? 1 : 0;
+            setSession('userSession', {
+                ...sessions.userSession,
+                hasChatFilter: newChatFilterStatus,
+            });
+        } else {
+            setVisibleFilter(false); 
+            console.log('Error:', response.data.message); 
+        }
+    } catch (error) {
+        console.error('Error:', error); 
+    }
+}
 
   return (
     <SafeAreaView className="bg-gray-900 h-full dark:bg-whitePerso">
@@ -77,6 +127,38 @@ const Settings = () => {
                 </>
               )}
             />
+          </View>
+        </View>
+      </Modal>
+
+      {/* Modal for chat filter */}
+      <Modal visible={visibleFilter} onRequestClose={() => setVisibleFilter(false)}>
+        <View className="flex w-full flex-row items-center bg-gray-900 dark:bg-whitePerso">
+          <View className="flex-1" />
+          <TouchableOpacity onPress={() => setVisibleFilter(false)}>
+            <Text className="text-mainred px-6 text-2xl font-extrabold">X</Text>
+          </TouchableOpacity>
+        </View>
+        <View className="flex-1 bg-gray-900 p-3 dark:bg-whitePerso">
+          <View className="rounded-lg p-2">
+            {/* Option for Chat Filter */}
+            <TouchableOpacity
+              onPress={() => {
+                SwitchChatFilter(1);
+              }}
+              className="p-4"
+            >
+              <Text className="text-white text-xl dark:text-blackPerso">On</Text>
+            </TouchableOpacity>
+            <View className="h-px bg-gray-600 dark:bg-gray-400 my-2" />
+            <TouchableOpacity
+              onPress={() => {
+                SwitchChatFilter(0);
+              }}
+              className="p-4"
+            >
+              <Text className="text-white text-xl dark:text-blackPerso">Off</Text>
+            </TouchableOpacity>
           </View>
         </View>
       </Modal>
@@ -163,6 +245,25 @@ const Settings = () => {
               </Text>
             </View>
           </TouchableOpacity>
+
+          {sessions.userSession.userId && (
+          <TouchableOpacity onPress={() => setVisibleFilter(true)} className="flex-row items-center mb-5">
+            <Image 
+              source={iconFilter}
+              className="w-6 h-6 mr-10"
+            />
+            <View className="flex-1">
+              <Text className="text-white text-lg font-semibold dark:text-blackPerso">
+                {t('filter')}
+              </Text>
+              <Text className="text-gray-300 text-base mt-1 dark:text-blackPerso">
+                {t('filter-change')}
+              </Text>
+            </View>
+          </TouchableOpacity>
+          )} 
+
+
         </View>
       </ScrollView>
     </SafeAreaView>

@@ -62,6 +62,8 @@
     "remove-frame": "Retirer le cadre",
     "use-frame": "Utiliser le cadre",
     "no-frame-yet": "Vous n'avez pas encore de cadre photo de profil.",
+    "filter": "Filtre",
+    "filter-change": "Changez le filtre de l'application (Pas de filtre/Strict)",
     "basic-info": {
         "username": "Nom d'utilisateur",
         "gender": "Genre",
