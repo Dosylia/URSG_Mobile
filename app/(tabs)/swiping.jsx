@@ -5,10 +5,10 @@ import axios from 'axios';
 import { PanGestureHandler } from 'react-native-gesture-handler'; 
 import { SessionContext } from '../../context/SessionContext';
 import { ProfileHeader, UseSwipeAlgorithm } from "../../components";
-import { RiotProfileSection } from "../../components";
-import { UserDataComponent } from "../../components";
+import { RiotProfileSection, CustomButton, UserDataComponent } from "../../components";
 import { images, icons } from "../../constants";
 import { useTranslation } from 'react-i18next';
+import { router } from 'expo-router';
 
 const Swiping = () => {
   const { t } = useTranslation();
@@ -235,6 +235,11 @@ const Swiping = () => {
           <View className="flex-1 h-[500px] justify-center items-center bg-gray-900 dark:bg-whitePerso">
             <Text className="text-white dark:text-blackPerso justify-center items-center mb-3 text-xl">{t('seen-all-profiles')}</Text>
             <Image source={images.sadBee} className="w-50 h-50" />
+            <CustomButton
+              title={t('update-game')}
+              handlePress={() => router.push('/(auth)/update-profile')}
+              containerStyles="w-full mt-7"
+            />
           </View>
         ) : otherUser && (
           <>

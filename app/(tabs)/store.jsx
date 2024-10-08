@@ -201,21 +201,33 @@ const StoreAndLeaderboard = () => {
           <View className={`${colorScheme === 'dark' ? 'bg-gray-300' : 'bg-gray-800' } p-4 rounded-lg shadow`}>
             <Text className="text-center text-2xl font-bold mb-4 text-mainred">Leaderboard</Text>
             <View>
-            {[...new Map(allUsers.map(user => [user.user_id, user])).values()]
-              .sort((a, b) => b.user_currency - a.user_currency) // Sort by user_currency in descending order
-              .map((user, index) => (
-                <View className="flex-row justify-between items-center py-2 border-b border-gray-300" key={user.user_id}>
-                  <Text className="text-white dark:text-blackPerso w-8 text-center">{index + 1}</Text>
-                  <TouchableOpacity 
-                    onPress={() => redirectToProfile(user.user_id)} 
-                    className=""
-                  >
-                    <Text className="text-white dark:text-blackPerso flex-1 text-center">{user.user_username}</Text>
-                  </TouchableOpacity>
-                  <Text className="text-white dark:text-blackPerso flex-1 text-center">{user.user_currency} <Image source={icons.soulHard} className="w-4 h-4 inline" /></Text>
-                  <Text className="text-white dark:text-blackPerso w-24 text-center">{user.user_isVip ? 'Premium' : 'Regular'}</Text>
-                </View>
-              ))}
+              {[...new Map(allUsers.map(user => [user.user_id, user])).values()]
+                .sort((a, b) => b.user_currency - a.user_currency) // Sort by user_currency in descending order
+                .map((user, index) => (
+                  <View className="flex-row justify-between items-center py-2 border-b border-gray-300" key={user.user_id}>
+                    {/* Rank */}
+                    <Text className="text-white dark:text-blackPerso w-8 text-center">{index + 1}</Text>
+                    
+                    {/* Username */}
+                    <TouchableOpacity 
+                      onPress={() => redirectToProfile(user.user_id)} 
+                      className=""
+                    >
+                      <Text className="text-white dark:text-blackPerso text-center" style={{ minWidth: 100 }}>{user.user_username}</Text>
+                    </TouchableOpacity>
+
+                    {/* Currency */}
+                    <Text className="text-white dark:text-blackPerso flex-1 text-center" style={{ minWidth: 80 }}>
+                      {user.user_currency} 
+                      <Image source={icons.soulHard} className="w-4 h-4 inline" />
+                    </Text>
+
+                    {/* VIP Status */}
+                    <Text className="text-white dark:text-blackPerso w-24 text-center">
+                      {user.user_isVip ? 'Premium' : 'Regular'}
+                    </Text>
+                  </View>
+                ))}
             </View>
           </View>
         </View>

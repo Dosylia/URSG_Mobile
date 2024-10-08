@@ -11,6 +11,7 @@ import axios from 'axios';
 import { SessionContext } from '../context/SessionContext';
 import { useTranslation } from 'react-i18next';
 import { useColorScheme } from 'nativewind';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function App() {
   const webClientId = process.env.EXPO_GOOGLE_WEB_CLIENT_ID;
@@ -43,6 +44,61 @@ export default function App() {
       router.push("/swiping");
     }
   }, []);
+
+  useEffect(() => {
+    const checkExistingSessions = async () => {
+      try {
+        const storedSessions = await AsyncStorage.getItem('userSessions');
+        if (storedSessions) {
+          const parsedSessions = JSON.parse(storedSessions);
+  
+          console.log("Parsed sessions from storage:", parsedSessions);
+  
+          const hasValidGoogleSession = parsedSessions.googleSession && Object.keys(parsedSessions.googleSession).length > 0;
+          const hasValidUserSession = parsedSessions.userSession && Object.keys(parsedSessions.userSession).length > 0;
+  
+          if (hasValidGoogleSession && hasValidUserSession) {
+            setSession('googleSession', parsedSessions.googleSession);
+            setSession('userSession', parsedSessions.userSession);
+  
+            const hasLookingforSession = parsedSessions.lookingforSession && Object.keys(parsedSessions.lookingforSession).length > 0;
+            const hasLeagueSession = parsedSessions.leagueSession && Object.keys(parsedSessions.leagueSession).length > 0;
+            const hasValorantSession = parsedSessions.valorantSession && Object.keys(parsedSessions.valorantSession).length > 0;
+  
+            if ((hasLeagueSession || hasValorantSession) && hasLookingforSession) {
+              setSession('lookingforSession', parsedSessions.lookingforSession);
+              if (parsedSessions.userSession.game === 'League of Legends') {
+                setSession('leagueSession', parsedSessions.leagueSession);
+              } else {
+                setSession('valorantSession', parsedSessions.valorantSession);
+              }
+              router.push('/swiping');
+            } else {
+              if (!hasLookingforSession && (hasLeagueSession || hasValorantSession)) {
+                if (parsedSessions.userSession.game === 'League of Legends') {
+                  setSession('leagueSession', parsedSessions.leagueSession);
+                } else {
+                  setSession('valorantSession', parsedSessions.valorantSession);
+                }
+                router.push('/lookingfor-data');
+              } else {
+                if (parsedSessions.userSession.game === 'League of Legends') {
+                  router.push('/league-data');
+                } else {
+                  router.push('/valorant-data');
+                }
+              }
+            }
+          }
+        }
+      } catch (error) {
+        console.error('Error checking sessions in storage:', error);
+      }
+    };
+  
+    checkExistingSessions();
+  }, []);
+
 
   const signIn = async () => {
     try {

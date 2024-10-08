@@ -1,4 +1,5 @@
-import React, { createContext, useState } from 'react';
+import React, { createContext, useState, useEffect } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const SessionContext = createContext();
 
@@ -9,15 +10,31 @@ export const SessionProvider = ({ children }) => {
     leagueSession: {},
     valorantSession: {},
     lookingforSession: {},
-    friendId: null // Ensure this is set as a primitive
+    friendId: null
   });
 
-  const setSession = (type, data, callback) => {
+  // Load sessions from AsyncStorage
+  useEffect(() => {
+    const loadSessions = async () => {
+      try {
+        const storedSessions = await AsyncStorage.getItem('userSessions');
+        if (storedSessions) {
+          setSessions(JSON.parse(storedSessions));
+        }
+      } catch (error) {
+        console.error('Error loading sessions from storage:', error);
+      }
+    };
+
+    loadSessions();
+  }, []);
+
+  const setSession = async (type, data, callback) => {
     console.log(`Setting session: ${type}`, data);
-  
+
     setSessions(prevSessions => {
       let updatedSessions;
-  
+
       if (type === 'reset') {
         updatedSessions = {
           googleSession: {},
@@ -36,7 +53,7 @@ export const SessionProvider = ({ children }) => {
         // If updating leagueSession or valorantSession, also update the `game` field in userSession
         if (type === 'leagueSession' || type === 'valorantSession') {
           const gameName = type === 'leagueSession' ? 'League of Legends' : 'Valorant';
-          
+
           updatedSessions = {
             ...prevSessions,
             [type]: {
@@ -58,8 +75,18 @@ export const SessionProvider = ({ children }) => {
           };
         }
       }
-  
+
       console.log(`Updated sessions ${type}:`, updatedSessions);
+      
+      // Save updated sessions to AsyncStorage inside the setSessions callback
+      AsyncStorage.setItem('userSessions', JSON.stringify(updatedSessions))
+        .then(() => {
+          console.log('Sessions saved to storage:', updatedSessions);
+        })
+        .catch(error => {
+          console.error('Error saving sessions to storage:', error);
+        });
+
       if (callback) callback(updatedSessions);
       return updatedSessions;
     });
