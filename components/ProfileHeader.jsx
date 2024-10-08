@@ -98,7 +98,7 @@ const ProfileHeader = ({ userData, isProfile }) => {
         {userData?.isVip && (
           <Image 
             source={{ uri: "https://ur-sg.com/public/images/premium-badge.png" }} 
-            style={{ width: 40, height: 40 }} 
+            style={{ width: 30, height: 30 }} 
           />
         )}
       </View>
