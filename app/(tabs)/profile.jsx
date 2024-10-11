@@ -174,19 +174,19 @@ const Profile = () => {
                 twitch: response.data.user.user_twitch,
                 twitter: response.data.user.user_twitter,
                 isVip: response.data.user.user_isVip,
-                main1: response.data.user.val_main1,
-                main2: response.data.user.val_main2,
-                main3: response.data.user.val_main3,
-                rank: response.data.user.val_rank,
-                role: response.data.user.val_role,
+                valmain1: response.data.user.valorant_main1,
+                valmain2: response.data.user.valorant_main2,
+                valmain3: response.data.user.valorant_main3,
+                valrank: response.data.user.valorant_rank,
+                valrole: response.data.user.valorant_role,
                 genderLf: response.data.user.lf_gender,
                 kindOfGamerLf: response.data.user.lf_kindofgamer,
                 gameLf: response.data.user.lf_game,
-                main1Lf: response.data.user.lf_valmain1,
-                main2Lf: response.data.user.lf_valmain2,
-                main3Lf: response.data.user.lf_valmain3,
-                rankLf: response.data.user.lf_valrank,
-                roleLf: response.data.user.lf_valrole
+                valmain1Lf: response.data.user.lf_valmain1,
+                valmain2Lf: response.data.user.lf_valmain2,
+                valmain3Lf: response.data.user.lf_valmain3,
+                valrankLf: response.data.user.lf_valrank,
+                valroleLf: response.data.user.lf_valrole
               };
 
               setUserData(formattedData);

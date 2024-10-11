@@ -65,6 +65,12 @@
     "no-frame-yet": "You don't have any profile picture frame yet.",
     "filter": "Filter",
     "filter-change": "Change the filter of the app (No filter/Strict)",
+    "filter-on": "Filter on/Strict",
+    "filter-off": "Filter off",
+    "buy": "Buy",
+    "leaderboard": "Leaderboard",
+    "store": "Store",
+    "filter-category": "Filter by category",
     "basic-info": {
         "username": "Username",
         "gender": "Gender",

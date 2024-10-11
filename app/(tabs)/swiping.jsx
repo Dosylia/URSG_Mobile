@@ -1,14 +1,15 @@
-import { ActivityIndicator, Text, View, ScrollView, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import { ActivityIndicator, Text, View, ScrollView, StyleSheet, TouchableOpacity, Image, Dimensions } from 'react-native';
 import React, { useState, useEffect, useContext, useCallback } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
 import axios from 'axios';
-import { PanGestureHandler } from 'react-native-gesture-handler'; 
+import { PanGestureHandler, GestureDetector, Gesture } from 'react-native-gesture-handler'; 
 import { SessionContext } from '../../context/SessionContext';
 import { ProfileHeader, UseSwipeAlgorithm } from "../../components";
 import { RiotProfileSection, CustomButton, UserDataComponent } from "../../components";
 import { images, icons } from "../../constants";
 import { useTranslation } from 'react-i18next';
 import { router } from 'expo-router';
+import Animated, { useSharedValue, useAnimatedStyle, withSpring, runOnJS, interpolate } from 'react-native-reanimated';
 
 const Swiping = () => {
   const { t } = useTranslation();
@@ -20,6 +21,9 @@ const Swiping = () => {
   const [noMoreUsers, setNoMoreUsers] = useState(false); 
   const [isLoading, setIsLoading] = useState(true);
   const [hasSwiped, setHasSwiped] = useState(false);
+  const activeIndex = useSharedValue(0);
+  const translationX = useSharedValue(0);
+  const screenWidth = Dimensions.get('screen').width;
 
   const reshapedUserData = {
     user_id: userData?.userId,
@@ -164,41 +168,72 @@ const Swiping = () => {
   
 
   const handleSwipe = async (direction) => {
-    setHasSwiped(true)
-    setOtherUser(null);
-    setIsLoading(true);
     if (!otherUser) return;
-
+  
     const action = direction === 'right' ? 'swipe_yes' : 'swipe_no';
     try {
+      setIsLoading(true);  // Trigger loading state
+  
       await fetch('https://ur-sg.com/swipeDone', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded'
-        },
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: `${action}=1&senderId=${encodeURIComponent(sessions.userSession.userId)}&receiverId=${encodeURIComponent(otherUser.userId)}`
       });
-
-      // Fetch the next user after the swipe action
-      const timer = setTimeout(() => {
-        fetchUserMatching(); 
-      }, 500); 
-
-      return () => clearTimeout(timer);
+  
+      runOnJS(() => {
+        setOtherUser(null);
+        setTimeout(() => {
+          fetchUserMatching();
+          translationX.value = 0;
+          setIsLoading(false); 
+        }, 500);
+      })();
+  
     } catch (error) {
       console.error("Error during swipe action:", error);
       setErrors('Error during swipe action');
     }
   };
 
-  const onGestureEvent = (event) => {
-    const { translationX } = event.nativeEvent;
-    if (translationX > 100 && hasSwiped === false) {
-      handleSwipe('right');
-    } else if (translationX < -100 && hasSwiped === false) {
-      handleSwipe('left');
+
+  const animatedStyle = useAnimatedStyle(() => ({
+    transform: [
+      {
+        translateX: translationX.value,
+      },
+      {
+        rotateZ: `${interpolate(
+          translationX.value,
+          [-screenWidth / 2, 0, screenWidth / 2],
+          [-15, 0, 15]
+        )}deg`,
+      },
+    ],
+  }));
+
+  const gesture = Gesture.Pan()
+  .onChange((event) => {
+    translationX.value = event.translationX;
+  })
+  .onEnd((event) => {
+    const swipeThreshold = 100; // Distance threshold in pixels for swipe
+    const velocityThreshold = 100; // Lower velocity threshold to make swipes easier
+
+    if (Math.abs(event.translationX) > swipeThreshold || Math.abs(event.velocityX) > velocityThreshold) {
+      // Trigger swipe and animate out of screen
+      translationX.value = withSpring(Math.sign(event.translationX) * 500, {
+        velocity: event.velocityX,
+      });
+
+      // Call handleSwipe using runOnJS, passing a primitive value (direction)
+      runOnJS(handleSwipe)(event.translationX > 0 ? 'right' : 'left');
+
+    } else {
+      // Not enough movement, return to the original position
+      translationX.value = withSpring(0);
     }
-  };
+  });
+
 
   useEffect(() => { 
     setErrors(null);
@@ -229,7 +264,7 @@ const Swiping = () => {
   }
 
   return (
-    <PanGestureHandler onGestureEvent={onGestureEvent}>
+    <GestureDetector gesture={gesture}>
       <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }} className="bg-gray-900 p-4 dark:bg-whitePerso">
         {noMoreUsers ? (
           <View className="flex-1 h-[500px] justify-center items-center bg-gray-900 dark:bg-whitePerso">
@@ -243,8 +278,10 @@ const Swiping = () => {
           </View>
         ) : otherUser && (
           <>
-            <ProfileHeader userData={otherUser} />
-            <RiotProfileSection userData={otherUser} isProfile={false} />
+            <Animated.View style={[animatedStyle]}>
+              <ProfileHeader userData={otherUser} />
+              <RiotProfileSection userData={otherUser} isProfile={false} />
+            </Animated.View>
             <View style={styles.arrowContainer}>
               <TouchableOpacity  
               onPress={() => {
@@ -278,7 +315,7 @@ const Swiping = () => {
         )}
         {/* {errors && <Text className="text-red-500">{errors}</Text>} */}
       </ScrollView>
-    </PanGestureHandler>
+    </GestureDetector>
   );
 };
 

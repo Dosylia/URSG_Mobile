@@ -38,11 +38,6 @@ export default function App() {
 
   useEffect(() => {
     configureGoogleSignIn();
-
-    if (sessions.googleSession && Object.keys(sessions.googleSession).length > 0) {
-      console.log("Google session found:", sessions.googleSession);
-      router.push("/swiping");
-    }
   }, []);
 
   useEffect(() => {
@@ -50,6 +45,7 @@ export default function App() {
       try {
         const storedSessions = await AsyncStorage.getItem('userSessions');
         if (storedSessions) {
+          setIsLoading(true)
           const parsedSessions = JSON.parse(storedSessions);
   
           console.log("Parsed sessions from storage:", parsedSessions);
@@ -89,10 +85,12 @@ export default function App() {
                 }
               }
             }
+          } else {
+            setIsLoading(false)
           }
         }
       } catch (error) {
-        console.error('Error checking sessions in storage:', error);
+        console.log('Error checking sessions in storage:', error);
       }
     };
   
@@ -234,21 +232,6 @@ export default function App() {
       setErrors('Missing user data');
     }
   }
-
-  // if (
-  //   sessions.googleSession && Object.keys(sessions.googleSession).length > 0 &&
-  //   sessions.userSession && Object.keys(sessions.userSession).length > 0 &&
-  //   sessions.leagueSession && Object.keys(sessions.leagueSession).length > 0 &&
-  //   sessions.lookingforSession && Object.keys(sessions.lookingforSession).length > 0
-  // ) {
-  //   console.log("Google session found:", sessions.googleSession);
-  //   console.log("User session found:", sessions.userSession);
-  //   console.log("League session found:", sessions.leagueSession);
-  //   console.log("Looking for session found:", sessions.lookingforSession);
-  //   return <Redirect href="/swiping" />;
-  // } else {
-  //   console.log("Not all sessions found:", sessions);
-  // }
 
   const handleProfileUpdate = () => {
     router.push("/(auth)/settings");

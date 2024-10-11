@@ -148,7 +148,7 @@ const Settings = () => {
               }}
               className="p-4"
             >
-              <Text className="text-white text-xl dark:text-blackPerso">On</Text>
+              <Text className="text-white text-xl dark:text-blackPerso">{t('filter-on')}</Text>
             </TouchableOpacity>
             <View className="h-px bg-gray-600 dark:bg-gray-400 my-2" />
             <TouchableOpacity
@@ -157,7 +157,7 @@ const Settings = () => {
               }}
               className="p-4"
             >
-              <Text className="text-white text-xl dark:text-blackPerso">Off</Text>
+              <Text className="text-white text-xl dark:text-blackPerso">{t('filter-off')}</Text>
             </TouchableOpacity>
           </View>
         </View>

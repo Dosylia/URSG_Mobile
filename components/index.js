@@ -21,5 +21,5 @@ export {
     UserDataChat,
     UseSwipeAlgorithm,
     Collapse,
-    ValorantDataComponent
+    ValorantDataComponent, 
   };

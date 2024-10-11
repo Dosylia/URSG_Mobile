@@ -65,6 +65,12 @@
     "no-frame-yet": "Vous n'avez pas encore de cadre photo de profil.",
     "filter": "Filtre",
     "filter-change": "Changez le filtre de l'application (Pas de filtre/Strict)",
+    "filter-on": "Filtre activé/Strict",
+    "filter-off": "Filtre désactivé",
+    "buy": "Acheter",
+    "leaderboard": "Classement",
+    "store": "Boutique",
+    "filter-category": "Filtrer par catégorie",
     "basic-info": {
         "username": "Nom d'utilisateur",
         "gender": "Genre",

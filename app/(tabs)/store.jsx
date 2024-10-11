@@ -109,7 +109,8 @@ const StoreAndLeaderboard = () => {
 
   const handleFilterChange = (category) => {
     setSelectedCategory(category);
-    setFilteredItems(category === 'all' ? items : items.filter(item => item.items_category === category));
+    const filtered = category === 'all' ? items : items.filter(item => item.items_category === category);
+    setFilteredItems(filtered);
   };
 
   useEffect(() => {
@@ -132,12 +133,12 @@ const StoreAndLeaderboard = () => {
       <View className="flex-row justify-around bg-mainred p-4 rounded-xl">
         <TouchableOpacity onPress={() => setActivePage('store')}>
           <Text className={`text-2xl ${activePage === 'store' ? 'text-white border-b-2 border-white' : 'text-white'}`}>
-            Store
+            {t('store')}
           </Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => setActivePage('leaderboard')}>
           <Text className={`text-2xl ${activePage === 'leaderboard' ? 'text-white border-b-2 border-white' : 'text-white'}`}>
-            Leaderboard
+            {t('leaderboard')}
           </Text>
         </TouchableOpacity>
       </View>
@@ -146,29 +147,29 @@ const StoreAndLeaderboard = () => {
       {activePage === 'store' ? (
         <View className="my-4">
           {/* Category Filter */}
-            <View className="items-center my-4">
-                <Text className="text-xl mb-2 text-white dark:text-blackPerso">Filter by category:</Text>
-                <Picker
-                    selectedValue={selectedCategory}
-                    onValueChange={handleFilterChange}
-                    className="w-64 border border-mainred rounded"
-                    style={{ 
-                        width: 200, 
-                        color: colorScheme === 'dark' ? 'black' : 'white'
-                    }}
-                    dropdownIconColor={colorScheme === 'dark' ? 'black' : 'white'} 
-                >
-                    <Picker.Item label="All Categories" value="all" />
-                    {Array.from(new Set(filteredItems.map(item => item.items_category))).map(category => (
-                        <Picker.Item label={capitalizeFirstLetter(category)} value={category} key={category} />
-                    ))}
-                </Picker>
-            </View>
+          <View className="items-center my-4">
+            <Text className="text-xl mb-2 text-white dark:text-blackPerso">{t('filter-category')}:</Text>
+            <Picker
+              selectedValue={selectedCategory}
+              onValueChange={handleFilterChange}
+              className="w-64 border border-mainred rounded"
+              style={{ 
+                width: 200, 
+                color: colorScheme === 'dark' ? 'black' : 'white'
+              }}
+              dropdownIconColor={colorScheme === 'dark' ? 'black' : 'white'} 
+            >
+              <Picker.Item label="All Categories" value="all" />
+              {Array.from(new Set(items.map(item => item.items_category))).map(category => (
+                <Picker.Item label={capitalizeFirstLetter(category)} value={category} key={category} />
+              ))}
+            </Picker>
+          </View>
 
           {/* Item Grid */}
           <View className="flex-row flex-wrap justify-center gap-4 w-full">
             {filteredItems.map(item => (
-              <View key={item.items_id} className={`${colorScheme === 'dark' ? 'bg-gray-300' : 'bg-gray-800'} p-4 rounded-lg shadow w-full min-h-[200px] flex flex-col`}>
+              <View key={`${item.items_id}-${selectedCategory}`} className={`${colorScheme === 'dark' ? 'bg-gray-300' : 'bg-gray-800'} p-4 rounded-lg shadow w-full min-h-[200px] flex flex-col`}>
                 <Image
                   source={{ uri: item.items_picture ? `https://ur-sg.com//public/images/store/${item.items_picture}` : 'https://ur-sg.com//public/images/store/defaultpicture.jpg' }}
                   className="h-40 object-cover w-full"
@@ -189,7 +190,7 @@ const StoreAndLeaderboard = () => {
                   className="mt-4 bg-mainred text-white text-xl p-2 rounded-full"
                   onPress={() => handleBuyItem(item.items_id, item.items_category)}
                 >
-                  <Text className="text-white text-center">Buy</Text>
+                  <Text className="text-white text-center">{t('buy')}</Text>
                 </TouchableOpacity>
               </View>
             ))}
@@ -199,10 +200,10 @@ const StoreAndLeaderboard = () => {
         <View className="my-4">
           {/* Leaderboard Section */}
           <View className={`${colorScheme === 'dark' ? 'bg-gray-300' : 'bg-gray-800' } p-4 rounded-lg shadow`}>
-            <Text className="text-center text-2xl font-bold mb-4 text-mainred">Leaderboard</Text>
+            <Text className="text-center text-2xl font-bold mb-4 text-mainred">{t('leaderboard')}</Text>
             <View>
               {[...new Map(allUsers.map(user => [user.user_id, user])).values()]
-                .sort((a, b) => b.user_currency - a.user_currency) // Sort by user_currency in descending order
+                .sort((a, b) => b.user_currency - a.user_currency)
                 .map((user, index) => (
                   <View className="flex-row justify-between items-center py-2 border-b border-gray-300" key={user.user_id}>
                     {/* Rank */}

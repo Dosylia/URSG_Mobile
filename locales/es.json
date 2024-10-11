@@ -65,6 +65,12 @@
     "no-frame-yet": "Aún no tienes ningún marco de foto de perfil.",
     "filter": "Filto",
     "filter-change": "Cambia el filtro de la aplicación (Sin filtro/Estricto)",
+    "filter-on": "Filtro activado/Estricto",
+    "filter-off": "Filtro desactivado",
+    "buy": "Comprar",
+    "leaderboard": "Tabla de clasificación",
+    "store": "Tienda",
+    "filter-category":  "Filtrar por categoría",
     "basic-info": {
         "username": "Nombre de usuario",
         "gender": "Género",
