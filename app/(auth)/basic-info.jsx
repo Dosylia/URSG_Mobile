@@ -119,11 +119,11 @@ const BasicInfo = () => {
           } else {
             console.error("Error submitting form:", error);
           }
-          setErrors('Error submitting form');
+          setErrors(t('fill-all-fields'));
         });
     } else {
       // Display an error message or handle the case when not all form fields are filled
-      setErrors('Please fill all fields.');
+      setErrors(t('fill-all-fields'));
     }
   }
 
@@ -210,6 +210,7 @@ const BasicInfo = () => {
             isSelect={true}
             options={gamerOptions}
           />
+          <Text className="text-white dark:text-blackPerso mb-3 font-psemibold text-xl">{t('game-switch')}</Text>
           <FormField 
             title={t('basic-info.game')}
             value={form.game}
@@ -227,7 +228,7 @@ const BasicInfo = () => {
             handleChangeText={(e) => setForm({ ...form, shortBio: e })}
             otherStyles="mt-7"
           />
-          {errors ? <Text className="text-red-600 text-xl my-2">{errors}</Text> : null}
+          {errors ? <Text className="text-red-600 font-psemibold text-xl my-2">{errors}</Text> : null}
           <CustomButton 
              title={t('about-game')}
              handlePress={submitForm}

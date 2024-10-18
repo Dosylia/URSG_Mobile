@@ -6,7 +6,8 @@ import { router } from 'expo-router';
 import { SessionContext } from '../context/SessionContext';
 import { useColorScheme } from 'nativewind';
 import { useTranslation } from 'react-i18next';
-import { useFriendList } from '../context/FriendListContext'; 
+import { useFriendList } from '../context/FriendListContext';
+import { icons } from '../constants'; 
 
 const UserDataChat = ({ userData, onBlock }) => {
   const { t } = useTranslation();
@@ -97,7 +98,10 @@ const UserDataChat = ({ userData, onBlock }) => {
 
       {/* 3-dot Icon */}
       <TouchableOpacity onPress={openBlockPopup} className="ml-auto px-4">
-        <Text className="text-mainred text-3xl">⋮</Text>
+      <Image 
+          source={icons.block}  
+          className="w-6 h-6 rounded-full"
+        />
       </TouchableOpacity>
 
       {/* Block User Modal */}
@@ -107,13 +111,18 @@ const UserDataChat = ({ userData, onBlock }) => {
         visible={modalVisible}
         onRequestClose={() => setModalVisible(false)}
       >
-        <View className="flex-1 justify-center items-center bg-gray-900 dark:bg-white bg-opacity-50">
-          <View className={`${colorScheme === 'dark' ? 'bg-gray-500' : 'bg-gray-800' }  p-6 rounded-lg w-4/5`}>
+        <View className="flex-1 justify-center items-center">
+          <View className={`${colorScheme === 'dark' ? 'bg-gray-500' : 'bg-gray-800'} p-6 rounded-lg w-4/5`}>
             <Text className="text-white text-lg mb-4">{t('block-user')}</Text>
-            <View className="flex-row justify-end">
-              <Button title={t('cancel')} onPress={() => setModalVisible(false)} color="#aaa" />
-              <Button title={t('block')} onPress={() => handleBlockUser(sessions.userSession.userId, userData.friend_id)} color="#e74057" />
+            <View className="flex-row justify-center">
+              <View className="mr-4">
+                <Button title={t('cancel')} onPress={() => setModalVisible(false)} color="#aaa" />
+              </View>
+              <View>
+                <Button title={t('block')} onPress={() => handleBlockUser(sessions.userSession.userId, userData.friend_id)} color="#e74057" />
+              </View>
             </View>
+
           </View>
         </View>
       </Modal>

@@ -71,6 +71,14 @@
     "leaderboard": "Tabla de clasificación",
     "store": "Tienda",
     "filter-category":  "Filtrar por categoría",
+    "money-explanation": "Puedes ganar dinero usando la aplicación y realizando acciones en ella. El dinero se puede usar en la tienda para comprar artículos o roles.",
+    "go-back": "Volver",
+    "yes": "Sí",
+    "no": "No",
+    "skip-champion-selection": "Omitir la selección de campeones?",
+    "game-switch": "Podrás cambiar tu juego más tarde",
+    "fill-all-fields": "Por favor, completa todos los campos",
+    "fill-all-fields-champions": "Por favor, completa todos los campos y asegúrate de que los agentes sean únicos",
     "basic-info": {
         "username": "Nombre de usuario",
         "gender": "Género",
@@ -146,6 +154,8 @@
     "gender-options": {
         "male": "Hombre",
         "female": "Mujer",
-        "non-binary": "No binario"
+        "non-binary": "No binario",
+        "all": "Todos",
+        "male-female": "Hombre/Muj"
     }
 }

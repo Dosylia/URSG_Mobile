@@ -1,5 +1,5 @@
-import React, { useState, useContext, useEffect } from 'react';
-import { View, Text, Image, ScrollView, TouchableOpacity } from 'react-native';
+import React, { useState, useContext, useEffect, useMemo} from 'react';
+import { View, Text, Image, ScrollView, TouchableOpacity, Modal, Button } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { SessionContext } from '../../context/SessionContext';
 import { router } from 'expo-router';
@@ -13,12 +13,12 @@ const StoreAndLeaderboard = () => {
   const { colorScheme } = useColorScheme();
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [items, setItems] = useState([]);
-  const [filteredItems, setFilteredItems] = useState(items);
   const [allUsers, setAllUsers] = useState([]);
   const [activePage, setActivePage] = useState('store');
   const [itemMessages, setItemMessages] = useState({}); 
   const { sessions, setSession } = useContext(SessionContext);
   const { userId } = sessions.userSession;
+  const [visible, setVisible] = useState(false);
 
   const fetchAllUsers = async () => {
     try {
@@ -54,7 +54,6 @@ const StoreAndLeaderboard = () => {
         const itemsData = itemsResponse.data;
         if (itemsData.message !== 'Success') return;
         setItems(itemsData.items);
-        setFilteredItems(itemsData.items);
       }
     } catch (error) {
       console.error('Error fetching items:', error);
@@ -107,11 +106,9 @@ const StoreAndLeaderboard = () => {
     }
   };
 
-  const handleFilterChange = (category) => {
-    setSelectedCategory(category);
-    const filtered = category === 'all' ? items : items.filter(item => item.items_category === category);
-    setFilteredItems(filtered);
-  };
+  const filteredItems = useMemo(() => {
+    return selectedCategory === 'all' ? items : items.filter(item => item.items_category === selectedCategory);
+  }, [items, selectedCategory]);
 
   useEffect(() => {
     fetchAllUsers();
@@ -123,15 +120,31 @@ const StoreAndLeaderboard = () => {
     router.push(`/profile`);
   };
 
+  const openMoneyModal = () => {
+    setVisible(true);
+  };
+
+  
+  const handleFilterChange = (category) => {
+    setSelectedCategory(category);
+  };
+
   const capitalizeFirstLetter = (string) => {
     return string.charAt(0).toUpperCase() + string.slice(1);
 };
 
   return (
-    <ScrollView className="p-4 bg-gray-900 dark:bg-whitePerso">
+    <ScrollView className="px-4 bg-gray-900 dark:bg-whitePerso">
+      <View className="flex w-full flex-row justify-between items-center bg-gray-900 dark:bg-whitePerso mb-3">
+        <TouchableOpacity onPress={openMoneyModal} className="ml-auto">
+          <View className="bg-gray-400 w-10 h-10 rounded-full justify-center items-center">
+            <Text className="text-2xl text-white font-pextrabold">?</Text>
+          </View>
+        </TouchableOpacity>
+      </View>
       {/* Page Header with Navigation between Store and Leaderboard */}
       <View className="flex-row justify-around bg-mainred p-4 rounded-xl">
-        <TouchableOpacity onPress={() => setActivePage('store')}>
+      <TouchableOpacity onPress={() => { setActivePage('store'); console.log(filteredItems); }}>
           <Text className={`text-2xl ${activePage === 'store' ? 'text-white border-b-2 border-white' : 'text-white'}`}>
             {t('store')}
           </Text>
@@ -174,10 +187,18 @@ const StoreAndLeaderboard = () => {
                   source={{ uri: item.items_picture ? `https://ur-sg.com//public/images/store/${item.items_picture}` : 'https://ur-sg.com//public/images/store/defaultpicture.jpg' }}
                   className="h-40 object-cover w-full"
                 />
-                <View className="mt-2 w-full flex-1">
+                
+                <View className="mt-2 w-full">
                   <Text className="text-2xl text-mainred">{item.items_name}</Text>
                   <Text className="text-lg text-white dark:text-blackPerso">
-                    {item.items_price * (sessions.userSession.isVip ? 0.8 : 1)} <Image source={icons.soulHard} className="w-4 h-4" />
+                    {sessions.userSession.isVip ? (
+                      <>
+                        <Text style={{ textDecorationLine: 'line-through' }}>{item.items_price} </Text>
+                        <Text>{item.items_price * 0.8} <Image source={icons.soulHard} className="w-4 h-4" /></Text>
+                      </>
+                    ) : (
+                      <Text>{item.items_price} <Image source={icons.soulHard} className="w-4 h-4" /></Text>
+                    )}
                   </Text>
                   <Text className="text-white dark:text-blackPerso">{item.items_desc.replace(/[\.:](\s|$)/g, '\n')}</Text>
                 </View>
@@ -233,6 +254,23 @@ const StoreAndLeaderboard = () => {
           </View>
         </View>
       )}
+
+      {/*Money Modal */}
+      <Modal
+        transparent={true}
+        animationType="slide"
+        visible={visible}
+        onRequestClose={() => setVisible(false)}
+      >
+        <View className="flex-1 justify-center items-center bg-opacity-50">
+          <View className={`${colorScheme === 'dark' ? 'bg-gray-500' : 'bg-gray-800' }  p-6 rounded-lg w-4/5`}>
+            <Text className="text-white text-lg mb-4">{t('money-explanation')}</Text>
+            <View className="flex-row justify-end">
+              <Button title={t('go-back')} onPress={() => setVisible(false)} color="#aaa" />
+            </View>
+          </View>
+        </View>
+      </Modal>
     </ScrollView>
   );
 };

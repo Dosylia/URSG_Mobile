@@ -19,6 +19,7 @@ const LeagueData = () => {
   const { t } = useTranslation();
   const { sessions, setSession } = useContext(SessionContext);
   const [errors, setErrors] = useState('');
+  const [skipSelection, setSkipSelection] = useState(0);
   const [form, setForm] = useState({
     userId: '',
     main1: 'Astra',
@@ -62,20 +63,17 @@ const LeagueData = () => {
   function submitForm() { // Add google data from Session created in previous step
     // Check if all form fields are filled
     console.log("Submitting form with data:", form);
-    if (
-      form.main1 &&
-      form.main2 &&
-      form.main3 &&
-      form.rank &&
-      form.role &&
-      form.server && 
+    if (form.rank && form.role && form.server && (skipSelection === 1 || 
       form.main1 !== form.main2 &&
       form.main1 !== form.main3 &&
-      form.main2 !== form.main3
-    ) {
-      // Send data to the PHP folder
+      form.main2 !== form.main3)) {
+      if (skipSelection === 1) {
+        form.main1 = '';
+        form.main2 = '';
+        form.main3 = '';
+      }
       axios.post('https://ur-sg.com/createValorantUserPhone', {
-        valorantData: JSON.stringify(form)
+        valorantData: JSON.stringify({ ...form, skipSelection })
       }, {
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded'
@@ -87,7 +85,12 @@ const LeagueData = () => {
             setErrors(data.message);
           } else {
           // Store session ID if needed
-          setSession('valorantSession', data.user);
+          const sessionData = {
+            user: data.user,
+            skipSelectionVal: skipSelection
+          };
+          
+          setSession('valorantSession', sessionData);
           router.push("/lookingfor-data");
           }
         })
@@ -111,16 +114,15 @@ const LeagueData = () => {
         });
     } else {
       // Display an error message or handle the case when not all form fields are filled
-      console.error("Mains cannot be same");
-      setErrors('Please fill all fields and ensure agents are unique.');
+      setErrors(t('fill-all-fields-champions'));
     }
   }
 
   const availableChampionsForMain1 = championValorantList;
-  const availableChampionsForMain2 = form.main1 !== 'Aatrox' ? 
+  const availableChampionsForMain2 = form.main1 !== 'Astra' ? 
   championValorantList.filter(champion => champion !== form.main1) : 
   championValorantList;
-const availableChampionsForMain3 = form.main1 !== 'Aatrox' && form.main2 !== 'Aatrox' ? 
+const availableChampionsForMain3 = form.main1 !== 'Astra' && form.main2 !== 'Astra' ? 
   championValorantList.filter(champion => champion !== form.main1 && champion !== form.main2) : 
   championValorantList;
 
@@ -151,6 +153,10 @@ const availableChampionsForMain3 = form.main1 !== 'Aatrox' && form.main2 !== 'Aa
     router.push("/(auth)/settings");
   };
 
+  function toggleSkipSelection() {
+    setSkipSelection(prev => (prev === 0 ? 1 : 0));
+  }
+
 
   return (
     <SafeAreaView className="bg-gray-900 h-full dark:bg-whitePerso">
@@ -170,42 +176,54 @@ const availableChampionsForMain3 = form.main1 !== 'Aatrox' && form.main2 !== 'Aa
         </View>
         <View className="w-full justify-start h-full px-4 my-6">
           <Text className="text-2xl text-white dark:text-blackPerso text-semibpmd mt-5 font-psemibold">{t('val.title')}</Text>
-          <FormField 
-            title={t('val.agent1')}
-            value={form.main1}
-            handleChangeText={(value) => setForm({ ...form, main1: value })}
-            placeholder= {t('placeholders.agent1')}
-            otherStyles="mt-7"
-            isSelect={true}
-            hasImage={true}
-            options={availableChampionsForMain1.map(champion => ({ label: champion, value: champion }))}
-            image={form.main1}
-            imageOrigin='championsValorant'
-          />
-          <FormField 
-            title={t('val.agent2')}
-            value={form.main2}
-            handleChangeText={(value) => setForm({ ...form, main2: value })}
-            placeholder= {t('placeholders.agent2')}
-            otherStyles="mt-7"
-            isSelect={true}
-            hasImage={true}
-            options={availableChampionsForMain2.map(champion => ({ label: champion, value: champion }))}
-            image={form.main2}
-            imageOrigin='championsValorant'
-          />
-          <FormField 
-            title={t('val.agent3')}
-            value={form.main3}
-            handleChangeText={(value) => setForm({ ...form, main3: value })}
-            placeholder= {t('placeholders.agent3')}
-            otherStyles="mt-7"
-            isSelect={true}
-            hasImage={true}
-            options={availableChampionsForMain3.map(champion => ({ label: champion, value: champion }))}
-            image={form.main3}
-            imageOrigin='championsValorant'
-          />
+          <View className="mt-4">
+            <Text className="text-white dark:text-blackPerso mb-3 font-psemibold text-xl">{t('skip-champion-selection')}</Text>
+            <TouchableOpacity 
+              onPress={toggleSkipSelection} 
+              className={`p-2 rounded ${skipSelection ? 'bg-green-500' : 'bg-red-500'} m-2`}>
+              <Text className="text-white">{skipSelection ? t('yes') : t('no')}</Text>
+            </TouchableOpacity>
+          </View>
+          {!skipSelection && (
+            <>
+              <FormField 
+                title={t('val.agent1')}
+                value={form.main1}
+                handleChangeText={(value) => setForm({ ...form, main1: value })}
+                placeholder= {t('placeholders.agent1')}
+                otherStyles="mt-7"
+                isSelect={true}
+                hasImage={true}
+                options={availableChampionsForMain1.map(champion => ({ label: champion, value: champion }))}
+                image={form.main1}
+                imageOrigin='championsValorant'
+              />
+              <FormField 
+                title={t('val.agent2')}
+                value={form.main2}
+                handleChangeText={(value) => setForm({ ...form, main2: value })}
+                placeholder= {t('placeholders.agent2')}
+                otherStyles="mt-7"
+                isSelect={true}
+                hasImage={true}
+                options={availableChampionsForMain2.map(champion => ({ label: champion, value: champion }))}
+                image={form.main2}
+                imageOrigin='championsValorant'
+              />
+              <FormField 
+                title={t('val.agent3')}
+                value={form.main3}
+                handleChangeText={(value) => setForm({ ...form, main3: value })}
+                placeholder= {t('placeholders.agent3')}
+                otherStyles="mt-7"
+                isSelect={true}
+                hasImage={true}
+                options={availableChampionsForMain3.map(champion => ({ label: champion, value: champion }))}
+                image={form.main3}
+                imageOrigin='championsValorant'
+              />
+            </>
+          )}
             <FormField 
             title={t('val.rank')}
             value={form.rank}
@@ -239,7 +257,7 @@ const availableChampionsForMain3 = form.main1 !== 'Aatrox' && form.main2 !== 'Aa
             isSelect={true}
             options={servers}
           />
-          {errors ? <Text className="text-red-600 text-xl my-2">{errors}</Text> : null}
+          {errors ? <Text className="text-red-600 font-psemibold text-xl my-2">{errors}</Text> : null}
           <CustomButton 
              title={t('lol.submit')}
              handlePress={submitForm}

@@ -71,6 +71,14 @@
     "leaderboard": "Bestenliste",
     "store": "Geschäft",
     "filter-category": "Nach Kategorie filtern",
+    "money-explanation": "Sie können Geld verdienen, indem Sie die Anwendung verwenden und Aktionen darauf ausführen. Das Geld kann im Geschäft verwendet werden, um Gegenstände oder Rollen zu kaufen.",
+    "go-back": "Zurück",
+    "yes": "Ja",
+    "no": "Nein",
+    "skip-champion-selection": "Champion-Auswahl überspringen?",
+    "game-switch": "Sie können Ihr Spiel später wechseln",
+    "fill-all-fields": "Bitte füllen Sie alle Felder aus",
+    "fill-all-fields-champions": "Bitte füllen Sie alle Felder aus und stellen Sie sicher, dass die Agenten einzigartig sind",
     "basic-info": {
         "username": "Benutzername",
         "gender": "Geschlecht",
@@ -146,6 +154,8 @@
     "gender-options": {
         "male": "Mann",
         "female": "Frau",
-        "non-binary": "Divers"
+        "non-binary": "Divers",
+        "all": "Alle",
+        "male-female": "Mann/Frau"
     }
 }

@@ -2,10 +2,13 @@ import Astra from '../assets/championsValorant/Astra_icon.webp';
 import Breach from '../assets/championsValorant/Breach_icon.webp';
 import Brimstone from '../assets/championsValorant/Brimstone_icon.webp';
 import Chamber from '../assets/championsValorant/Chamber_icon.webp';
+import Clove from '../assets/championsValorant/Clove_icon.webp';
 import Cypher from '../assets/championsValorant/Cypher_icon.webp';
+import Deadlock from '../assets/championsValorant/Deadlock_icon.webp';
 import Fade from '../assets/championsValorant/Fade_icon.webp';
 import Gekko from '../assets/championsValorant/Gekko_icon.webp';
 import Harbor from '../assets/championsValorant/Harbor_icon.webp';
+import Iso from '../assets/championsValorant/Iso_icon.webp';
 import Jett from '../assets/championsValorant/Jett_icon.webp';
 import Kayo from '../assets/championsValorant/Kayo_icon.webp';
 import Killjoy from '../assets/championsValorant/Killjoy_icon.webp';
@@ -18,6 +21,7 @@ import Sage from '../assets/championsValorant/Sage_icon.webp';
 import Skye from '../assets/championsValorant/Skye_icon.webp';
 import Sova from '../assets/championsValorant/Sova_icon.webp';
 import Viper from '../assets/championsValorant/Viper_icon.webp';
+import Vyse from '../assets/championsValorant/Vyse_icon.webp';
 import Yoru from '../assets/championsValorant/Yoru_icon.webp';
 
 export default {
@@ -25,10 +29,13 @@ export default {
     Breach,
     Brimstone,
     Chamber,
+    Clove,
     Cypher,
+    Deadlock,
     Fade,
     Gekko,
     Harbor,
+    Iso,
     Jett,
     Kayo,
     Killjoy,
@@ -41,5 +48,6 @@ export default {
     Skye,
     Sova,
     Viper,
+    Vyse,
     Yoru
 };

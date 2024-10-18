@@ -51,40 +51,20 @@ export default function App() {
           console.log("Parsed sessions from storage:", parsedSessions);
   
           const hasValidGoogleSession = parsedSessions.googleSession && Object.keys(parsedSessions.googleSession).length > 0;
-          const hasValidUserSession = parsedSessions.userSession && Object.keys(parsedSessions.userSession).length > 0;
   
-          if (hasValidGoogleSession && hasValidUserSession) {
-            setSession('googleSession', parsedSessions.googleSession);
-            setSession('userSession', parsedSessions.userSession);
-  
-            const hasLookingforSession = parsedSessions.lookingforSession && Object.keys(parsedSessions.lookingforSession).length > 0;
-            const hasLeagueSession = parsedSessions.leagueSession && Object.keys(parsedSessions.leagueSession).length > 0;
-            const hasValorantSession = parsedSessions.valorantSession && Object.keys(parsedSessions.valorantSession).length > 0;
-  
-            if ((hasLeagueSession || hasValorantSession) && hasLookingforSession) {
-              setSession('lookingforSession', parsedSessions.lookingforSession);
-              if (parsedSessions.userSession.game === 'League of Legends') {
-                setSession('leagueSession', parsedSessions.leagueSession);
-              } else {
-                setSession('valorantSession', parsedSessions.valorantSession);
-              }
-              router.push('/swiping');
-            } else {
-              if (!hasLookingforSession && (hasLeagueSession || hasValorantSession)) {
-                if (parsedSessions.userSession.game === 'League of Legends') {
-                  setSession('leagueSession', parsedSessions.leagueSession);
-                } else {
-                  setSession('valorantSession', parsedSessions.valorantSession);
-                }
-                router.push('/lookingfor-data');
-              } else {
-                if (parsedSessions.userSession.game === 'League of Legends') {
-                  router.push('/league-data');
-                } else {
-                  router.push('/valorant-data');
-                }
+          if (hasValidGoogleSession) {
+            const userDataStored = {
+              user : {
+                id: parsedSessions.googleSession.googleId,
+                name: parsedSessions.googleSession.fullName,
+                givenName: parsedSessions.googleSession.firstName,
+                familyName: parsedSessions.googleSession.lastName,
+                photo: parsedSessions.googleSession.imageUrl,
+                email: parsedSessions.googleSession.email,
               }
             }
+  
+            submitForm(userDataStored);
           } else {
             setIsLoading(false)
           }
@@ -127,7 +107,7 @@ export default function App() {
 
     console.log("User info:", userInfo);
 
-    if (googleId && fullName && givenName && familyName && imageUrl && email) {
+    if (googleId && fullName && givenName && imageUrl && email) {
       const userData = { googleId, fullName, givenName, familyName, imageUrl, email };
       console.log("Submitting form with user data:", userData);
 

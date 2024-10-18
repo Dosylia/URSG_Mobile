@@ -28,16 +28,16 @@ const Settings = () => {
     const { userSession, leagueSession, valorantSession, lookingforSession, googleSession } = sessions;
   
     if (userSession.userId) {
-      if ((leagueSession.main1 && lookingforSession.main1Lf) || (valorantSession.main1 && lookingforSession.valmain1Lf)) {
+      if ((leagueSession.role && lookingforSession.roleLf) || (valorantSession.role && lookingforSession.valroleLf)) {
         router.push("/(tabs)/profile");
   
-      } else if ((leagueSession.main1 || valorantSession.main1) && (!lookingforSession.main1Lf || !lookingforSession.valmain1Lf)) {
+      } else if ((leagueSession.role || valorantSession.role) && (!lookingforSession.roleLf || !lookingforSession.valroleLf)) {
         router.push("/lookingfor-data");
 
-      } else if (valorantSession.main1 && !leagueSession.main1) {
+      } else if (valorantSession.role && !leagueSession.role) {
         router.push("/valorant-data");
   
-      } else if (!leagueSession.main1 && valorantSession.main1) {
+      } else if (!leagueSession.role && valorantSession.role) {
         router.push("/league-data");
       }
       

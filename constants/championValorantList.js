@@ -3,10 +3,13 @@ const championValorantList = [
     "Breach",
     "Brimstone",
     "Chamber",
+    "Clove",
     "Cypher",
+    "Deadlock",
     "Fade",
     "Gekko",
     "Harbor",
+    "Iso",
     "Jett",
     "Kayo",
     "Killjoy",
@@ -19,6 +22,7 @@ const championValorantList = [
     "Skye",
     "Sova",
     "Viper",
+    "Vyse",
     "Yoru"
 ];
 

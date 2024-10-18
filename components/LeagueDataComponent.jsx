@@ -19,34 +19,44 @@ const LeagueDataComponent = ({ main1, main2, main3, role, rank }) => {
   return (
     <View className="flex-row justify-between mb-4">
       {/* Champion 1 */}
-      <Image 
-        source={getChampionImage(main1)}
-        className="w-14 h-14 rounded-full object-cover"
-      />
+      {main1 && (
+        <Image 
+          source={getChampionImage(main1)}
+          className="w-14 h-14 rounded-full object-cover"
+        />
+      )}
 
       {/* Champion 2 */}
-      <Image 
-        source={getChampionImage(main2)}
-        className="w-14 h-14 rounded-full object-cover"
-      />
+      {main2 && (
+        <Image 
+          source={getChampionImage(main2)}
+          className="w-14 h-14 rounded-full object-cover"
+        />
+      )}
 
       {/* Champion 3 */}
-      <Image 
-        source={getChampionImage(main3)}
-        className="w-14 h-14 rounded-full object-cover"
-      />
+      {main3 && (
+        <Image 
+          source={getChampionImage(main3)}
+          className="w-14 h-14 rounded-full object-cover"
+        />
+      )}
 
       {/* Rank */}
-      <Image 
-        source={getRankImage(rank)}
-        className="w-14 h-14 rounded-full"
-      />
+      {rank && (
+        <Image 
+          source={getRankImage(rank)}
+          className="w-14 h-14 rounded-full"
+        />
+      )}
 
       {/* Role */}
-      <Image 
-        source={getRoleImage(role)}
-        className="w-14 h-14 rounded-full"
-      />
+      {role && (
+        <Image 
+          source={getRoleImage(role)}
+          className="w-14 h-14 rounded-full"
+        />
+      )}
     </View>
   );
 };

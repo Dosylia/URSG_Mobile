@@ -130,7 +130,12 @@ const Swiping = () => {
             kindOfGamer: matchingData.user.user_kindOfGamer,
             shortBio: matchingData.user.user_shortBio,
             picture: matchingData.user.user_picture,
-            userId: matchingData.user.user_id
+            userId: matchingData.user.user_id,
+            account : matchingData.user.lol_account,
+            sProfileIcon : matchingData.user.lol_sProfileIcon,
+            sRank : matchingData.user.lol_sRank,
+            sLevel : matchingData.user.lol_sLevel,
+            sUsername : matchingData.user.lol_sUsername
           };
         } else {
           UserMatched = {

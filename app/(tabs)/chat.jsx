@@ -123,16 +123,17 @@ function renderEmotes(message) {
     if (emoteMap[cleanedPart]) {
       return (
         <Image
-          key={`${cleanedPart}-${index}`}
+          key={`emote-${index}`}
           source={emoteMap[cleanedPart]}
           style={{ width: 30, height: 30 }}
           resizeMode="contain"
         />
       );
     }
-    return <Text key={`${part}-${index}`}>{part}</Text>;
+    return <Text key={`text-${index}`}>{part}</Text>;
   });
 }
+
 
 
 const toggleEmotePicker = () => {
@@ -251,11 +252,25 @@ const addEmoteToMessage = (emoteCode) => {
   );
 
   const convertCamelToDashCase = (camelCaseKey) => {
-    return camelCaseKey
-      .replace(/([a-z])([A-Z])/g, '$1-$2')
+    const dashCaseModel = {
+      'surprisedCat': 'surprised-cat',
+      'catSmile': 'cat-smile',
+      'catcute': 'cat-cute',
+      'goofyAhCat': 'goofy-ah-cat',
+      'catSurprised': 'cat-surprised',
+      'catliked': 'cat-liked',
+      'catSus': 'cat-sus',
+      'catbruh': 'cat-bruh',
+      'catlicking': 'cat-licking',
+    };
+  
+    const dashCaseKey = dashCaseModel[camelCaseKey] || camelCaseKey
+      .replace(/([a-z])([A-Z])/g, '$1-$2') 
       .toLowerCase(); 
+  
+    return dashCaseKey;
   };
-
+  
   return (
     <View className="flex-1 bg-gray-900 p-4 dark:bg-whitePerso">
       {friendPage && (

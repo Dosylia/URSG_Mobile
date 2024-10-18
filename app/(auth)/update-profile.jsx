@@ -23,6 +23,10 @@ const updateProfile = () => {
   const [errors, setErrors] = useState('');
   const [previousGame, setPreviousGame] = useState(sessions.userSession.game);
   const [userData, setUserData] = useState({});
+  const [skipSelection, setSkipSelection] = useState(
+    sessions.userSession.game === 'League of Legends' ? sessions.leagueSession.skipSelectionLol : sessions.valorantSession.skipSelectionVal
+  );
+  const [skipSelectionLf, setSkipSelectionLf] = useState(sessions.lookingforSession.skipSelectionLf);
   const [form, setForm] = useState({
     userId: sessions.userSession.userId,
     username: sessions.userSession.username,
@@ -103,7 +107,7 @@ const updateProfile = () => {
                 roleLf: form.game === 'League of Legends' ? user.lf_lolrole : user.lf_valrole,
             };
               axios.post('https://ur-sg.com/updateUserPhone', {
-                userData: JSON.stringify(dataUpdated)
+                userData: JSON.stringify({...dataUpdated, skipSelection, skipSelectionLf})
               }, {
                 headers: {
                   'Content-Type': 'application/x-www-form-urlencoded'
@@ -145,7 +149,8 @@ const updateProfile = () => {
                       sUsername: user.lol_sUsername,
                       sRank: user.lol_sRank,
                       sLevel: user.lol_sLevel,
-                      sProfileIcon : user.lol_sProfileIcon
+                      sProfileIcon : user.lol_sProfileIcon,
+                      skipSelectionLol : user.lol_noChamp
                     });
                   
                     setSession('lookingforSession', {
@@ -156,7 +161,8 @@ const updateProfile = () => {
                       main3Lf: user.lf_lolmain3,
                       rankLf: user.lf_lolrank,
                       roleLf: user.lf_lolrole,
-                      gameLf: form.game
+                      gameLf: form.game,
+                      skipSelectionLf : user.lf_lolNoChamp
                     }, () => {
                       setTimeout(() => {
                         router.push("/(tabs)/profile");
@@ -187,7 +193,8 @@ const updateProfile = () => {
                       main3: user.valorant_main3,
                       rank: user.valorant_rank,
                       role: user.valorant_role,
-                      server: user.valorant_server
+                      server: user.valorant_server,
+                      skipSelectionVal : user.valorant_noChamp
                     });
                   
                     setSession('lookingforSession', {
@@ -198,7 +205,8 @@ const updateProfile = () => {
                       valmain3Lf: user.lf_valmain3,
                       valrankLf: user.lf_valrank,
                       valroleLf: user.lf_valrole,
-                      gameLf: form.game
+                      gameLf: form.game,
+                      skipSelectionLf : user.lf_valNoChamp
                     }, () => {
                       setTimeout(() => {
                         router.push("/(tabs)/profile");
@@ -257,30 +265,44 @@ const updateProfile = () => {
     console.log("Submitting form with data:", form);
 
     if (
-        form.userId &&
-        form.username &&
-        form.gender &&
-        form.age &&
-        form.kindOfGamer &&
-        form.game &&
-        form.shortBio &&
-        form.main1 &&
-        form.main2 &&
-        form.main3 &&
-        form.rank &&
-        form.role &&
-        form.server &&
-        form.genderLf &&
-        form.kindOfGamerLf &&
-        form.main1Lf &&
-        form.main2Lf &&
-        form.main3Lf &&
-        form.rankLf &&
-        form.roleLf
-      ) {
+      form.userId &&
+      form.username &&
+      form.gender &&
+      form.age &&
+      form.kindOfGamer &&
+      form.game &&
+      form.shortBio &&
+      form.rank &&
+      form.role &&
+      form.server &&
+      form.genderLf &&
+      form.kindOfGamerLf &&
+      form.rankLf &&
+      form.roleLf &&
+      (skipSelection === 1 || 
+        form.main1 !== form.main2 &&
+        form.main1 !== form.main3 &&
+        form.main2 !== form.main3) &&
+      (skipSelectionLf === 1 || 
+        form.main1Lf !== form.main2Lf &&
+        form.main1Lf !== form.main3Lf &&
+        form.main2Lf !== form.main3Lf)
+    ) {
+      if (skipSelection === 1) {
+        form.main1 = '';
+        form.main2 = '';
+        form.main3 = '';
+      }
+      if (skipSelectionLf === 1) {
+        form.main1Lf = '';
+        form.main2Lf = '';
+        form.main3Lf = '';
+      }
       // Send data to the PHP folder
       axios.post('https://ur-sg.com/updateUserPhone', {
-        userData: JSON.stringify(form)
+        userData: JSON.stringify({...form,
+          skipSelection,
+          skipSelectionLf})
       }, {
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded'
@@ -316,7 +338,8 @@ const updateProfile = () => {
               main3: form.main3,
               rank: form.rank,
               role: form.role,
-              server: form.server
+              server: form.server,
+              skipSelectionLol: skipSelection
             });
           
             setSession('lookingforSession', {
@@ -327,7 +350,8 @@ const updateProfile = () => {
               main3Lf: form.main3Lf,
               rankLf: form.rankLf,
               roleLf: form.roleLf,
-              gameLf: form.game
+              gameLf: form.game,
+              skipSelectionLf : skipSelectionLf
             }, () => {
               setTimeout(() => {
                 router.push("/(tabs)/profile");
@@ -351,7 +375,8 @@ const updateProfile = () => {
               main3: form.main3,
               rank: form.rank,
               role: form.role,
-              server: form.server
+              server: form.server,
+              skipSelectionVal : skipSelection
             });
           
             setSession('lookingforSession', {
@@ -362,7 +387,8 @@ const updateProfile = () => {
               valmain3Lf: form.main3Lf,
               valrankLf: form.rankLf,
               valroleLf: form.roleLf,
-              gameLf: form.game
+              gameLf: form.game,
+              skipSelectionLf : skipSelectionLf
             }, () => {
               setTimeout(() => {
                 router.push("/(tabs)/profile");
@@ -391,7 +417,7 @@ const updateProfile = () => {
         });
     } else {
       // Display an error message or handle the case when not all form fields are filled
-      setErrors('Please fill all fields.');
+      setErrors(t('fill-all-fields'));
     }
   }
 
@@ -423,13 +449,15 @@ const updateProfile = () => {
     championList;
   
   
-    roles = roleList.map((role) => (
-      { label: role, value: role }
-    ));
+    roles = [
+      ...roleList.map((role) => ({ label: role, value: role })),
+      { label: 'Any', value: 'Any' }
+    ];
   
-    ranks = rankList.map((rank) => (
-      { label: rank, value: rank }
-    ));
+    ranks = [
+      ...rankList.map((rank) => ({ label: rank, value: rank })),
+      { label: 'Any', value: 'Any' }
+    ];
   } else {
     const championListLf = championValorantList
     availableChampionsForMain1Lf = championListLf;
@@ -447,14 +475,16 @@ const updateProfile = () => {
   availableChampionsForMain3 = form.main1 !== 'Astra' && form.main2 !== 'Astra' ? 
     championValorantList.filter(champion => champion !== form.main1 && champion !== form.main2) : 
     championValorantList;
+    
+    roles = [
+      ...roleValorantList.map((role) => ({ label: role, value: role })),
+      { label: 'Any', value: 'Any' }
+    ];
   
-    roles = roleValorantList.map((role) => (
-      { label: role, value: role }
-    ));
-  
-    ranks = rankValorantList.map((rank) => (
-      { label: rank, value: rank }
-    ));
+    ranks = [
+      ...rankValorantList.map((rank) => ({ label: rank, value: rank })),
+      { label: 'Any', value: 'Any' }
+    ];
   }
 
   const servers = serverList.map((server) => (
@@ -472,6 +502,8 @@ const updateProfile = () => {
     { label: t('gender-options.male'), value: 'Male' },
     { label: t('gender-options.female'), value: 'Female' },
     { label: t('gender-options.non-binary'), value: 'Non binary' },
+    { label: t('gender-options.male-female'), value: 'Male and Female' },
+    { label: t('gender-options.all'), value: 'All' },
   ];
 
   const gameOptions = [
@@ -483,7 +515,13 @@ const updateProfile = () => {
     router.push("/(tabs)/profile");
   };
 
+  function toggleSkipSelection() {
+    setSkipSelection(prev => (prev === 0 ? 1 : 0));
+  }
 
+  function toggleSkipSelectionLf() {
+    setSkipSelectionLf(prev => (prev === 0 ? 1 : 0));
+  }
 
   return (
     <SafeAreaView className="bg-gray-900 dark:bg-whitePerso h-full">
@@ -496,7 +534,6 @@ const updateProfile = () => {
       </View>
         <View className="w-full justify-start h-full px-4 my-6">
         <Text className="text-2xl text-white dark:text-blackPerso text-semibpmd mt-5 font-psemibold">{t('update-profile')}</Text>
-          {errors ? <Text className="text-red-600 text-xl my-2">{errors}</Text> : null}
           <Collapse collapseTitle={t('basic-info.title')}>
         <FormField 
           title={t('basic-info.gender')}
@@ -542,42 +579,54 @@ const updateProfile = () => {
         />
       </Collapse>
       <Collapse collapseTitle={form.game === 'League of Legends' ? t('lol.title') : t('val.title')}>
-        <FormField 
-          title={t('lol.main1')}
-          value={form.main1}
-          handleChangeText={(value) => setForm({ ...form, main1: value })}
-          placeholder={form.game === 'League of Legends' ? t('placeholders.main1') : t('placeholders.agent')}
-          otherStyles="mt-7"
-          isSelect={true}
-          hasImage={true}
-          options={availableChampionsForMain1.map(champion => ({ label: champion, value: champion }))}
-          image={form.main1}
-          imageOrigin={form.game === 'League of Legends' ? 'champions' : 'championsValorant'}
-        />
-        <FormField 
-          title={t('lol.main2')}
-          value={form.main2}
-          handleChangeText={(value) => setForm({ ...form, main2: value })}
-          placeholder={form.game === 'League of Legends' ? t('placeholders.main2') : t('placeholders.agent2')}
-          otherStyles="mt-7"
-          isSelect={true}
-          hasImage={true}
-          options={availableChampionsForMain2.map(champion => ({ label: champion, value: champion }))}
-          image={form.main2}
-          imageOrigin={form.game === 'League of Legends' ? 'champions' : 'championsValorant'}
-        />
-        <FormField 
-          title={t('lol.main3')}
-          value={form.main3}
-          handleChangeText={(value) => setForm({ ...form, main3: value })}
-          placeholder={form.game === 'League of Legends' ? t('placeholders.main3') : t('placeholders.agent3')}
-          otherStyles="mt-7"
-          isSelect={true}
-          hasImage={true}
-          options={availableChampionsForMain3.map(champion => ({ label: champion, value: champion }))}
-          image={form.main3}
-          imageOrigin={form.game === 'League of Legends' ? 'champions' : 'championsValorant'}
-        />
+      <View className="mt-4">
+            <Text className="text-white dark:text-blackPerso mb-3 font-psemibold text-xl">{t('skip-champion-selection')}</Text>
+            <TouchableOpacity 
+              onPress={toggleSkipSelection} 
+              className={`p-2 rounded ${skipSelection ? 'bg-green-500' : 'bg-red-500'} m-2`}>
+              <Text className="text-white">{skipSelection ? t('yes') : t('no')}</Text>
+            </TouchableOpacity>
+          </View>
+        {!skipSelection && (
+          <>
+          <FormField 
+            title={t('lol.main1')}
+            value={form.main1}
+            handleChangeText={(value) => setForm({ ...form, main1: value })}
+            placeholder={form.game === 'League of Legends' ? t('placeholders.main1') : t('placeholders.agent')}
+            otherStyles="mt-7"
+            isSelect={true}
+            hasImage={true}
+            options={availableChampionsForMain1.map(champion => ({ label: champion, value: champion }))}
+            image={form.main1}
+            imageOrigin={form.game === 'League of Legends' ? 'champions' : 'championsValorant'}
+          />
+          <FormField 
+            title={t('lol.main2')}
+            value={form.main2}
+            handleChangeText={(value) => setForm({ ...form, main2: value })}
+            placeholder={form.game === 'League of Legends' ? t('placeholders.main2') : t('placeholders.agent2')}
+            otherStyles="mt-7"
+            isSelect={true}
+            hasImage={true}
+            options={availableChampionsForMain2.map(champion => ({ label: champion, value: champion }))}
+            image={form.main2}
+            imageOrigin={form.game === 'League of Legends' ? 'champions' : 'championsValorant'}
+          />
+          <FormField 
+            title={t('lol.main3')}
+            value={form.main3}
+            handleChangeText={(value) => setForm({ ...form, main3: value })}
+            placeholder={form.game === 'League of Legends' ? t('placeholders.main3') : t('placeholders.agent3')}
+            otherStyles="mt-7"
+            isSelect={true}
+            hasImage={true}
+            options={availableChampionsForMain3.map(champion => ({ label: champion, value: champion }))}
+            image={form.main3}
+            imageOrigin={form.game === 'League of Legends' ? 'champions' : 'championsValorant'}
+          />
+          </>
+        )}
         <FormField 
           title={t('lol.rank')}
           value={form.rank}
@@ -631,42 +680,54 @@ const updateProfile = () => {
           isSelect={true}
           options={gamerOptions}
         />
-        <FormField 
-          title={t('lf.main1')}
-          value={form.main1Lf}
-          handleChangeText={(value) => setForm({ ...form, main1Lf: value })}
-          placeholder={form.game === 'League of Legends' ? t('placeholders.main1Lf') : t('placeholders.agent1')}
-          otherStyles="mt-7"
-          isSelect={true}
-          hasImage={true}
-          options={availableChampionsForMain1Lf.map(champion => ({ label: champion, value: champion }))}
-          image={form.main1Lf}
-          imageOrigin={form.game === 'League of Legends' ? 'champions' : 'championsValorant'}
-        />
-        <FormField 
-          title={t('lf.main2')}
-          value={form.main2Lf}
-          placeholder={form.game === 'League of Legends' ? t('placeholders.main2Lf') : t('placeholders.agent2')}
-          handleChangeText={(value) => setForm({ ...form, main2Lf: value })}
-          otherStyles="mt-7"
-          isSelect={true}
-          hasImage={true}
-          options={availableChampionsForMain2Lf.map(champion => ({ label: champion, value: champion }))}
-          image={form.main2Lf}
-          imageOrigin={form.game === 'League of Legends' ? 'champions' : 'championsValorant'}
-        />
-        <FormField 
-          title={t('lf.main3')}
-          value={form.main3Lf}
-          placeholder={form.game === 'League of Legends' ? t('placeholders.main3Lf') : t('placeholders.agent3')}
-          handleChangeText={(value) => setForm({ ...form, main3Lf: value })}
-          otherStyles="mt-7"
-          isSelect={true}
-          hasImage={true}
-          options={availableChampionsForMain3Lf.map(champion => ({ label: champion, value: champion }))}
-          image={form.main3Lf}
-          imageOrigin={form.game === 'League of Legends' ? 'champions' : 'championsValorant'}
-        />
+        <View className="mt-4">
+            <Text className="text-white dark:text-blackPerso mb-3 font-psemibold text-xl">{t('skip-champion-selection')}</Text>
+            <TouchableOpacity 
+              onPress={toggleSkipSelectionLf} 
+              className={`p-2 rounded ${skipSelectionLf ? 'bg-green-500' : 'bg-red-500'} m-2`}>
+              <Text className="text-white">{skipSelectionLf ? t('yes') : t('no')}</Text>
+            </TouchableOpacity>
+          </View>
+        {!skipSelectionLf && (
+          <>
+          <FormField 
+            title={t('lf.main1')}
+            value={form.main1Lf}
+            handleChangeText={(value) => setForm({ ...form, main1Lf: value })}
+            placeholder={form.game === 'League of Legends' ? t('placeholders.main1Lf') : t('placeholders.agent1')}
+            otherStyles="mt-7"
+            isSelect={true}
+            hasImage={true}
+            options={availableChampionsForMain1Lf.map(champion => ({ label: champion, value: champion }))}
+            image={form.main1Lf}
+            imageOrigin={form.game === 'League of Legends' ? 'champions' : 'championsValorant'}
+          />
+          <FormField 
+            title={t('lf.main2')}
+            value={form.main2Lf}
+            placeholder={form.game === 'League of Legends' ? t('placeholders.main2Lf') : t('placeholders.agent2')}
+            handleChangeText={(value) => setForm({ ...form, main2Lf: value })}
+            otherStyles="mt-7"
+            isSelect={true}
+            hasImage={true}
+            options={availableChampionsForMain2Lf.map(champion => ({ label: champion, value: champion }))}
+            image={form.main2Lf}
+            imageOrigin={form.game === 'League of Legends' ? 'champions' : 'championsValorant'}
+          />
+          <FormField 
+            title={t('lf.main3')}
+            value={form.main3Lf}
+            placeholder={form.game === 'League of Legends' ? t('placeholders.main3Lf') : t('placeholders.agent3')}
+            handleChangeText={(value) => setForm({ ...form, main3Lf: value })}
+            otherStyles="mt-7"
+            isSelect={true}
+            hasImage={true}
+            options={availableChampionsForMain3Lf.map(champion => ({ label: champion, value: champion }))}
+            image={form.main3Lf}
+            imageOrigin={form.game === 'League of Legends' ? 'champions' : 'championsValorant'}
+          />
+        </>
+      )}
         <FormField 
           title={t('lf.rank')}
           value={form.rankLf}
@@ -692,6 +753,7 @@ const updateProfile = () => {
           imageOrigin={form.game === 'League of Legends' ? 'roles' : 'rolesValorant'}
         />
       </Collapse>
+      {errors ? <Text className="text-red-600 font-psemibold text-xl my-2">{errors}</Text> : null}
           <CustomButton 
              title="Update profile"
              handlePress={submitForm}

@@ -16,21 +16,21 @@ const LookingForSection = ({ userData }) => {
         <>
           {/* Render League or Valorant Data Component based on userData.game */}
           {userData.game === "League of Legends" ? (
-            userData.main1Lf && userData.main2Lf && userData.main3Lf && userData.roleLf && userData.rankLf && (
+            userData.roleLf && userData.rankLf && (
               <LeagueDataComponent
-                main1={userData.main1Lf}
-                main2={userData.main2Lf}
-                main3={userData.main3Lf}
+                main1={userData.main1Lf || undefined}
+                main2={userData.main2Lf || undefined}
+                main3={userData.main3Lf || undefined}
                 role={userData.roleLf}
                 rank={userData.rankLf}
               />
             )
           ) : (
-            userData.valmain1Lf && userData.valmain2Lf && userData.valmain3Lf && userData.valroleLf && userData.valrankLf && (
+            userData.valroleLf && userData.valrankLf && (
               <ValorantDataComponent
-                main1={userData.valmain1Lf}
-                main2={userData.valmain2Lf}
-                main3={userData.valmain3Lf}
+                main1={userData.valmain1Lf || undefined}
+                main2={userData.valmain2Lf || undefined}
+                main3={userData.valmain3Lf || undefined}
                 role={userData.valroleLf}
                 rank={userData.valrankLf}
               />

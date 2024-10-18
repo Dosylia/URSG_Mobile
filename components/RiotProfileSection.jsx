@@ -30,7 +30,7 @@ const RiotProfileSection = ({ userData, isProfile }) => {
       {userData && (
         <View>
           {/* Riot Profile Section */}
-          {userData.sUsername && isProfile && (
+          {userData.sUsername && (
             <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 16 }}>
               <Image
                 source={riotProfilePicture}
@@ -53,21 +53,21 @@ const RiotProfileSection = ({ userData, isProfile }) => {
           )}
 
         {userData.game === "League of Legends" ? (
-          userData.main1 && userData.main2 && userData.main3 && userData.role && userData.rank && (
+           userData.role && userData.rank && (
             <LeagueDataComponent
-              main1={userData.main1}
-              main2={userData.main2}
-              main3={userData.main3}
+            main1={userData.main1 || undefined}
+            main2={userData.main2 || undefined} 
+            main3={userData.main3 || undefined}
               role={userData.role}
               rank={userData.rank}
             />
           )
         ) : (
-          userData.valmain1 && userData.valmain2 && userData.valmain3 && userData.valrole && userData.valrank && (
+          userData.valrole && userData.valrank && (
             <ValorantDataComponent
-              main1={userData.valmain1}
-              main2={userData.valmain2}
-              main3={userData.valmain3}
+              main1={userData.valmain1 || undefined}
+              main2={userData.valmain2 || undefined}
+              main3={userData.valmain3 || undefined}
               role={userData.valrole}
               rank={userData.valrank}
             />

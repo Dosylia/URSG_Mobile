@@ -71,6 +71,14 @@
     "leaderboard": "Leaderboard",
     "store": "Store",
     "filter-category": "Filter by category",
+    "money-explanation": "You can earn money by using the application and doing actions on it. Money can be used on the store to buy items or roles.",
+    "go-back": "Go back",
+    "yes": "Yes",
+    "no": "No",
+    "skip-champion-selection": "Skip champion selection?",
+    "game-switch": "You'll be able to switch your game later",
+    "fill-all-fields": "Please fill all fields",
+    "fill-all-fields-champions": "Please fill all fields and ensure agents are unique",
     "basic-info": {
         "username": "Username",
         "gender": "Gender",
@@ -146,6 +154,8 @@
     "gender-options": {
         "male": "Male",
         "female": "Female",
-        "non-binary": "Non-binary"
+        "non-binary": "Non-binary",
+        "all": "All",
+        "male-female": "Male and Female"
     }
 }

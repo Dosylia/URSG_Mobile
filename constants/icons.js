@@ -29,6 +29,7 @@ import filter from "../assets/icons/filter.png";
 import filterDark from "../assets/icons/filterDark.png";
 import lolLogo from "../assets/icons/lol-logo.png";
 import valorantLogo from "../assets/icons/Valorant.png";
+import block from "../assets/icons/block.png";
 
 export default {
   play,
@@ -62,4 +63,5 @@ export default {
   filterDark,
   lolLogo,
   valorantLogo,
+  block
 };
