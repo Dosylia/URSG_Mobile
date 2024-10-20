@@ -33,6 +33,7 @@
     "gender": "Genre",
     "kind-of-gamer": "Type de joueur",
     "looking-for": "Votre recherche",
+    "looking-for-them": "Leur recherche",
     "copied-clipboard": "Copié dans votre presse papier",
     "discord-copied": "Le nom d'utilisateur Discord a été copié!",
     "seen-all-profiles": "Vous avez vu tous les profils disponibles.",
@@ -79,6 +80,7 @@
     "game-switch": "Vous pourrez changer votre jeu plus tard",
     "fill-all-fields": "Veuillez remplir tous les champs",
     "fill-all-fields-champions": "Veuillez remplir tous les champs et vous assurer que les agents sont uniques",
+    "return-your-profile": "Retour à votre profil",
     "basic-info": {
         "username": "Nom d'utilisateur",
         "gender": "Genre",
@@ -154,6 +156,8 @@
     "gender-options": {
         "male": "Homme",
         "female": "Femme",
-        "non-binary": "Non-binaire"
+        "non-binary": "Non-binaire",
+        "all": "Tous les genres",
+        "male-female": "Homme et Femme"
     }
 }

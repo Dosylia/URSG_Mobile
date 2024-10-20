@@ -6,15 +6,16 @@ import { icons } from "../constants";
 import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { useColorScheme } from 'nativewind';
+import { SessionContext } from '../context/SessionContext';
 import axios from 'axios';
 
 const ProfileHeader = ({ userData, isProfile }) => {
   const { colorScheme } = useColorScheme();
+  const { sessions } = useContext(SessionContext);
   const { t } = useTranslation();
   const profileImage = images.defaultpicture; 
   const addImage = colorScheme === 'dark' ? icons.addImageDark : icons.addImage;
   const [ownedItems, setOwnedItems] = useState([]);
-
 
   const handleOpenLink = (url) => {
     Linking.openURL(url).catch(err => console.error('Failed to open URL:', err));
@@ -39,8 +40,11 @@ const ProfileHeader = ({ userData, isProfile }) => {
         }
       });
       const itemsData = response.data;
+      console.log('Items data:', itemsData);
       if (itemsData.message === 'Success') {
         setOwnedItems(itemsData.items);
+      } else {
+        setOwnedItems([]);
       }
     } catch (error) {
       console.error('Error fetching items:', error);
@@ -48,8 +52,8 @@ const ProfileHeader = ({ userData, isProfile }) => {
   };
 
   useEffect(() => {
-    fetchOwnedItems();
-  }, []);
+      fetchOwnedItems();
+  }, [userData]); 
 
   const profileFrames = ownedItems.filter(item => item.items_category === 'profile Picture' && item.userItems_isUsed === 1);
 
@@ -78,7 +82,7 @@ const ProfileHeader = ({ userData, isProfile }) => {
         />
         
         {/* Button to update picture */}
-        {isProfile && (
+        {isProfile && userData.userId === sessions.userSession.userId && (
           <TouchableOpacity onPress={handlePictureUpdate} className="absolute top-0 -right-14">
             <Image 
               source={addImage} 

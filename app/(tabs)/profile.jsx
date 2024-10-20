@@ -126,6 +126,7 @@ const Profile = () => {
           if (response.data.message === 'Success') {
             if (response.data.user.user_game === "League of Legends") {
               const formattedData = {
+                userId : response.data.user.user_id,
                 username: response.data.user.user_username,
                 gender: response.data.user.user_gender,
                 age: response.data.user.user_age,
@@ -162,6 +163,7 @@ const Profile = () => {
               setUserData(formattedData);
             } else {
               const formattedData = {
+                userId : response.data.user.user_id,
                 username: response.data.user.user_username,
                 gender: response.data.user.user_gender,
                 age: response.data.user.user_age,
@@ -263,6 +265,11 @@ const Profile = () => {
   //     .catch(error => console.error('Error binding Riot account:', error));
   // }
 
+  const redirectToProfile = (friendId) => {
+    setSession('friendId', friendId);
+    router.push(`/profile`);
+  };
+
   return (
     <ScrollView className="flex-1 bg-gray-900 p-4 dark:bg-whitePerso">
       <View className="flex w-full flex-row justify-between items-center bg-gray-900 dark:bg-whitePerso">
@@ -288,12 +295,23 @@ const Profile = () => {
       )} 
       {userData && <ProfileHeader userData={userData} isProfile={true}/>}
 
+      {friendId && (
+        <CustomButton 
+        title={t('return-your-profile')}
+        handlePress={() => {router.push("/profile"); setSession('friendId', null)}}
+        containerStyles="w-full mt-7 mb-7"
+        />
+      )}
       {/* Friend Requests */}
       {!friendId && friendRequests.length > 0 && (
         <View>
           {friendRequests.map((request) => (
-            <View key={request.user_id} className="flex-row justify-between items-center mb-2 p-3 bg-gray-800 rounded dark:bg-whitePerso">
-              <Text className="text-white dark:text-blackPerso">{request.user_username}</Text>
+            <View key={request.user_id} className="flex-row justify-between items-center mb-2 p-3 bg-gray-800 rounded dark:bg-whitePerso mt-7">
+              <TouchableOpacity
+                onPress={() => redirectToProfile(request.user_id)}
+              >
+              <Text className="text-white dark:text-blackPerso border-b-4 border-mainred">{request.user_username}</Text>
+              </TouchableOpacity>
               <View className="flex-row">
                 <TouchableOpacity 
                   onPress={() => handleAcceptRequest(request.user_id, request.fr_id)} 
@@ -330,11 +348,18 @@ const Profile = () => {
             handlePress={() => router.push("/(auth)/update-social")}
             containerStyles="w-full mt-7 mb-7"
           />
+          <RiotProfileSection userData={userData} isProfile={true} />
+          <LookingForSection userData={userData} isProfile={true}/>
+        </>
+       )} 
+
+      {friendId && ( 
+        <>
+          <RiotProfileSection userData={userData} isProfile={false} />
+          <LookingForSection userData={userData} isProfile={false}/>
         </>
        )} 
   
-      <RiotProfileSection userData={userData} isProfile={true} />
-      <LookingForSection userData={userData} />
     </ScrollView>
   );
 };

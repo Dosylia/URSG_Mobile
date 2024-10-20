@@ -31,13 +31,13 @@ const Settings = () => {
       if ((leagueSession.role && lookingforSession.roleLf) || (valorantSession.role && lookingforSession.valroleLf)) {
         router.push("/(tabs)/profile");
   
-      } else if ((leagueSession.role || valorantSession.role) && (!lookingforSession.roleLf || !lookingforSession.valroleLf)) {
+      } else if ((leagueSession.role || valorantSession.valrole) && (!lookingforSession.roleLf || !lookingforSession.valroleLf)) {
         router.push("/lookingfor-data");
 
-      } else if (valorantSession.role && !leagueSession.role) {
+      } else if (!valorantSession.valrole && userSession.userId && userSession.game === "Valorant") {
         router.push("/valorant-data");
   
-      } else if (!leagueSession.role && valorantSession.role) {
+      } else if (!leagueSession.role && userSession.userId && userSession.game === "League of Legends") {
         router.push("/league-data");
       }
       

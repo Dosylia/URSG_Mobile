@@ -33,6 +33,7 @@
     "gender": "Género",
     "kind-of-gamer": "Tipo de jugador",
     "looking-for": "Buscando",
+    "looking-for-them": "Su busqueda",
     "copied-clipboard": "Copiado al portapapeles",
     "discord-copied": "¡El nombre de usuario de Discord ha sido copiado!",
     "seen-all-profiles": "Has visto todos los perfiles disponibles.",
@@ -79,6 +80,7 @@
     "game-switch": "Podrás cambiar tu juego más tarde",
     "fill-all-fields": "Por favor, completa todos los campos",
     "fill-all-fields-champions": "Por favor, completa todos los campos y asegúrate de que los agentes sean únicos",
+    "return-your-profile": "Volver a tu perfil",
     "basic-info": {
         "username": "Nombre de usuario",
         "gender": "Género",

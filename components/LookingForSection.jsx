@@ -5,13 +5,13 @@ import LeagueDataComponent from './LeagueDataComponent';
 import ValorantDataComponent from './ValorantDataComponent'; // Assuming you have this component
 import { useTranslation } from 'react-i18next';
 
-const LookingForSection = ({ userData }) => {
+const LookingForSection = ({ userData, isProfile }) => {
   const { t } = useTranslation();
   const genderLf = userData?.genderLf || 'Not specified';
   const kindOfGamerLf = userData?.kindOfGamerLf || 'Not specified';
 
   return (
-    <ProfileSection title={t('looking-for')}>
+    <ProfileSection title={isProfile ? t('looking-for') : t('looking-for-them')}>
       {userData && (
         <>
           {/* Render League or Valorant Data Component based on userData.game */}

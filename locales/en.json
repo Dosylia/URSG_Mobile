@@ -46,6 +46,7 @@
     "gender": "Gender",
     "kind-of-gamer": "Kind of gamer",
     "looking-for": "Looking for",
+    "looking-for-them": "Their intrest",
     "copied-clipboard": "Copied to clipboard",
     "discord-copied": "Discord username has been copied!",
     "mode": "Mode",
@@ -79,6 +80,7 @@
     "game-switch": "You'll be able to switch your game later",
     "fill-all-fields": "Please fill all fields",
     "fill-all-fields-champions": "Please fill all fields and ensure agents are unique",
+    "return-your-profile": "Return to your profile",
     "basic-info": {
         "username": "Username",
         "gender": "Gender",

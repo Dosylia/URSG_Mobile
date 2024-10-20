@@ -91,7 +91,7 @@ const UserDataChat = ({ userData, onBlock }) => {
 
       {/* Username */}
       <Text 
-        className="text-white ml-4 dark:text-blackPerso active:opacity-75 active:scale-95 "
+        className="text-white ml-4 dark:text-blackPerso active:opacity-75 active:scale-95 border-b-4 border-mainred"
         onPress={() => redirectToProfile(userData.friend_id)}>
         {userData.friend_username}
       </Text>
