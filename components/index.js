@@ -9,6 +9,7 @@ import UserDataChat from "./UserDataChat";
 import UseSwipeAlgorithm  from "./UseSwipingAlgoritm";
 import Collapse from "./Collapse";
 import ValorantDataComponent from "./ValorantDataComponent";
+import ProgressBar from "./ProgressBar";
 
 export {
     CustomButton,
@@ -22,4 +23,5 @@ export {
     UseSwipeAlgorithm,
     Collapse,
     ValorantDataComponent, 
+    ProgressBar,
   };

@@ -27,6 +27,8 @@ const UserDataComponent = ({ sessions, onUserDataChange }) => {
         currency : sessions.userSession.currency,
         isVip : sessions.userSession.isVip,
         hasChatFilter : sessions.userSession.hasChatFilter,
+        arcane : sessions.userSession.arcane,
+        arcaneIgnore : sessions.userSession.arcaneIgnore,
         skipSelectionLol : sessions.leagueSession.skipSelectionLol,
         main1: sessions.leagueSession.main1,
         main2: sessions.leagueSession.main2,

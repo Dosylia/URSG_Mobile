@@ -1,4 +1,4 @@
-import { ActivityIndicator, Text, View, ScrollView, StyleSheet, TouchableOpacity, Image, Dimensions } from 'react-native';
+import { ActivityIndicator, Text, View, ScrollView, StyleSheet, TouchableOpacity, Image, Dimensions, Modal } from 'react-native';
 import React, { useState, useEffect, useContext, useCallback } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
 import axios from 'axios';
@@ -10,9 +10,11 @@ import { images, icons } from "../../constants";
 import { useTranslation } from 'react-i18next';
 import { router } from 'expo-router';
 import Animated, { useSharedValue, useAnimatedStyle, withSpring, runOnJS, interpolate } from 'react-native-reanimated';
+import { useColorScheme } from 'nativewind';
 
 const Swiping = () => {
   const { t } = useTranslation();
+  const { colorScheme } = useColorScheme();
   const { sessions } = useContext(SessionContext);
   const [userData, setUserData] = useState(null);
   const [otherUser, setOtherUser] = useState(null);
@@ -24,6 +26,11 @@ const Swiping = () => {
   const activeIndex = useSharedValue(0);
   const translationX = useSharedValue(0);
   const screenWidth = Dimensions.get('screen').width;
+  const [visibleArcane, setVisibleArcane] = useState(() => {
+    const { arcane, arcaneIgnore } = sessions.userSession || {};
+    console.log('Arcane:', arcane, arcaneIgnore);
+    return !(arcane === "Zaun" || arcane === "Piltover" || arcaneIgnore === 1);
+  });
 
   const reshapedUserData = {
     user_id: userData?.userId,
@@ -57,6 +64,33 @@ const Swiping = () => {
     lf_valrank: userData?.valrankLf,
     lf_valrole: userData?.valroleLf,
   };
+
+  const joinSide = async (side) => {
+    try {
+        const userId = sessions.userSession.userId;
+        const joinSideResponse = await axios.post('https://ur-sg.com/arcaneSide', 
+          `pick=1&userId=${encodeURIComponent(userId)}&side=${encodeURIComponent(side)}`,
+          {
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded'
+            }
+          }
+        );
+  
+        const sideData = joinSideResponse.data;
+        console.log('Side data:', sideData);
+        if (!sideData.success) {
+          console.log('Error during join side:', sideData.error);
+          return;
+        }
+        
+        console.log('Side picked:', side);
+        setVisibleArcane(false);
+
+    } catch (error) {
+      console.log('Error during join data:', error);
+    } 
+  }
 
   const fetchAllUsers = async () => {
     try {
@@ -319,6 +353,57 @@ const Swiping = () => {
           </>
         )}
         {/* {errors && <Text className="text-red-500">{errors}</Text>} */}
+
+        {/* Modal for picking a side */}
+        <Modal
+          transparent={true}
+          animationType="slide"
+          visible={visibleArcane}
+          onRequestClose={() => setVisibleArcane(false)}
+        >
+          <View className="flex-1 justify-center items-center bg-black/50">
+            <View className={`p-6 rounded-lg w-4/5 ${colorScheme === 'dark' ? 'bg-gray-500' : 'bg-gray-800'}`}>
+              <Text className="text-white text-2xl font-bold text-center">Pick a side now!</Text>
+              <Text className="text-gray-300 text-sm text-center mb-4">Team winning will get an extra reward!</Text>
+
+              {/* Background Image */}
+              <View className="w-full h-48 relative mb-4">
+                <Image
+                  source={images.ursgArcane}
+                  className="absolute w-full h-full rounded-lg"
+                  resizeMode="cover"
+                />
+                {/* Piltover Button */}
+                <TouchableOpacity
+                  className="absolute top-0 left-0 w-1/2 h-full"
+                  onPress={() => joinSide('Piltover')}
+                >
+                  <View className="absolute bottom-4 left-4 w-3/4 py-2 bg-blue-500 rounded-lg shadow-lg">
+                    <Text className="text-center text-white font-bold">Join Piltover</Text>
+                  </View>
+                </TouchableOpacity>
+
+                {/* Zaun Button */}
+                <TouchableOpacity
+                  className="absolute top-0 right-0 w-1/2 h-full"
+                  onPress={() => joinSide('Zaun')}
+                >
+                  <View className="absolute bottom-4 right-4 w-3/4 py-2 bg-green-500 rounded-lg shadow-lg">
+                    <Text className="text-center text-white font-bold">Join Zaun</Text>
+                  </View>
+                </TouchableOpacity>
+              </View>
+
+              {/* Ignore Button */}
+              <TouchableOpacity
+                className="w-full py-2 bg-red-500 rounded-lg"
+                onPress={() => joinSide('none')}
+              >
+                <Text className="text-white font-bold text-center">Ignore</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
       </ScrollView>
     </GestureDetector>
   );

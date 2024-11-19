@@ -6,7 +6,7 @@ import { router } from 'expo-router';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 
 import { SessionContext } from '../../context/SessionContext';
-import { ProfileHeader, RiotProfileSection, LookingForSection, CustomButton, UserDataComponent } from "../../components";
+import { ProfileHeader, RiotProfileSection, LookingForSection, CustomButton, UserDataComponent, ProgressBar } from "../../components";
 import { icons } from "../../constants";
 import { useTranslation } from 'react-i18next';
 import { useFriendList } from '../../context/FriendListContext'; 
@@ -18,6 +18,49 @@ const Profile = () => {
   const [friendRequests, setFriendRequests] = useState([]);
   const friendId = sessions?.friendId;
   const { refreshFriendList } = useFriendList();
+  const [zaunScore, setZaunScore] = useState(0);
+  const [piltoverScore, setPiltoverScore] = useState(0);
+
+  const fetchAllUsers = async () => {
+    try {
+      if (sessions.userSession && sessions.userSession.userId) {
+        console.log("User session found:", sessions.userSession);
+        const allUsersResponse = await axios.post('https://ur-sg.com/getAllUsers', {
+          allUsers: 'allUsers'
+        }, {
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+          }
+        });
+  
+        const allUsersData = allUsersResponse.data;
+        if (allUsersData.message !== 'Success') {
+          setErrors(allUsersData.message);
+          return;
+        }
+  
+        const allUsers = allUsersData.allUsers;
+  
+        // Calculate scores for Zaun and Piltover
+        let zaunScore = 0;
+        let piltoverScore = 0;
+        allUsers.forEach(user => {
+          if (user.user_arcane === 'Zaun') {
+            zaunScore += user.arcane_snapshot;
+          } else if (user.user_arcane === 'Piltover') {
+            piltoverScore += user.arcane_snapshot;
+          }
+        });
+  
+        setZaunScore(zaunScore);
+        setPiltoverScore(piltoverScore);
+      } else {
+        console.log("User session not yet populated");
+      }
+    } catch (error) {
+      console.error('Error fetching users:', error);
+    }
+  };
 
   const getFriendRequest = async () => { 
     const { userId } = sessions.userSession;
@@ -112,6 +155,10 @@ const Profile = () => {
       };
     }, [])
   );
+
+  useEffect(() => {
+    fetchAllUsers();
+  }, []);
 
   useEffect(() => {
     if (friendId) {
@@ -302,6 +349,10 @@ const Profile = () => {
         containerStyles="w-full mt-7 mb-7"
         />
       )}
+
+    <ProgressBar zaunScore={zaunScore} piltoverScore={piltoverScore} userSide={sessions.userSession.arcane} />
+
+
       {/* Friend Requests */}
       {!friendId && friendRequests.length > 0 && (
         <View>
