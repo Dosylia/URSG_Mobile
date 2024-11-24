@@ -15,7 +15,7 @@ import { useColorScheme } from 'nativewind';
 const Swiping = () => {
   const { t } = useTranslation();
   const { colorScheme } = useColorScheme();
-  const { sessions } = useContext(SessionContext);
+  const { sessions, setSession } = useContext(SessionContext);
   const [userData, setUserData] = useState(null);
   const [otherUser, setOtherUser] = useState(null);
   const [allUsers, setAllUsers] = useState([]); 
@@ -82,6 +82,16 @@ const Swiping = () => {
         if (!sideData.success) {
           console.log('Error during join side:', sideData.error);
           return;
+        }
+
+        if (side !== 'none') {
+          setSession('userSession', { arcane: side }, (updatedSessions) => {
+            console.log('Updated userSession with arcane:', updatedSessions.userSession);
+          });
+        } else {
+          setSession('userSession', { arcaneIgnore: side }, (updatedSessions) => {
+            console.log('Updated userSession with arcaneIgnore:', updatedSessions.userSession);
+          });
         }
         
         console.log('Side picked:', side);
