@@ -15,6 +15,11 @@ import defaultpicture from "../assets/images/defaultprofilepicture.jpg";
 import defaultpictureLol from "../assets/images/7.png";
 import sadBee from "../assets/images/sadbee.webp";
 import ursgArcane from "../assets/images/ursg-arcane.jpg";
+import bluesky from "../assets/images/bluesky_user.png";
+import premiumBadge from "../assets/images/premium-badge.png";
+import partnerBadge from "../assets/images/partner-badge.png";
+import certifiedBadge from "../assets/images/certified-badge.png";
+import hammer from "../assets/images/hammer.png";
 
 
-export default { profile, thumbnail, cards, path, logo, logoWhite, empty, ahri, joystick, discord, instagram, twitch, twitter, defaultpicture, defaultpictureLol, sadBee, ursgArcane };
+export default { profile, thumbnail, cards, path, logo, logoWhite, empty, ahri, joystick, discord, instagram, twitch, twitter, defaultpicture, defaultpictureLol, sadBee, ursgArcane, bluesky, premiumBadge, partnerBadge, certifiedBadge, hammer };

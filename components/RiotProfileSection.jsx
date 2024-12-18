@@ -8,7 +8,7 @@ import he from 'he';
 import { useTranslation } from 'react-i18next';
 import { useColorScheme } from 'nativewind';
 
-const BASE_PROFILE_ICON_URL = 'https://ddragon.leagueoflegends.com/cdn/14.14.1/img/profileicon/';
+const BASE_PROFILE_ICON_URL = 'https://ddragon.leagueoflegends.com/cdn/14.23.1/img/profileicon/';
 
 const RiotProfileSection = ({ userData, isProfile }) => {
   const { colorScheme } = useColorScheme();
@@ -58,8 +58,8 @@ const RiotProfileSection = ({ userData, isProfile }) => {
             main1={userData.main1 || undefined}
             main2={userData.main2 || undefined} 
             main3={userData.main3 || undefined}
-              role={userData.role}
-              rank={userData.rank}
+            role={userData.role}
+            rank={userData.rank}
             />
           )
         ) : (
@@ -73,7 +73,9 @@ const RiotProfileSection = ({ userData, isProfile }) => {
             />
           )
         )}
-
+          <Text style={{ color: colorScheme === 'dark' ? '#000' : '#fff' }}>
+            {isProfile ? t('your-server') : t('their-server')}: {userData.game === "League of Legends" ? server : userData.valserver}
+          </Text>
           <Text style={{ color: colorScheme === 'dark' ? '#000' : '#fff' }}>
             {isProfile ? t('your-gender') : t('their-gender')}: {gender}
           </Text>

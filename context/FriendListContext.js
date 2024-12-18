@@ -15,14 +15,14 @@ const { sessions } = useContext(SessionContext);
 
   const refreshFriendList = async (userId) => {
     try {
-        const friendsResponse = await axios.post('https://ur-sg.com/getFriendlist', new URLSearchParams({ userId }).toString(), {
+        const friendsResponse = await axios.post('https://ur-sg.com/getFriendlistPhone', new URLSearchParams({ userId }).toString(), {
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
+          'Authorization': `Bearer ${sessions.googleSession.token}`,
         },
       });
       
       if (friendsResponse.data.success) {
-        console.log('Friend list refreshed:', friendsResponse.data.friendlist);
         setFriendList(friendsResponse.data.friendlist);
       } else {
         console.log('Failed to refresh friend list:', friendsResponse.data.error);

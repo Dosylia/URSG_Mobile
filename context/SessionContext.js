@@ -30,7 +30,6 @@ export const SessionProvider = ({ children }) => {
   }, []);
 
   const setSession = async (type, data, callback) => {
-    console.log(`Setting session: ${type}`, data);
 
     setSessions(prevSessions => {
       let updatedSessions;
@@ -81,7 +80,6 @@ export const SessionProvider = ({ children }) => {
       // Save updated sessions to AsyncStorage inside the setSessions callback
       AsyncStorage.setItem('userSessions', JSON.stringify(updatedSessions))
         .then(() => {
-          console.log('Sessions saved to storage:', updatedSessions);
         })
         .catch(error => {
           console.error('Error saving sessions to storage:', error);

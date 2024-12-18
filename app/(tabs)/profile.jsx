@@ -6,7 +6,7 @@ import { router } from 'expo-router';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 
 import { SessionContext } from '../../context/SessionContext';
-import { ProfileHeader, RiotProfileSection, LookingForSection, CustomButton, UserDataComponent, ProgressBar } from "../../components";
+import { ProfileHeader, RiotProfileSection, LookingForSection, CustomButton, UserDataComponent } from "../../components";
 import { icons } from "../../constants";
 import { useTranslation } from 'react-i18next';
 import { useFriendList } from '../../context/FriendListContext'; 
@@ -18,49 +18,14 @@ const Profile = () => {
   const [friendRequests, setFriendRequests] = useState([]);
   const friendId = sessions?.friendId;
   const { refreshFriendList } = useFriendList();
-  const [zaunScore, setZaunScore] = useState(0);
-  const [piltoverScore, setPiltoverScore] = useState(0);
-
-  const fetchAllUsers = async () => {
-    try {
-      if (sessions.userSession && sessions.userSession.userId) {
-        console.log("User session found:", sessions.userSession);
-        const allUsersResponse = await axios.post('https://ur-sg.com/getAllUsers', {
-          allUsers: 'allUsers'
-        }, {
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-          }
-        });
-  
-        const allUsersData = allUsersResponse.data;
-        if (allUsersData.message !== 'Success') {
-          setErrors(allUsersData.message);
-          return;
-        }
-  
-        const allUsers = allUsersData.allUsers;
-  
-        // Calculate scores for Zaun and Piltover
-        let zaunScore = 0;
-        let piltoverScore = 0;
-        allUsers.forEach(user => {
-          if (user.user_arcane === 'Zaun') {
-            zaunScore += user.arcane_snapshot;
-          } else if (user.user_arcane === 'Piltover') {
-            piltoverScore += user.arcane_snapshot;
-          }
-        });
-  
-        setZaunScore(zaunScore);
-        setPiltoverScore(piltoverScore);
-      } else {
-        console.log("User session not yet populated");
-      }
-    } catch (error) {
-      console.error('Error fetching users:', error);
-    }
-  };
+  const [currentPage, setCurrentPage] = useState(0);
+  const itemsPerPage = 3;
+  const currentRequests = friendRequests.slice(
+    currentPage * itemsPerPage,
+    (currentPage + 1) * itemsPerPage
+  );
+  const hasPrevious = currentPage > 0;
+  const hasNext = (currentPage + 1) * itemsPerPage < friendRequests.length;
 
   const getFriendRequest = async () => { 
     const { userId } = sessions.userSession;
@@ -155,10 +120,6 @@ const Profile = () => {
       };
     }, [])
   );
-
-  useEffect(() => {
-    fetchAllUsers();
-  }, []);
 
   useEffect(() => {
     if (friendId) {
@@ -271,47 +232,6 @@ const Profile = () => {
     router.push("/(auth)/settings");
   };
 
-  // function bindAccount() {
-  //   const clientId = process.env.EXO_RIOT_CLIENT_ID;
-
-  //   axios.post(`https://auth.riotgames.com/authorize?redirect_uri=https://ur-sg.com/riotAccountPhone&client_id=${clientId}&response_type=code&scope=openid`, {
-  //   }, {
-  //     headers: {
-  //       'Content-Type': 'application/x-www-form-urlencoded'
-  //     }
-  //   })
-  //     .then(response => {
-  //       if (response.data.message === 'Success') {
-  //         bindAccountCode(response.data.code);
-  //       } else {
-  //         console.error('Failed to fetch user data');
-  //       }
-  //     })
-  //     .catch(error => console.error('Error fetching user data:', error));
-  // }
-
-  // function bindAccountCode(code) {
-  //   const dataToSend = {
-  //     code: code,
-  //     userId : sessions.userSession.userId
-  //   }
-  //   axios.post('https://ur-sg.com/RiotCodePhone', {
-  //     dataToSend: JSON.stringify(dataToSend)
-  //   }, {
-  //     headers: {
-  //       'Content-Type': 'application/x-www-form-urlencoded'
-  //     }
-  //   })
-  //     .then(response => {
-  //       if (response.data.message === 'Success') {
-  //         console.log('Riot account binded');
-  //       } else {
-  //         console.error('Failed to bind Riot account');
-  //       }
-  //     })
-  //     .catch(error => console.error('Error binding Riot account:', error));
-  // }
-
   const redirectToProfile = (friendId) => {
     setSession('friendId', friendId);
     router.push(`/profile`);
@@ -350,28 +270,29 @@ const Profile = () => {
         />
       )}
 
-    <ProgressBar zaunScore={zaunScore} piltoverScore={piltoverScore} userSide={sessions.userSession.arcane} />
-
-
+    <View>
       {/* Friend Requests */}
       {!friendId && friendRequests.length > 0 && (
         <View>
-          {friendRequests.map((request) => (
-            <View key={request.user_id} className="flex-row justify-between items-center mb-2 p-3 bg-gray-800 rounded dark:bg-whitePerso mt-7">
-              <TouchableOpacity
-                onPress={() => redirectToProfile(request.user_id)}
-              >
-              <Text className="text-white dark:text-blackPerso border-b-4 border-mainred">{request.user_username}</Text>
+          {currentRequests.map((request) => (
+            <View
+              key={request.user_id}
+              className="flex-row justify-between items-center mb-2 p-3 bg-gray-800 rounded dark:bg-whitePerso mt-7"
+            >
+              <TouchableOpacity onPress={() => redirectToProfile(request.user_id)}>
+                <Text className="text-white dark:text-blackPerso border-b-4 border-mainred">
+                  {request.user_username}
+                </Text>
               </TouchableOpacity>
               <View className="flex-row">
-                <TouchableOpacity 
-                  onPress={() => handleAcceptRequest(request.user_id, request.fr_id)} 
+                <TouchableOpacity
+                  onPress={() => handleAcceptRequest(request.user_id, request.fr_id)}
                   className="bg-mainred p-2 rounded mr-2"
                 >
                   <Text className="text-white">{t('accept')}</Text>
                 </TouchableOpacity>
-                <TouchableOpacity 
-                  onPress={() => handleRefuseRequest(request.user_id, request.fr_id)} 
+                <TouchableOpacity
+                  onPress={() => handleRefuseRequest(request.user_id, request.fr_id)}
                   className="bg-gray-600 p-2 rounded"
                 >
                   <Text className="text-white">{t('refuse')}</Text>
@@ -379,8 +300,27 @@ const Profile = () => {
               </View>
             </View>
           ))}
+
+          {/* Pagination Controls */}
+          <View className="flex-row justify-between mt-4">
+            <TouchableOpacity
+              disabled={!hasPrevious}
+              onPress={() => setCurrentPage((prev) => Math.max(prev - 1, 0))}
+              className={`p-3 rounded ${!hasPrevious ? 'bg-gray-400' : 'bg-mainred'}`}
+            >
+              <Text className="text-white">{'<'}</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              disabled={!hasNext}
+              onPress={() => setCurrentPage((prev) => prev + 1)}
+              className={`p-3 rounded ${!hasNext ? 'bg-gray-400' : 'bg-mainred'}`}
+            >
+              <Text className="text-white">{'>'}</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       )}
+    </View>
   
       {!friendId && ( 
         <>

@@ -104,10 +104,11 @@ export const DataProvider = ({ children }) => {
 
   const fetchUnreadMessage = async (userId) => {
     try {
-      const response = await axios.post('https://ur-sg.com/getUnreadMessage',
+      const response = await axios.post('https://ur-sg.com/getUnreadMessagePhone',
         new URLSearchParams({ userId }).toString(), {
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
+          'Authorization': `Bearer ${sessions.googleSession.token}`,
         },
       });
       const data = response.data;
@@ -133,10 +134,11 @@ export const DataProvider = ({ children }) => {
 
   const fetchUnreadMessageFriends = async (userId) => {
     try {
-      const response = await axios.post('https://ur-sg.com/getUnreadMessage',
+      const response = await axios.post('https://ur-sg.com/getUnreadMessagePhone',
         new URLSearchParams({ userId }).toString(), {
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
+          'Authorization': `Bearer ${sessions.googleSession.token}`,
         },
       });
       const data = response.data;
@@ -180,16 +182,17 @@ export const DataProvider = ({ children }) => {
 
   const fetchFriendRequest = async (userId) => {
     try {
-      const response = await axios.post('https://ur-sg.com/getFriendRequest',
+      const response = await axios.post('https://ur-sg.com/getFriendRequestReact',
         new URLSearchParams({ userId }).toString(), {
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
+          'Authorization': `Bearer ${sessions.googleSession.token}`,
         },
       });
       const data = response.data;
       if (data.success) {
         const pendingCount = data.pendingCount.pendingFriendRequest || 0;
-        console.log('Pending friend request:', pendingCount);
+        console.log('Friend requests successfully fetched!')
         setPendingFriendRequest(pendingCount);
       } else {
         console.log('Failed to fetch friend requests:', data.error);

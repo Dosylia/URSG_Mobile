@@ -137,6 +137,8 @@ const BasicInfo = () => {
     { label: t('gender-options.male'), value: 'Male' },
     { label: t('gender-options.female'), value: 'Female' },
     { label: t('gender-options.non-binary'), value: 'Non binary' },
+    { label: t('gender-options.transman'), value: 'Trans Man' },
+    { label: t('gender-options.tranwoman'), value: 'Trans Woman' },
   ];
 
   const gameOptions = [

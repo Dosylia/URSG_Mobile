@@ -9,7 +9,8 @@ const rankList = [
   "Master",
   "Grand Master",
   "Challenger",
-  "Unranked"
+  "Unranked",
+  "Any"
 ];
   
   export default rankList;

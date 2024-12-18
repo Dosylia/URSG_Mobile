@@ -305,7 +305,8 @@ const updateProfile = () => {
           skipSelectionLf})
       }, {
         headers: {
-          'Content-Type': 'application/x-www-form-urlencoded'
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'Authorization': `Bearer ${sessions.googleSession.token}`,
         }
       })
       .then(response => {
@@ -504,7 +505,17 @@ const updateProfile = () => {
     { label: t('gender-options.non-binary'), value: 'Non binary' },
     { label: t('gender-options.male-female'), value: 'Male and Female' },
     { label: t('gender-options.all'), value: 'All' },
+    { label: t('gender-options.transman'), value: 'Trans Man' },
+    { label: t('gender-options.tranwoman'), value: 'Trans Woman' },
   ];
+
+  const genderOptionsBasic = [
+    { label: t('gender-options.male'), value: 'Male' },
+    { label: t('gender-options.female'), value: 'Female' },
+    { label: t('gender-options.non-binary'), value: 'Non binary' },
+    { label: t('gender-options.trans'), value: 'Trans' },
+  ];
+
 
   const gameOptions = [
     { label: 'League of Legends', value: 'League of Legends' },
@@ -542,7 +553,7 @@ const updateProfile = () => {
           placeholder={t('placeholders.gender')}
           otherStyles="mt-7"
           isSelect={true}
-          options={genderOptions}
+          options={genderOptionsBasic}
         />
         <FormField 
           title={t('basic-info.age')}

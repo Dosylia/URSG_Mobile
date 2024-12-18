@@ -7,7 +7,8 @@ const rankValorantList = [
     "Diamond",
     "Ascendant",
     "Radiant",
-    "Immortal"
+    "Immortal",
+    "Any"
 ];
 
 export default rankValorantList;

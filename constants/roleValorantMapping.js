@@ -3,7 +3,8 @@ const roleValorantMapping = {
     "Controller": "Controller",
     "Initiator": "Initiator",
     "Sentinel": "Sentinel",
-    "Fill": "Fill"
+    "Fill": "Fill",
+    "Any": "Any"
 }
 
 export default roleValorantMapping;

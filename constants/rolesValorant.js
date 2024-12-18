@@ -3,5 +3,6 @@ import Duelist from '../assets/rolesValorant/Duelist.webp';
 import Initiator from '../assets/rolesValorant/Initiator.webp';
 import Sentinel from '../assets/rolesValorant/Sentinel.webp';
 import Fill from '../assets/rolesValorant/fill.png';
+import Any from '../assets/rolesValorant/Any.png';
 
-export default { Controller, Duelist, Initiator, Sentinel, Fill };
+export default { Controller, Duelist, Initiator, Sentinel, Fill, Any };

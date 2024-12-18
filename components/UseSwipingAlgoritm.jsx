@@ -1016,8 +1016,6 @@ const UseSwipeAlgorithm = ({ reshapedUserData, allUsers }) => {
         // Stringify the array of objects
         const jsonData = JSON.stringify(dataToSend);
 
-        console.log('Algo data sent to back end : ', dataToSend)
-
         // Create a new fetch request
         fetch('https://ur-sg.com/algoData', {
             method: 'POST',

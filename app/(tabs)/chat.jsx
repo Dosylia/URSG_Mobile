@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext, useCallback, useRef } from 'react';
-import { View, Text, ScrollView, TextInput, TouchableOpacity, ActivityIndicator, Image } from 'react-native';
+import { View, Text, ScrollView, TextInput, TouchableOpacity, ActivityIndicator, Image, FlatList } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { router } from 'expo-router';
 import axios from 'axios';
@@ -72,10 +72,12 @@ const ChatPage = () => {
   };
 
   const fetchMessages = async (userId, friendId) => {
+    const token = sessions.googleSession.token;
     try {
-      const messagesResponse = await axios.post('https://ur-sg.com/getMessageData', new URLSearchParams({ userId, friendId }).toString(), {
+      const messagesResponse = await axios.post('https://ur-sg.com/getMessageDataPhone', new URLSearchParams({ userId, friendId, token}).toString(), {
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
+          'Authorization': `Bearer ${sessions.googleSession.token}`,
         },
       });
 
@@ -86,7 +88,7 @@ const ChatPage = () => {
         }));
         setMessages(formattedMessages);
       } else {
-        console.log(messagesResponse.data.error);
+        console.log("Error getting messages: ", messagesResponse.error);
       }
     } catch (error) {
       console.log('Error fetching messages');
@@ -178,10 +180,11 @@ const addEmoteToMessage = (emoteCode) => {
 
       const jsonData = JSON.stringify(dataToSend);
 
-      const response = await fetch('https://ur-sg.com/sendMessageData', {
+      const response = await fetch('https://ur-sg.com/sendMessageDataPhone', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
+          'Authorization': `Bearer ${sessions.googleSession.token}`,
         },
         body: "param=" + encodeURIComponent(jsonData),
       });
@@ -273,54 +276,78 @@ const addEmoteToMessage = (emoteCode) => {
   
   return (
     <View className="flex-1 bg-gray-900 p-4 dark:bg-whitePerso">
-      {friendPage && (
-        friends.length > 0 ? (
-          <View className="flex-1">
-            <ScrollView>
-              <Text className="text-mainred text-3xl mb-2 font-bold">{t('friends-list')}</Text>
-              {filteredFriends.map((friend) => (
-                <TouchableOpacity
-                  key={friend.fr_id}
-                  className="my-2"
-                  onPress={() => handleSelectFriend(friend)}
-                >
-                  <View className={`p-3 rounded relative flex-row items-center ${colorScheme === 'dark' ? 'bg-gray-300' : 'bg-gray-800'}`}>
-                    <Image 
-                      source={
-                        friend.friend_picture
-                          ? { uri: `https://ur-sg.com/public/upload/${friend.friend_picture}` }
-                          : profileImage}  
-                      className="w-10 h-10 rounded-full mr-4"
-                    />
-                    <Text className="text-white dark:text-blackPerso flex-1 text-xl">{friend.friend_username}</Text>
-                    <Image
-                      source={friend.friend_game === 'League of Legends' ? icons.lolLogo : icons.valorantLogo}
-                      className="w-12 h-12 ml-2"
-                    />
-                    {unreadMessageFriends[friend.friend_id] > 0 && (
-                      <View className="w-4 h-4 bg-red-600 rounded-full items-center justify-center">
-                        <Text className="text-white text-xs font-bold">{unreadMessageFriends[friend.friend_id]}</Text>
-                      </View>
-                    )}
-                  </View>
-                </TouchableOpacity>
-              ))}
-            </ScrollView>
-            {/* Search bar */}
-            <View className={`flex-row items-center p-2 ${colorScheme === 'dark' ? 'bg-gray-300' : 'bg-gray-800'} mt-3`}>
-              <TextInput
-                placeholder={t('search-friends')}
-                placeholderTextColor={colorScheme === 'dark' ? '#2f2f30' : '#ffffff'}
-                value={searchQuery}
-                onChangeText={setSearchQuery}
-                className="flex-1 text-white dark:text-blackPerso p-2 rounded-l"
-              />
+{friendPage && (
+  friends.length > 0 ? (
+    <View className="flex-1">
+      <Text className="text-mainred text-3xl mb-2 font-bold">{t('friends-list')}</Text>
+      {/* FlatList for Friends */}
+      <FlatList
+        data={filteredFriends}
+        keyExtractor={(item) => String(item.fr_id)}
+        renderItem={({ item: friend }) => (
+          <TouchableOpacity
+            className="my-2"
+            onPress={() => handleSelectFriend(friend)}
+          >
+            <View
+              className={`p-3 rounded relative flex-row items-center ${colorScheme === 'dark' ? 'bg-gray-300' : 'bg-gray-800'}`}
+            >
+              {/* Profile Image */}
               <Image
-                source={colorScheme === 'dark' ? icons.searchBlack : icons.search}
-                className="w-6 h-6 ml-2"
+                source={
+                  friend.friend_picture
+                    ? { uri: `https://ur-sg.com/public/upload/${friend.friend_picture}` }
+                    : profileImage
+                }
+                className="w-10 h-10 rounded-full mr-4"
               />
+
+              {/* Username and Online Indicator */}
+              <View className="flex-row items-center flex-1">
+                <Text className="text-white dark:text-blackPerso text-xl">
+                  {friend.friend_username}
+                </Text>
+
+                {/* Online Icon */}
+                {friend.friend_online === 1 && (
+                  <View className="w-3 h-3 bg-green-500 rounded-full ml-2" />
+                )}
+              </View>
+
+              {/* Game Logo */}
+              <Image
+                source={friend.friend_game === 'League of Legends' ? icons.lolLogo : icons.valorantLogo}
+                className="w-12 h-12 ml-2"
+              />
+
+              {/* Unread Messages Badge */}
+              {unreadMessageFriends[friend.friend_id] > 0 && (
+                <View className="w-4 h-4 bg-red-600 rounded-full items-center justify-center">
+                  <Text className="text-white text-xs font-bold">
+                    {unreadMessageFriends[friend.friend_id]}
+                  </Text>
+                </View>
+              )}
             </View>
+          </TouchableOpacity>
+        )}
+        ListHeaderComponent={
+          <View className={`flex-row items-center p-2 ${colorScheme === 'dark' ? 'bg-gray-300' : 'bg-gray-800'} mt-3`}>
+            <TextInput
+              placeholder={t('search-friends')}
+              placeholderTextColor={colorScheme === 'dark' ? '#2f2f30' : '#ffffff'}
+              value={searchQuery}
+              onChangeText={setSearchQuery}
+              className="flex-1 text-white dark:text-blackPerso p-2 rounded-l"
+            />
+            <Image
+              source={colorScheme === 'dark' ? icons.searchBlack : icons.search}
+              className="w-6 h-6 ml-2"
+            />
           </View>
+        }
+      />
+    </View>
         ) : (
           <View className="flex-1 justify-center items-center">
             <Text className="text-white dark:text-blackPerso text-center mb-5 text-2xl ">{t('no-friends')}</Text>
@@ -355,10 +382,9 @@ const addEmoteToMessage = (emoteCode) => {
               <View
                 key={message.chat_id}
                 className={`mb-2 p-3 rounded ${message.chat_senderId === userId ? 'bg-mainred self-end' : `${colorScheme === 'dark' ? 'bg-gray-300' : 'bg-gray-800'} self-start`}`}
-                style={{ maxWidth: '80%', paddingHorizontal: 10 }}
+                style={{ maxWidth: '80%', paddingHorizontal: 10, minWidth: '20%' }}
               >
                 <Text className={`text-white text-base pb-1 ${message.chat_senderId === userId ? 'text-white' : 'dark:text-blackPerso'}`}>
-                {message.chat_senderId === userId ? t('you') : selectedFriend.friend_username}: 
                 {sessions.userSession.hasChatFilter 
                     ? renderEmotes(chatfilter(he.decode(message.chat_message))) 
                     : renderEmotes(he.decode(message.chat_message))}

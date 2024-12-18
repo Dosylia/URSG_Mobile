@@ -54,6 +54,8 @@
     "dark-mode": "Dark mode",
     "light-mode": "Light mode",
     "block-user": "Are you sure you want to block this user?",
+    "unfriend-user": "Are you sure you want to unfriend this user?",
+    "unfriend": "Unfriend",
     "cancel": "Cancel",
     "block": "Block",
     "back-to-friends": "Back to friends",
@@ -81,6 +83,9 @@
     "fill-all-fields": "Please fill all fields",
     "fill-all-fields-champions": "Please fill all fields and ensure agents are unique",
     "return-your-profile": "Return to your profile",
+    "bind-league": "Bind your League of Legends account",
+    "your-server": "Your server",
+    "their-server": "Their server",
     "basic-info": {
         "username": "Username",
         "gender": "Gender",
@@ -121,9 +126,9 @@
         "title": "Looking for"
     },
     "placeholders": {
-        "twitter": "URL of your twitter account",
-        "instagram": "URL of your instagram account",
-        "twitch": "URL of your twitch account",
+        "twitter": "Username of your twitter account",
+        "instagram": "Username of your instagram account",
+        "twitch": "Username of your twitch account",
         "discord": "Your discord username",
         "username": "Choose your username",
         "gender": "Choose your gender",
@@ -158,6 +163,9 @@
         "female": "Female",
         "non-binary": "Non-binary",
         "all": "All",
-        "male-female": "Male and Female"
+        "male-female": "Male and Female",
+        "trans": "Trans",
+        "transman": "Trans Man",
+        "transwoman": "Trans Woman"
     }
 }

@@ -7,7 +7,8 @@ const rankValorantMapping = {
     "Diamond" : "Diamond",
     "Ascendant" : "Ascendant",
     "Radiant" : "Radiant",
-    "Immortal" : "Immortal"
+    "Immortal" : "Immortal",
+    "Any" : "Any"
 }
 
 export default rankValorantMapping;

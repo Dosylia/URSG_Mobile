@@ -54,6 +54,8 @@
     "dark-mode": "Dunkler Modus",
     "light-mode": "Heller Modus",
     "block-user": "Bist du sicher, dass du diesen Benutzer blockieren möchtest?",
+    "unfriend-user": "Bist du sicher, dass du diesen Benutzer entfreunden möchtest?",
+    "unfriend": "Entfreunden",
     "cancel": "Abbrechen",
     "block": "Blockieren",
     "back-to-friends": "Zurück zu Freunden",
@@ -81,6 +83,9 @@
     "fill-all-fields": "Bitte füllen Sie alle Felder aus",
     "fill-all-fields-champions": "Bitte füllen Sie alle Felder aus und stellen Sie sicher, dass die Agenten einzigartig sind",
     "return-your-profile": "Zurück zu Ihrem Profil",
+    "bind-league": "Verknüpfe dein League of Legends-Konto",
+    "your-server": "Dein Server",
+    "their-server": "Ihr Server",
     "basic-info": {
         "username": "Benutzername",
         "gender": "Geschlecht",
@@ -121,9 +126,9 @@
         "title": "Suche"
     },
     "placeholders": {
-        "twitter": "URL deines Twitter-Accounts",
-        "instagram": "URL deines Instagram-Accounts",
-        "twitch": "URL deines Twitch-Accounts",
+        "twitter": "Benutzername Ihres Twitter-Kontos",
+        "instagram": "Benutzername Ihres Instagram-Kontos",
+        "twitch": "Benutzername Ihres Twitch-Kontos",
         "discord": "Dein Discord-Benutzername",
         "username": "Wähle deinen Benutzernamen",
         "gender": "Wähle dein Geschlecht",
@@ -158,6 +163,9 @@
         "female": "Frau",
         "non-binary": "Divers",
         "all": "Alle",
-        "male-female": "Mann/Frau"
+        "male-female": "Mann/Frau",
+        "trans": "Trans",
+        "transman": "Trans Mann",
+        "transwoman": "Trans Frau"
     }
 }

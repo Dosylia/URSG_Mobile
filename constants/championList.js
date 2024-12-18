@@ -8,6 +8,7 @@ const championList = [
     "Amumu",
     "Anivia",
     "Annie",
+    "Aphelios",
     "Ashe",
     "Aurelion Sol",
     "Aurora",

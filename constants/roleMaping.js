@@ -5,7 +5,8 @@ const roleMapping = {
     "Fill": "Fill",
     "Jungler": "Jungler",
     "Mid laner": "Midlaner",
-    "Top laner": "Toplaner"
+    "Top laner": "Toplaner",
+    "Any": "Any"
   };
   
   export default roleMapping;

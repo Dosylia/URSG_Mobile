@@ -139,6 +139,7 @@ const LookingForData = () => {
     { label: t('gender-options.non-binary'), value: 'Non binary' },
     { label: t('gender-options.male-female'), value: 'Male and Female' },
     { label: t('gender-options.all'), value: 'All' },
+    { label: t('gender-options.trans'), value: 'Trans' },
   ];
 
   let availableChampionsForMain1 = championList;

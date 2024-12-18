@@ -6,6 +6,7 @@ import Alistar from '../assets/champions/Alistar.png';
 import Amumu from '../assets/champions/Amumu.png';
 import Anivia from '../assets/champions/Anivia.png';
 import Annie from '../assets/champions/Annie.png';
+import Aphelios from '../assets/champions/Aphelios.png';
 import Ashe from '../assets/champions/Ashe.png';
 import AurelionSol from '../assets/champions/AurelionSol.png';
 import Aurora from '../assets/champions/Aurora.png';
@@ -175,6 +176,7 @@ export default {
     Amumu,
     Anivia,
     Annie,
+    Aphelios,
     Ashe,
     AurelionSol,
     Aurora,

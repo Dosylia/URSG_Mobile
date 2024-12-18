@@ -3,7 +3,8 @@ const roleValorantList = [
     "Duelist",
     "Initiator",
     "Sentinel",
-    "Fill"
+    "Fill",
+    "Any"
 ]
 
 export default roleValorantList;

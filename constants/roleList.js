@@ -4,7 +4,8 @@ const roleList = [
     "Fill",
     "Jungler",
     "Mid laner",
-    "Top laner"
+    "Top laner",
+    "Any"
 ];
 
 

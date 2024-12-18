@@ -21,14 +21,16 @@ const StoreAndLeaderboard = () => {
   const [visible, setVisible] = useState(false);
 
   const fetchAllUsers = async () => {
+    const adminToken = '56874d4zezfze656e2f6e62f6e';
     try {
       if (sessions.userSession && sessions.userSession.userId) {
         console.log("User session found:", sessions.userSession);
-        const allUsersResponse = await axios.post('https://ur-sg.com/getAllUsers', {
+        const allUsersResponse = await axios.post('https://ur-sg.com/getAllUsersPhone', {
           allUsers: 'allUsers'
         }, {
           headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Authorization': `Bearer ${adminToken}`,
           }
         });
         const allUsersData = allUsersResponse.data;
@@ -72,15 +74,17 @@ const StoreAndLeaderboard = () => {
     try {
       let response;
       if (itemCategory === 'role') {
-        response = await axios.post('https://ur-sg.com/buyRole', `param=${encodeURIComponent(jsonData)}`, {
+        response = await axios.post('https://ur-sg.com/buyRolePhone', `param=${encodeURIComponent(jsonData)}`, {
           headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Authorization': `Bearer ${sessions.googleSession.token}`,
           }
         });
       } else {
-        response = await axios.post('https://ur-sg.com/buyItem', `param=${encodeURIComponent(jsonData)}`, {
+        response = await axios.post('https://ur-sg.com/buyItemPhone', `param=${encodeURIComponent(jsonData)}`, {
           headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Authorization': `Bearer ${sessions.googleSession.token}`,
           }
         });
       }
@@ -225,6 +229,7 @@ const StoreAndLeaderboard = () => {
             <View>
               {[...new Map(allUsers.map(user => [user.user_id, user])).values()]
                 .sort((a, b) => b.user_currency - a.user_currency)
+                .slice(0, 100)
                 .map((user, index) => (
                   <View className="flex-row justify-between items-center py-2 border-b border-gray-300" key={user.user_id}>
                     {/* Rank */}

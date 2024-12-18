@@ -10,7 +10,8 @@ const rankMapping = {
     "Master" : "Master",
     "Grand Master" : "GrandMaster",
     "Challenger" : "Challenger",
-    "Unranked" : "Unranked"
+    "Unranked" : "Unranked",
+    "Any" : "Any"
   };
   
   export default rankMapping;

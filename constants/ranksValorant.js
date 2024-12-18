@@ -7,6 +7,7 @@ import Diamond from '../assets/ranksValorant/Diamond.png';
 import Ascendant from '../assets/ranksValorant/Ascendant.png';
 import Radiant from '../assets/ranksValorant/Radiant.png';
 import Immortal from '../assets/ranksValorant/Immortal.png';
+import Any from '../assets/ranksValorant/Any.png';
 
-export default { Iron, Bronze, Silver, Gold, Platinum, Diamond, Ascendant, Radiant, Immortal };
+export default { Iron, Bronze, Silver, Gold, Platinum, Diamond, Ascendant, Radiant, Immortal, Any };
 
