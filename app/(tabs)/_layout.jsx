@@ -1,8 +1,13 @@
-import { View, Text, Image, SafeAreaView } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, Image, SafeAreaView, Keyboard } from 'react-native';
 import { Tabs } from 'expo-router';
 import { useColorScheme } from 'nativewind';
 import { useData } from '../../context/DataContext';
 import { icons } from '../../constants';
+import * as Notifications from 'expo-notifications';
+import { router } from 'expo-router';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useChat } from '../../context/ChatContext';
 
 const TabIcon = ({ icon, color, name, focused, badgeCount }) => {
   return (
@@ -25,11 +30,11 @@ const TabIcon = ({ icon, color, name, focused, badgeCount }) => {
       </Text>
     </View>
   );
-}; 
+};
 
-const formatCurrency = (value) =>{
+const formatCurrency = (value) => {
   if (value >= 1000) {
-      return Math.floor(value / 1000) + 'k';
+    return Math.floor(value / 1000) + 'k';
   }
   return value;
 }
@@ -41,6 +46,41 @@ const TabsLayout = () => {
   const borderCorlor = colorScheme === 'dark' ? '#7f8287' : '#232533';
   const tabColor = colorScheme === 'dark' ? '#ffffff' : '#CDCDE0';
   const backgroundColorHeader = colorScheme === 'dark' ? '#ffffff' : '#111827';
+  const { setChatPageState } = useChat(); 
+
+  // State to track if the keyboard is open
+  const [isKeyboardVisible, setIsKeyboardVisible] = useState(false);
+
+  // Listen to keyboard events
+  useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => {
+      setIsKeyboardVisible(true); // Keyboard is open
+    });
+
+    const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', () => {
+      setIsKeyboardVisible(false); // Keyboard is closed
+    });
+
+    return () => {
+      keyboardDidHideListener.remove();
+      keyboardDidShowListener.remove();
+    };
+  }, []);
+
+
+  useEffect(() => {
+    const subscription = Notifications.addNotificationResponseReceivedListener(response => {
+      const { screen, chatId } = response.notification.request.content.data;
+      
+      if (screen === 'chat') {
+        AsyncStorage.setItem('selectedFriendId', String(chatId));
+        setChatPageState(true);
+        router.push(`/chat`);
+      }
+    });
+
+    return () => subscription.remove();
+  }, [router]);
 
   return (
     <SafeAreaView style={{ flex: 1, paddingTop: 50, backgroundColor: backgroundColorHeader }}>
@@ -53,7 +93,7 @@ const TabsLayout = () => {
             backgroundColor: backgroundColorClass,
             borderTopWidth: 1,
             borderTopColor: borderCorlor,
-            height: 84,
+            height: isKeyboardVisible ? 0 : 84, // Hide the tab bar when the keyboard is visible
           },
         }}
       >
@@ -95,18 +135,18 @@ const TabsLayout = () => {
             headerShown: false,
             tabBarIcon: ({ color, focused }) => (
               <View className="items-center justify-center gap-2 relative">
-              <View className="relative">
-                <Image
-                  source={icons.soulHard}
-                  resizeMode="contain"
-                  style={{ tintColor: color, width: 30, height: 30 }}
-                  className="w-6 h-6"
-                />
+                <View className="relative">
+                  <Image
+                    source={icons.soulHard}
+                    resizeMode="contain"
+                    style={{ tintColor: color, width: 30, height: 30 }}
+                    className="w-6 h-6"
+                  />
+                </View>
+                <Text className={`${focused ? 'font-semibold' : 'font-normal'} text-xs`} style={{ color: color }}>
+                  {formatCurrency(currency)}
+                </Text>
               </View>
-              <Text className={`${focused ? 'font-semibold' : 'font-normal'} text-xs`} style={{ color: color }}>
-                {formatCurrency(currency)}
-              </Text>
-            </View>
             ),
           }}
         />

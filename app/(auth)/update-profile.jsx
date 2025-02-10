@@ -14,11 +14,13 @@ import championValorantList from  "../../constants/championValorantList";
 import roleValorantList from "../../constants/roleValorantList";
 import rankValorantList from "../../constants/rankValorantList";
 import serverList from "../../constants/serverList";
+import { useColorScheme } from 'nativewind';
 
 
 
 const updateProfile = () => {
   const { t } = useTranslation();
+  const { colorScheme } = useColorScheme();
   const { sessions, setSession } = useContext(SessionContext);
   const [errors, setErrors] = useState('');
   const [previousGame, setPreviousGame] = useState(sessions.userSession.game);
@@ -802,10 +804,12 @@ const updateProfile = () => {
           {serverListFinal.map((server) => (
             <TouchableOpacity
               key={server}
-              className={`m-1 px-4 py-2 rounded-lg ${Array.isArray(form.filteredServerLf) && form.filteredServerLf.includes(server) ? "bg-red-500" : "bg-gray-300"}`}
+              className={`m-1 px-4 py-2 rounded-lg ${Array.isArray(form.filteredServerLf) && form.filteredServerLf.includes(server) ? "bg-red-500" : (colorScheme === 'dark' ? 'bg-gray-300' : 'bg-gray-800')}`}
               onPress={() => toggleServer(server)}
             >
-              <Text className="text-white">{server}</Text>
+              <Text className={`text-white ${Array.isArray(form.filteredServerLf) && form.filteredServerLf.includes(server) ? '' : 'dark:text-blackPerso'}`}>
+                {server}
+              </Text>
             </TouchableOpacity>
           ))}
           </View>

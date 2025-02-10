@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useContext, useCallback, useRef } from 'react';
-import { View, Text, ScrollView, TextInput, TouchableOpacity, ActivityIndicator, Image, FlatList } from 'react-native';
+import { View, Text, ScrollView, TextInput, TouchableOpacity, ActivityIndicator, Image, FlatList, Linking } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { router } from 'expo-router';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { SessionContext } from '../../context/SessionContext';
+import { useChat } from '../../context/ChatContext';
 import { UserDataChat, CustomButton } from '../../components';
 import { useTranslation } from 'react-i18next';
 import { useColorScheme } from 'nativewind';
@@ -27,7 +28,7 @@ const ChatPage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [errors, setErrors] = useState(null);
   const [friendPage, setFriendPage] = useState(true);
-  const [chatPage, setChatPage] = useState(false);
+  // const [chatPage, setChatPage] = useState(false);
   const backgroundColorClass = colorScheme === 'dark' ? 'bg-gray-300' : 'bg-gray-800';
   const placeholderColor = colorScheme === 'dark' ? '#2f2f30' : '#bcb0b0';
   const profileImage = images.defaultpicture; 
@@ -37,6 +38,7 @@ const ChatPage = () => {
   const [isBlocked, setIsBlocked] = useState(false);
   const { friendList } = useFriendList();
   const [isEmotePickerVisible, setIsEmotePickerVisible] = useState(false);
+  const { chatPage, setChatPageState } = useChat();
 
   const scrollViewRef = useRef();
 
@@ -67,7 +69,7 @@ const ChatPage = () => {
     if (blockStatus) {
       fetchChatData();  
       setFriendPage(true); 
-      setChatPage(false);
+      setChatPageState(false);
     }
   };
 
@@ -107,7 +109,7 @@ const ChatPage = () => {
     return filteredText;
 }
 
-function renderEmotes(message) {
+function detectEmotes(part, index) {
   const emoteMap = {
     ':surprised-cat:': emotes.surprisedCat,
     ':cat-smile:': emotes.catSmile,
@@ -120,23 +122,61 @@ function renderEmotes(message) {
     ':cat-licking:': emotes.catlicking,
   };
 
-  return message.split(/(:[a-zA-Z0-9]+(?:-[a-zA-Z0-9]+)*:)/g).map((part, index) => {
-    const cleanedPart = part.replace(/::.*$/g, ''); 
-    if (emoteMap[cleanedPart]) {
-      return (
-        <Image
-          key={`emote-${index}`}
-          source={emoteMap[cleanedPart]}
-          style={{ width: 30, height: 30 }}
-          resizeMode="contain"
-        />
-      );
-    }
-    return <Text key={`text-${index}`}>{part}</Text>;
-  });
+  const cleanedPart = part.replace(/::.*$/g, '');
+  if (emoteMap[cleanedPart]) {
+    return (
+      <Image
+        key={`emote-${index}`}
+        source={emoteMap[cleanedPart]}
+        style={{ width: 30, height: 30 }}
+        resizeMode="contain"
+      />
+    );
+  }
+  return null;
 }
 
+// Link detection
+function detectLinks(part, index) {
+  const urlRegex = /(https?:\/\/[^\s]+)/g;
+  if (part.match(urlRegex)) {
+    return (
+      <TouchableOpacity
+        key={`link-${index}`}
+        onPress={() => Linking.openURL(part)}
+      >
+        <Text style={{ color: '#00f', textDecorationLine: 'underline' }}>
+          {part}
+        </Text>
+      </TouchableOpacity>
+    );
+  }
+  return null;
+}
 
+// Text processing
+function processTextPart(part, index) {
+  return (
+    <Text
+      key={`text-${index}`}
+      value={part}
+      style={{ color: colorScheme === 'dark' ? '#000' : '#FFF' }}
+    />
+  );
+}
+
+// Main render function
+function renderMessageContent(message) {
+  return message.split(/(:[a-zA-Z0-9]+(?:-[a-zA-Z0-9]+)*:)|(https?:\/\/[^\s]+)/g).map((part, index) => {
+    if (!part) return null;
+
+    return (
+      detectEmotes(part, index) ||
+      detectLinks(part, index) ||
+      processTextPart(part, index)
+    );
+  });
+}
 
 const toggleEmotePicker = () => {
   setIsEmotePickerVisible(!isEmotePickerVisible);
@@ -157,14 +197,14 @@ const addEmoteToMessage = (emoteCode) => {
   const handleSelectFriend = async (friend) => {
     setSelectedFriend(friend);
     setFriendPage(false);
-    setChatPage(true);
+    setChatPageState(true);
     setMessages([]);
     await AsyncStorage.setItem('selectedFriendId', String(friend.friend_id));
     fetchMessages(userId, friend.friend_id);
   };
 
   const handleBackToFriendList = () => {
-    setChatPage(false);
+    setChatPageState(false);
     setFriendPage(true);
   };
 
@@ -386,8 +426,8 @@ const addEmoteToMessage = (emoteCode) => {
               >
                 <Text className={`text-white text-base pb-1 ${message.chat_senderId === userId ? 'text-white' : 'dark:text-blackPerso'}`}>
                 {sessions.userSession.hasChatFilter 
-                    ? renderEmotes(chatfilter(he.decode(message.chat_message))) 
-                    : renderEmotes(he.decode(message.chat_message))}
+                    ? renderMessageContent(chatfilter(he.decode(message.chat_message))) 
+                    : renderMessageContent(he.decode(message.chat_message))}
                 </Text>
                 <Text className={`text-white ${message.chat_senderId === userId ? 'text-white' : 'dark:text-blackPerso'} text-xs absolute bottom-0 right-0 pr-1 pt-1 opacity-50`}>{message.formattedTime}</Text>
               </View>
