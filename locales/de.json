@@ -91,6 +91,8 @@
     "their-server": "Ihr Server",
     "gallery": "Galerie",
     "their-gallery": "Ihre Galerie",
+    "server-filter-title": "Serverfilter",
+    "server-filter-info": "Sie sehen nur Server, auf denen die Schaltfläche rot ist",
     "basic-info": {
         "username": "Benutzername",
         "gender": "Geschlecht",

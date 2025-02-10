@@ -67,6 +67,7 @@ const championMapping = {
     "Kindred": "Kindred",
     "Kled": "Kled",
     "Kog Maw": "KogMaw",
+    "KogMaw": "KogMaw",
     "Ksante": "Ksante",
     "LeBlanc": "LeBlanc",
     "Lee Sin": "LeeSin",

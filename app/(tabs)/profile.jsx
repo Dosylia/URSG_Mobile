@@ -142,6 +142,7 @@ const Profile = () => {
                 game: response.data.user.user_game,
                 shortBio: response.data.user.user_shortBio,
                 picture: response.data.user.user_picture,
+                bonusPicture: response.data.user.user_bonusPicture,
                 discord: response.data.user.user_discord,
                 instagram: response.data.user.user_instagram,
                 twitch: response.data.user.user_twitch,
@@ -179,6 +180,7 @@ const Profile = () => {
                 game: response.data.user.user_game,
                 shortBio: response.data.user.user_shortBio,
                 picture: response.data.user.user_picture,
+                bonusPicture: response.data.user.user_bonusPicture,
                 discord: response.data.user.user_discord,
                 instagram: response.data.user.user_instagram,
                 twitch: response.data.user.user_twitch,
@@ -350,6 +352,9 @@ const Profile = () => {
       {friendId && ( 
         <>
           <RiotProfileSection userData={userData} isProfile={false} />
+          {userData?.bonusPicture && userData.bonusPicture !== "[]" && JSON.parse(userData.bonusPicture).length > 0 && (
+            <BonusPicture userData={userData} isProfile={false} />
+          )}
           <LookingForSection userData={userData} isProfile={false}/>
         </>
        )} 

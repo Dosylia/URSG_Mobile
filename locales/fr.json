@@ -91,6 +91,8 @@
     "their-server": "Leur serveur",
     "gallery": "Galerie",
     "their-gallery": "Leur galerie",
+    "server-filter-title": "Filtre de serveur",
+    "server-filter-info": "Vous ne verrez que les serveurs où le bouton est rouge",
     "basic-info": {
         "username": "Nom d'utilisateur",
         "gender": "Genre",

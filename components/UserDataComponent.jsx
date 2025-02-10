@@ -66,7 +66,8 @@ const UserDataComponent = ({ sessions, onUserDataChange }) => {
         main2Lf: sessions.lookingforSession.main2Lf,
         main3Lf: sessions.lookingforSession.main3Lf,
         rankLf: sessions.lookingforSession.rankLf,
-        roleLf: sessions.lookingforSession.roleLf
+        roleLf: sessions.lookingforSession.roleLf,
+        filteredServerLf : sessions.lookingforSession.filteredServerLf,
       };
       
       // Call the callback function to pass the data up

@@ -49,6 +49,9 @@ const updateProfile = () => {
     main3Lf: sessions.userSession.game === 'League of Legends' ? sessions.lookingforSession.main3Lf : sessions.lookingforSession.valmain3Lf,
     rankLf: sessions.userSession.game === 'League of Legends' ? sessions.lookingforSession.rankLf : sessions.lookingforSession.valrankLf,
     roleLf: sessions.userSession.game === 'League of Legends' ? sessions.lookingforSession.roleLf : sessions.lookingforSession.valroleLf,
+    filteredServerLf: sessions.lookingforSession.filteredServerLf 
+    ? JSON.parse(sessions.lookingforSession.filteredServerLf) 
+    : [], 
   });
 
   useEffect(() => {
@@ -105,6 +108,7 @@ const updateProfile = () => {
                 main3Lf: form.game === 'League of Legends' ? user.lf_lolmain3 : user.lf_valmain3,
                 rankLf: form.game === 'League of Legends' ? user.lf_lolrank : user.lf_valrank,
                 roleLf: form.game === 'League of Legends' ? user.lf_lolrole : user.lf_valrole,
+                filteredServerLf : user.lf_filteredServer,
             };
               axios.post('https://ur-sg.com/updateUserPhone', {
                 userData: JSON.stringify({...dataUpdated, skipSelection, skipSelectionLf})
@@ -162,7 +166,8 @@ const updateProfile = () => {
                       rankLf: user.lf_lolrank,
                       roleLf: user.lf_lolrole,
                       gameLf: form.game,
-                      skipSelectionLf : user.lf_lolNoChamp
+                      skipSelectionLf : user.lf_lolNoChamp,
+                      filteredServerLf : user.lf_filteredServer
                     }, () => {
                       setTimeout(() => {
                         router.push("/(tabs)/profile");
@@ -206,7 +211,8 @@ const updateProfile = () => {
                       valrankLf: user.lf_valrank,
                       valroleLf: user.lf_valrole,
                       gameLf: form.game,
-                      skipSelectionLf : user.lf_valNoChamp
+                      skipSelectionLf : user.lf_valNoChamp,
+                      filteredServerLf : user.lf_filteredServer
                     }, () => {
                       setTimeout(() => {
                         router.push("/(tabs)/profile");
@@ -248,6 +254,7 @@ const updateProfile = () => {
                 main3Lf: isLoL ? 'Aatrox' : 'Astra',
                 rankLf: isLoL ? 'Bronze' : 'Bronze',
                 roleLf: isLoL ? 'ADCarry' : 'Controller',
+                filteredServerLf: ''
               }));
             }
           } else {
@@ -279,6 +286,7 @@ const updateProfile = () => {
       form.kindOfGamerLf &&
       form.rankLf &&
       form.roleLf &&
+      form.filteredServerLf &&
       (skipSelection === 1 || 
         form.main1 !== form.main2 &&
         form.main1 !== form.main3 &&
@@ -352,7 +360,8 @@ const updateProfile = () => {
               rankLf: form.rankLf,
               roleLf: form.roleLf,
               gameLf: form.game,
-              skipSelectionLf : skipSelectionLf
+              skipSelectionLf : skipSelectionLf,
+              filteredServerLf : JSON.stringify(form.filteredServerLf)
             }, () => {
               setTimeout(() => {
                 router.push("/(tabs)/profile");
@@ -389,7 +398,8 @@ const updateProfile = () => {
               valrankLf: form.rankLf,
               valroleLf: form.roleLf,
               gameLf: form.game,
-              skipSelectionLf : skipSelectionLf
+              skipSelectionLf : skipSelectionLf,
+              filteredServerLf : JSON.stringify(form.filteredServerLf)
             }, () => {
               setTimeout(() => {
                 router.push("/(tabs)/profile");
@@ -492,6 +502,12 @@ const updateProfile = () => {
     { label: server, value: server }
   ));
 
+  const serverListFinal = [
+    "Europe West", "North America", "Europe Nordic & East", "Brazil",
+    "Latin America North", "Latin America South", "Oceania",
+    "Russia", "Turkey", "Japan", "Korea"
+  ];
+
 
   const gamerOptions = [
     { label: t('gamer-options.chill'), value: 'Chill' },
@@ -533,6 +549,22 @@ const updateProfile = () => {
   function toggleSkipSelectionLf() {
     setSkipSelectionLf(prev => (prev === 0 ? 1 : 0));
   }
+
+  const toggleServer = (server) => {
+    let currentServers = Array.isArray(form.filteredServerLf) ? form.filteredServerLf : [];
+  
+    let updatedServers;
+    if (currentServers.includes(server)) {
+      updatedServers = currentServers.filter(s => s !== server);
+    } else {
+      updatedServers = [...currentServers, server];
+    }
+  
+    setForm(prev => ({ ...prev, filteredServerLf: updatedServers }));
+  };
+  
+
+  console.log("Form :" , form);
 
   return (
     <SafeAreaView className="bg-gray-900 dark:bg-whitePerso h-full">
@@ -763,6 +795,21 @@ const updateProfile = () => {
           image={form.roleLf}
           imageOrigin={form.game === 'League of Legends' ? 'roles' : 'rolesValorant'}
         />
+        <View className={`space-y-2 mt-7`}>
+          <Text className="text-xl text-gray-100 dark:text-blackPerso font-pmedium">{t('server-filter-title')}</Text>
+          <Text className="text-base text-gray-100 dark:text-blackPerso font-pmedium">{t('server-filter-info')}</Text>
+          <View className="flex-wrap flex-row mt-2">
+          {serverListFinal.map((server) => (
+            <TouchableOpacity
+              key={server}
+              className={`m-1 px-4 py-2 rounded-lg ${Array.isArray(form.filteredServerLf) && form.filteredServerLf.includes(server) ? "bg-red-500" : "bg-gray-300"}`}
+              onPress={() => toggleServer(server)}
+            >
+              <Text className="text-white">{server}</Text>
+            </TouchableOpacity>
+          ))}
+          </View>
+        </View>
       </Collapse>
       {errors ? <Text className="text-red-600 font-psemibold text-xl my-2">{errors}</Text> : null}
           <CustomButton 

@@ -72,6 +72,8 @@
     "filter-change": "Change the filter of the app (No filter/Strict)",
     "filter-on": "Filter on/Strict",
     "filter-off": "Filter off",
+    "server-filter-title": "Server filter",
+    "server-filter-info": "You'll be seeing only servers where button is red",
     "buy": "Buy",
     "owned": "Owned",
     "leaderboard": "Leaderboard",
