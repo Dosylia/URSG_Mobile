@@ -81,7 +81,8 @@ const LookingForData = () => {
         lookingforData: JSON.stringify({ ...form, skipSelection })
       }, {
         headers: {
-          'Content-Type': 'application/x-www-form-urlencoded'
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'Authorization': `Bearer ${sessions.googleSession.token}`,
         }
       })
         .then(response => {

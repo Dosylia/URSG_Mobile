@@ -10,6 +10,7 @@ import UseSwipeAlgorithm  from "./UseSwipingAlgoritm";
 import Collapse from "./Collapse";
 import ValorantDataComponent from "./ValorantDataComponent";
 import ProgressBar from "./ProgressBar";
+import BonusPicture from "./BonusPicture";
 
 export {
     CustomButton,
@@ -24,4 +25,5 @@ export {
     Collapse,
     ValorantDataComponent, 
     ProgressBar,
+    BonusPicture,
   };

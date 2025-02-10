@@ -1,4 +1,5 @@
 import React from 'react';
+import { useState, useEffect } from 'react';
 import { View, Text, Image } from 'react-native';
 import ProfileSection from './ProfileSection';
 import { images } from "../constants";
@@ -8,11 +9,28 @@ import he from 'he';
 import { useTranslation } from 'react-i18next';
 import { useColorScheme } from 'nativewind';
 
-const BASE_PROFILE_ICON_URL = 'https://ddragon.leagueoflegends.com/cdn/14.23.1/img/profileicon/';
-
 const RiotProfileSection = ({ userData, isProfile }) => {
   const { colorScheme } = useColorScheme();
   const { t } = useTranslation();
+  const [version, setVersion] = useState(null);
+  useEffect(() => {
+    const fetchVersion = async () => {
+      try {
+        const response = await fetch("https://ddragon.leagueoflegends.com/api/versions.json");
+        const versions = await response.json();
+        setVersion(versions[0]);
+      } catch (error) {
+        console.error("Error fetching version:", error);
+      }
+    };
+
+    fetchVersion();
+  }, []);
+
+  const BASE_PROFILE_ICON_URL = version
+    ? `https://ddragon.leagueoflegends.com/cdn/${version}/img/profileicon/`
+    : 'https://ddragon.leagueoflegends.com/cdn/15.2.1/img/profileicon/';
+
   const riotProfilePicture = userData?.sProfileIcon
     ? { uri: `${BASE_PROFILE_ICON_URL}${userData.sProfileIcon}.png` }
     : images.defaultpictureLol;

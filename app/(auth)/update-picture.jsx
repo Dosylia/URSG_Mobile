@@ -103,6 +103,7 @@ const UpdatePicture = () => {
         {
           headers: {
             'Content-Type': 'multipart/form-data',
+            'Authorization': `Bearer ${sessions.googleSession.token}`,
           },
         }
       );
@@ -170,6 +171,7 @@ const UpdatePicture = () => {
       const response = await axios.post('https://ur-sg.com/usePictureFrame', formData, {
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
+          'Authorization': `Bearer ${sessions.googleSession.token}`,
         },
       });
   

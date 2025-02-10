@@ -6,7 +6,7 @@ import { router } from 'expo-router';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 
 import { SessionContext } from '../../context/SessionContext';
-import { ProfileHeader, RiotProfileSection, LookingForSection, CustomButton, UserDataComponent } from "../../components";
+import { ProfileHeader, RiotProfileSection, LookingForSection, CustomButton, UserDataComponent, BonusPicture } from "../../components";
 import { icons } from "../../constants";
 import { useTranslation } from 'react-i18next';
 import { useFriendList } from '../../context/FriendListContext'; 
@@ -340,6 +340,9 @@ const Profile = () => {
             containerStyles="w-full mt-7 mb-7"
           />
           <RiotProfileSection userData={userData} isProfile={true} />
+          {userData?.bonusPicture && userData.bonusPicture !== "[]" && JSON.parse(userData.bonusPicture).length > 0 && (
+            <BonusPicture userData={userData} isProfile={true} />
+          )}
           <LookingForSection userData={userData} isProfile={true}/>
         </>
        )} 

@@ -21,6 +21,7 @@ const UserDataComponent = ({ sessions, onUserDataChange }) => {
         game: sessions.userSession.game,
         shortBio: sessions.userSession.shortBio,
         picture : sessions.userSession.picture,
+        bonusPicture: sessions.userSession.bonusPicture,
         discord : sessions.userSession.discord,
         instagram : sessions.userSession.instagram,
         twitch : sessions.userSession.twitch,

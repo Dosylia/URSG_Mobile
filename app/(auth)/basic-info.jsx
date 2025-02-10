@@ -84,7 +84,8 @@ const BasicInfo = () => {
         userData: JSON.stringify(form)
       }, {
         headers: {
-          'Content-Type': 'application/x-www-form-urlencoded'
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'Authorization': `Bearer ${sessions.googleSession.token}`,
         }
       })
         .then(response => {
@@ -138,7 +139,7 @@ const BasicInfo = () => {
     { label: t('gender-options.female'), value: 'Female' },
     { label: t('gender-options.non-binary'), value: 'Non binary' },
     { label: t('gender-options.transman'), value: 'Trans Man' },
-    { label: t('gender-options.tranwoman'), value: 'Trans Woman' },
+    { label: t('gender-options.transwoman'), value: 'Trans Woman' },
   ];
 
   const gameOptions = [

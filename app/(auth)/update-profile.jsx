@@ -505,15 +505,15 @@ const updateProfile = () => {
     { label: t('gender-options.non-binary'), value: 'Non binary' },
     { label: t('gender-options.male-female'), value: 'Male and Female' },
     { label: t('gender-options.all'), value: 'All' },
-    { label: t('gender-options.transman'), value: 'Trans Man' },
-    { label: t('gender-options.tranwoman'), value: 'Trans Woman' },
+    { label: t('gender-options.trans'), value: 'Trans' },
   ];
 
   const genderOptionsBasic = [
     { label: t('gender-options.male'), value: 'Male' },
     { label: t('gender-options.female'), value: 'Female' },
     { label: t('gender-options.non-binary'), value: 'Non binary' },
-    { label: t('gender-options.trans'), value: 'Trans' },
+    { label: t('gender-options.transman'), value: 'Trans Man' },
+    { label: t('gender-options.transwoman'), value: 'Trans Woman' },
   ];
 
 

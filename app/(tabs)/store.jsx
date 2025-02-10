@@ -19,6 +19,29 @@ const StoreAndLeaderboard = () => {
   const { sessions, setSession } = useContext(SessionContext);
   const { userId } = sessions.userSession;
   const [visible, setVisible] = useState(false);
+  const [ownedItems, setOwnedItems] = useState([]);
+
+  const fetchOwnedItems = async () => {
+    try {
+      const response = await axios.post('https://ur-sg.com/getOwnedItems', {
+        userId: userId
+      }, {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'Authorization': `Bearer ${sessions.googleSession.token}`,
+        }
+      });
+      const itemsData = response.data;
+      console.log('Items data:', itemsData);
+      if (itemsData.message === 'Success') {
+        setOwnedItems(itemsData.items);
+      } else {
+        setOwnedItems([]);
+      }
+    } catch (error) {
+      console.error('Error fetching items:', error);
+    }
+  };
 
   const fetchAllUsers = async () => {
     const adminToken = '56874d4zezfze656e2f6e62f6e';
@@ -117,6 +140,7 @@ const StoreAndLeaderboard = () => {
   useEffect(() => {
     fetchAllUsers();
     fetchItems();
+    fetchOwnedItems();
   }, []);
 
   const redirectToProfile = (friendId) => {
@@ -212,10 +236,27 @@ const StoreAndLeaderboard = () => {
                 )}
 
                 <TouchableOpacity
-                  className="mt-4 bg-mainred text-white text-xl p-2 rounded-full"
-                  onPress={() => handleBuyItem(item.items_id, item.items_category)}
+                  className={`mt-4 p-2 rounded-full ${(
+                    ownedItems.some(ownedItem => ownedItem.items_id === item.items_id) || 
+                    (item.items_category === "role" && sessions.userSession.isVip === 1)
+                  ) ? 'bg-gray-500' : 'bg-mainred'}`}
+                  onPress={() => (
+                    (ownedItems.some(ownedItem => ownedItem.items_id === item.items_id) || 
+                    (item.items_category === "role" && sessions.userSession.isVip === 1))
+                    ? null 
+                    : handleBuyItem(item.items_id, item.items_category)
+                  )}
+                  disabled={
+                    (ownedItems.some(ownedItem => ownedItem.items_id === item.items_id) || 
+                    (item.items_category === "role" && sessions.userSession.isVip === 1))
+                  }
                 >
-                  <Text className="text-white text-center">{t('buy')}</Text>
+                  <Text className="text-white text-center">
+                    {(ownedItems.some(ownedItem => ownedItem.items_id === item.items_id) || 
+                      (item.items_category === "role" && sessions.userSession.isVip === 1))
+                      ? t('owned') 
+                      : t('buy')}
+                  </Text>
                 </TouchableOpacity>
               </View>
             ))}
