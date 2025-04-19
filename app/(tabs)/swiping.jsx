@@ -1,5 +1,5 @@
 import { ActivityIndicator, Text, View, StyleSheet, TouchableOpacity, Image, Dimensions, Modal } from 'react-native';
-import React, { useState, useEffect, useContext, useCallback } from 'react';
+import React, { useState, useEffect, useContext, useCallback, useRef } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
 import axios from 'axios';
 import { PanGestureHandler, GestureDetector, Gesture, ScrollView } from 'react-native-gesture-handler'; 
@@ -26,71 +26,72 @@ const Swiping = () => {
   const activeIndex = useSharedValue(0);
   const translationX = useSharedValue(0);
   const screenWidth = Dimensions.get('screen').width;
+  const hasFetched = useRef(false);
 
-  const reshapedUserData = {
-    user_id: userData?.userId,
-    user_gender: userData?.gender,
-    user_age: userData?.age,
-    user_kindOfGamer: userData?.kindOfGamer,
-    user_game: userData?.game,
-    lol_server: userData?.server,
-    lol_main1: userData?.main1,
-    lol_main2: userData?.main2,
-    lol_main3: userData?.main3,
-    lol_rank: userData?.rank,
-    lol_role: userData?.role,
-    valorant_server: userData?.valserver,
-    valorant_main1: userData?.valmain1,
-    valorant_main2: userData?.valmain2,
-    valorant_main3: userData?.valmain3,
-    valorant_rank: userData?.valrank,
-    valorant_role: userData?.valrole,
-    lf_gender: userData?.genderLf,
-    lf_kindofgamer: userData?.kindOfGamerLf,
-    lf_game: userData?.gameLf,
-    lf_lolmain1: userData?.main1Lf,
-    lf_lolmain2: userData?.main2Lf,
-    lf_lolmain3: userData?.main3Lf,
-    lf_lolrank: userData?.rankLf,
-    lf_lolrole: userData?.roleLf,
-    lf_valmain1: userData?.valmain1Lf,
-    lf_valmain2: userData?.valmain2Lf,
-    lf_valmain3: userData?.valmain3Lf,
-    lf_valrank: userData?.valrankLf,
-    lf_valrole: userData?.valroleLf,
-  };
+  // const reshapedUserData = {
+  //   user_id: userData?.userId,
+  //   user_gender: userData?.gender,
+  //   user_age: userData?.age,
+  //   user_kindOfGamer: userData?.kindOfGamer,
+  //   user_game: userData?.game,
+  //   lol_server: userData?.server,
+  //   lol_main1: userData?.main1,
+  //   lol_main2: userData?.main2,
+  //   lol_main3: userData?.main3,
+  //   lol_rank: userData?.rank,
+  //   lol_role: userData?.role,
+  //   valorant_server: userData?.valserver,
+  //   valorant_main1: userData?.valmain1,
+  //   valorant_main2: userData?.valmain2,
+  //   valorant_main3: userData?.valmain3,
+  //   valorant_rank: userData?.valrank,
+  //   valorant_role: userData?.valrole,
+  //   lf_gender: userData?.genderLf,
+  //   lf_kindofgamer: userData?.kindOfGamerLf,
+  //   lf_game: userData?.gameLf,
+  //   lf_lolmain1: userData?.main1Lf,
+  //   lf_lolmain2: userData?.main2Lf,
+  //   lf_lolmain3: userData?.main3Lf,
+  //   lf_lolrank: userData?.rankLf,
+  //   lf_lolrole: userData?.roleLf,
+  //   lf_valmain1: userData?.valmain1Lf,
+  //   lf_valmain2: userData?.valmain2Lf,
+  //   lf_valmain3: userData?.valmain3Lf,
+  //   lf_valrank: userData?.valrankLf,
+  //   lf_valrole: userData?.valroleLf,
+  // };
 
-  const fetchAllUsers = async () => {
-    const adminToken = '56874d4zezfze656e2f6e62f6e';
-    try {
-      if (sessions.userSession && sessions.userSession.userId) {
-        console.log("User session found:", sessions.userSession);
+  // const fetchAllUsers = async () => {
+  // const adminToken = process.env.EXPO_ADMIN_TOKEN;
+  //   try {
+  //     if (sessions.userSession && sessions.userSession.userId) {
+  //       console.log("User session found:", sessions.userSession);
   
-        // First Axios Request to get all users
-        const allUsersResponse = await axios.post('https://ur-sg.com/getAllUsersPhone', {
-          allUsers: 'allUsers'
-        }, {
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-            'Authorization': `Bearer ${adminToken}`,
-          }
-        });
+  //       // First Axios Request to get all users
+  //       const allUsersResponse = await axios.post('https://ur-sg.com/getAllUsersPhone', {
+  //         allUsers: 'allUsers'
+  //       }, {
+  //         headers: {
+  //           'Content-Type': 'application/x-www-form-urlencoded',
+  //           'Authorization': `Bearer ${adminToken}`,
+  //         }
+  //       });
   
-        const allUsersData = allUsersResponse.data;
-        if (allUsersData.message !== 'Success') {
-          setErrors(allUsersData.message);
-          return;
-        }
+  //       const allUsersData = allUsersResponse.data;
+  //       if (allUsersData.message !== 'Success') {
+  //         setErrors(allUsersData.message);
+  //         return;
+  //       }
   
-        const allUsers = allUsersData.allUsers;
-        setAllUsers(allUsers);
-      } else {
-        console.log("User session not yet populated");
-      }
-    } catch (error) {
-      handleAxiosError(error);
-    }
-  };
+  //       const allUsers = allUsersData.allUsers;
+  //       setAllUsers(allUsers);
+  //     } else {
+  //       console.log("User session not yet populated");
+  //     }
+  //   } catch (error) {
+  //     handleAxiosError(error);
+  //   }
+  // };
 
   const fetchUserMatching = async () => {
     try {
@@ -196,7 +197,6 @@ const Swiping = () => {
         setTimeout(() => {
           fetchUserMatching();
           translationX.value = 0;
-          setIsLoading(false); 
         }, 500);
       })();
   
@@ -252,17 +252,17 @@ const Swiping = () => {
     setErrors(null);
   }, [otherUser]);
 
-  useFocusEffect(
-    useCallback(() => {
-      fetchAllUsers();
+  useEffect(() => {
+    if (!hasFetched.current) {
       const timer = setTimeout(() => {
         fetchUserMatching();
-        setIsLoading(false);
-      }, 500); 
-    
-      return () => clearTimeout(timer);
-    }, [])
-  );
+      }, 500);
+
+      hasFetched.current = true; 
+
+      return () => clearTimeout(timer); 
+    }
+  }, []);
 
   if (isLoading) {
     return (

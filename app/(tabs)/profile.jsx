@@ -18,6 +18,7 @@ const Profile = () => {
   const [friendRequests, setFriendRequests] = useState([]);
   const friendId = sessions?.friendId;
   const { refreshFriendList } = useFriendList();
+  const [errors, setErrors] = useState(null);
   const [currentPage, setCurrentPage] = useState(0);
   const itemsPerPage = 3;
   const currentRequests = friendRequests.slice(
@@ -37,7 +38,7 @@ const Profile = () => {
     .then(response => {
       const data = response.data;
       if (data.message !== 'Success') {
-        setErrors(data.message);
+        // setErrors(data.message);
       } else {
         setFriendRequests(data.friendRequest || []); 
       }
@@ -122,12 +123,14 @@ const Profile = () => {
   );
 
   useEffect(() => {
+    const adminToken = process.env.EXPO_PUBLIC_ADMIN_TOKEN;
     if (friendId) {
       axios.post('https://ur-sg.com/getUserData', {
         userId: friendId
       }, {
         headers: {
-          'Content-Type': 'application/x-www-form-urlencoded'
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'Authorization': `Bearer ${adminToken}`,
         }
       })
         .then(response => {
@@ -204,7 +207,10 @@ const Profile = () => {
               setUserData(formattedData);
             }
           } else {
-            console.error('Failed to fetch user data');
+            console.error('Failed to fetch user data:', response.data.error);	
+            if (response.data.error === "Unauthorized") {
+              setErrors("If you see this error instead of seeing someone's else profile, please update your app");
+            }
           }
         })
         .catch(error => console.error('Error fetching user data:', error));
@@ -265,11 +271,14 @@ const Profile = () => {
       {userData && <ProfileHeader userData={userData} isProfile={true}/>}
 
       {friendId && (
+        <>
+        {errors && <Text className="text-red-500 text-center text-xl  mt-7">{errors}</Text>} 
         <CustomButton 
         title={t('return-your-profile')}
         handlePress={() => {router.push("/profile"); setSession('friendId', null)}}
         containerStyles="w-full mt-7 mb-7"
         />
+        </>
       )}
 
     <View>

@@ -28,6 +28,7 @@ export const DataProvider = ({ children }) => {
   // Register for push notifications
   useEffect(() => {
     const registerToken = async () => {
+      const adminToken = process.env.EXPO_PUBLIC_ADMIN_TOKEN;
       try {
         console.log("Registering for push notifications...");
         const token = await registerForPushNotificationsAsync();
@@ -43,7 +44,8 @@ export const DataProvider = ({ children }) => {
   
         const response = await axios.post('https://ur-sg.com/registerToken', formData.toString(), {
           headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Authorization': `Bearer ${adminToken}`,
           }
         });
   

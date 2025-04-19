@@ -4,10 +4,6 @@ import { Tabs } from 'expo-router';
 import { useColorScheme } from 'nativewind';
 import { useData } from '../../context/DataContext';
 import { icons } from '../../constants';
-import * as Notifications from 'expo-notifications';
-import { router } from 'expo-router';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useChat } from '../../context/ChatContext';
 
 const TabIcon = ({ icon, color, name, focused, badgeCount }) => {
   return (
@@ -46,7 +42,6 @@ const TabsLayout = () => {
   const borderCorlor = colorScheme === 'dark' ? '#7f8287' : '#232533';
   const tabColor = colorScheme === 'dark' ? '#ffffff' : '#CDCDE0';
   const backgroundColorHeader = colorScheme === 'dark' ? '#ffffff' : '#111827';
-  const { setChatPageState } = useChat(); 
 
   // State to track if the keyboard is open
   const [isKeyboardVisible, setIsKeyboardVisible] = useState(false);
@@ -66,21 +61,6 @@ const TabsLayout = () => {
       keyboardDidShowListener.remove();
     };
   }, []);
-
-
-  useEffect(() => {
-    const subscription = Notifications.addNotificationResponseReceivedListener(response => {
-      const { screen, chatId } = response.notification.request.content.data;
-      
-      if (screen === 'chat') {
-        AsyncStorage.setItem('selectedFriendId', String(chatId));
-        setChatPageState(true);
-        router.push(`/chat`);
-      }
-    });
-
-    return () => subscription.remove();
-  }, [router]);
 
   return (
     <SafeAreaView style={{ flex: 1, paddingTop: 50, backgroundColor: backgroundColorHeader }}>

@@ -5,7 +5,6 @@ import { router } from 'expo-router';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { SessionContext } from '../../context/SessionContext';
-import { useChat } from '../../context/ChatContext';
 import { UserDataChat, CustomButton } from '../../components';
 import { useTranslation } from 'react-i18next';
 import { useColorScheme } from 'nativewind';
@@ -28,7 +27,7 @@ const ChatPage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [errors, setErrors] = useState(null);
   const [friendPage, setFriendPage] = useState(true);
-  // const [chatPage, setChatPage] = useState(false);
+  const [chatPage, setChatPage] = useState(false);
   const backgroundColorClass = colorScheme === 'dark' ? 'bg-gray-300' : 'bg-gray-800';
   const placeholderColor = colorScheme === 'dark' ? '#2f2f30' : '#bcb0b0';
   const profileImage = images.defaultpicture; 
@@ -38,7 +37,6 @@ const ChatPage = () => {
   const [isBlocked, setIsBlocked] = useState(false);
   const { friendList } = useFriendList();
   const [isEmotePickerVisible, setIsEmotePickerVisible] = useState(false);
-  const { chatPage, setChatPageState } = useChat();
 
   const scrollViewRef = useRef();
 
@@ -69,7 +67,7 @@ const ChatPage = () => {
     if (blockStatus) {
       fetchChatData();  
       setFriendPage(true); 
-      setChatPageState(false);
+      setChatPage(false);
     }
   };
 
@@ -109,7 +107,8 @@ const ChatPage = () => {
     return filteredText;
 }
 
-function detectEmotes(part, index) {
+
+function renderEmotes(message) {
   const emoteMap = {
     ':surprised-cat:': emotes.surprisedCat,
     ':cat-smile:': emotes.catSmile,
@@ -120,61 +119,22 @@ function detectEmotes(part, index) {
     ':cat-sus:': emotes.catSus,
     ':cat-bruh:': emotes.catbruh,
     ':cat-licking:': emotes.catlicking,
+    ':cat-laugh:': emotes.catLaugh,
   };
 
-  const cleanedPart = part.replace(/::.*$/g, '');
-  if (emoteMap[cleanedPart]) {
-    return (
-      <Image
-        key={`emote-${index}`}
-        source={emoteMap[cleanedPart]}
-        style={{ width: 30, height: 30 }}
-        resizeMode="contain"
-      />
-    );
-  }
-  return null;
-}
-
-// Link detection
-function detectLinks(part, index) {
-  const urlRegex = /(https?:\/\/[^\s]+)/g;
-  if (part.match(urlRegex)) {
-    return (
-      <TouchableOpacity
-        key={`link-${index}`}
-        onPress={() => Linking.openURL(part)}
-      >
-        <Text style={{ color: '#00f', textDecorationLine: 'underline' }}>
-          {part}
-        </Text>
-      </TouchableOpacity>
-    );
-  }
-  return null;
-}
-
-// Text processing
-function processTextPart(part, index) {
-  return (
-    <Text
-      key={`text-${index}`}
-      value={part}
-      style={{ color: colorScheme === 'dark' ? '#000' : '#FFF' }}
-    />
-  );
-}
-
-// Main render function
-function renderMessageContent(message) {
-  return message.split(/(:[a-zA-Z0-9]+(?:-[a-zA-Z0-9]+)*:)|(https?:\/\/[^\s]+)/g).map((part, index) => {
-    if (!part) return null;
-
-    return (
-      detectEmotes(part, index) ||
-      detectLinks(part, index) ||
-      processTextPart(part, index)
-    );
+  return message.split(/(:[a-zA-Z0-9]+(?:-[a-zA-Z0-9]+)*:)/g).map((part, index) => {
+    const cleanedPart = part.replace(/::.*$/g, ''); 
+    if (emoteMap[cleanedPart]) {
+      return (
+        <Image
+          key={`emote-${index}`}
+          source={emoteMap[cleanedPart]}
+          style={{ width: 30, height: 30 }}
+          resizeMode="contain"
+        />
+      );
+    }
+    return <Text key={`text-${index}`}>{part}</Text>;
   });
 }
 
@@ -197,14 +157,14 @@ const addEmoteToMessage = (emoteCode) => {
   const handleSelectFriend = async (friend) => {
     setSelectedFriend(friend);
     setFriendPage(false);
-    setChatPageState(true);
+    setChatPage(true);
     setMessages([]);
     await AsyncStorage.setItem('selectedFriendId', String(friend.friend_id));
     fetchMessages(userId, friend.friend_id);
   };
 
   const handleBackToFriendList = () => {
-    setChatPageState(false);
+    setChatPage(false);
     setFriendPage(true);
   };
 
@@ -244,6 +204,8 @@ const addEmoteToMessage = (emoteCode) => {
           chat_status: 'unread',
           formattedTime: formattedTime,
         };
+
+        console.log('Error sending message:', responseData.message);
 
         setMessages((prevMessages) => [...prevMessages, newMessageObject]);
         setNewMessage('');
@@ -305,6 +267,7 @@ const addEmoteToMessage = (emoteCode) => {
       'catSus': 'cat-sus',
       'catbruh': 'cat-bruh',
       'catlicking': 'cat-licking',
+      'catLaugh': 'cat-laugh',
     };
   
     const dashCaseKey = dashCaseModel[camelCaseKey] || camelCaseKey
@@ -426,8 +389,8 @@ const addEmoteToMessage = (emoteCode) => {
               >
                 <Text className={`text-white text-base pb-1 ${message.chat_senderId === userId ? 'text-white' : 'dark:text-blackPerso'}`}>
                 {sessions.userSession.hasChatFilter 
-                    ? renderMessageContent(chatfilter(he.decode(message.chat_message))) 
-                    : renderMessageContent(he.decode(message.chat_message))}
+                    ? renderEmotes(chatfilter(he.decode(message.chat_message))) 
+                    : renderEmotes(he.decode(message.chat_message))}
                 </Text>
                 <Text className={`text-white ${message.chat_senderId === userId ? 'text-white' : 'dark:text-blackPerso'} text-xs absolute bottom-0 right-0 pr-1 pt-1 opacity-50`}>{message.formattedTime}</Text>
               </View>

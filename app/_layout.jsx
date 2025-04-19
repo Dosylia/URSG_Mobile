@@ -6,7 +6,6 @@ import { useColorScheme } from 'nativewind';
 import { SessionProvider } from '../context/SessionContext';
 import { DataProvider } from '../context/DataContext';
 import { FriendListProvider } from '../context/FriendListContext';
-import { ChatProvider } from '../context/ChatContext';
 import changeNavigationBarColor from 'react-native-navigation-bar-color';
 import { useFonts } from 'expo-font';
 import { SplashScreen } from 'expo-router';
@@ -90,7 +89,6 @@ const RootLayout = () => {
       <SessionProvider>
         <DataProvider>
           <FriendListProvider>
-            <ChatProvider>
               <Stack
                 screenOptions={{
                   headerShown: false,
@@ -99,7 +97,6 @@ const RootLayout = () => {
               >
                 <Stack.Screen name="index" options={{ headerShown: false }} />
               </Stack>
-            </ChatProvider>
           </FriendListProvider>
         </DataProvider>
       </SessionProvider>
