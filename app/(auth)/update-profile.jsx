@@ -70,11 +70,13 @@ const updateProfile = () => {
   
     // Fetch user data when the game changes
     if (form.game !== previousGame) {
+      const adminToken = '56874d4zezfze656e2f6e62f6e';
       axios.post('https://ur-sg.com/getUserData', {
         userId: sessions.userSession.userId
       }, {
         headers: {
-          'Content-Type': 'application/x-www-form-urlencoded'
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'Authorization': `Bearer ${adminToken}`,
         }
       })
         .then(response => {

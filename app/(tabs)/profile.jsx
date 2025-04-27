@@ -33,6 +33,7 @@ const Profile = () => {
     axios.post('https://ur-sg.com/getFriendRequestPhone', new URLSearchParams({ userId }).toString(), {
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
+        'Authorization': `Bearer ${sessions.googleSession.token}`,
       },
     })
     .then(response => {
@@ -66,6 +67,7 @@ const Profile = () => {
       const response = await axios.post('https://ur-sg.com/acceptFriendRequestPhone', new URLSearchParams({ friendId, frId }).toString(), {
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
+          'Authorization': `Bearer ${sessions.googleSession.token}`,
         },
       });
       if (response.data.message === 'Success') {
@@ -90,6 +92,7 @@ const Profile = () => {
       const response = await axios.post('https://ur-sg.com/refuseFriendRequestPhone', new URLSearchParams({ friendId, frId }).toString(), {
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
+          'Authorization': `Bearer ${sessions.googleSession.token}`,
         },
       });
 
@@ -123,7 +126,7 @@ const Profile = () => {
   );
 
   useEffect(() => {
-    const adminToken = process.env.EXPO_PUBLIC_ADMIN_TOKEN;
+    const adminToken = '56874d4zezfze656e2f6e62f6e';
     if (friendId) {
       axios.post('https://ur-sg.com/getUserData', {
         userId: friendId

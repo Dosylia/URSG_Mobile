@@ -140,11 +140,12 @@ const UpdatePicture = () => {
   // Function to fetch owned items
   const fetchOwnedItems = async () => {
     try {
-      const response = await axios.post('https://ur-sg.com/getOwnedItems', {
+      const response = await axios.post('https://ur-sg.com/getOwnedItemsPhone', {
         userId: userId
       }, {
         headers: {
-          'Content-Type': 'application/x-www-form-urlencoded'
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'Authorization': `Bearer ${sessions.googleSession.token}`,
         }
       });
       const itemsData = response.data;
@@ -200,6 +201,7 @@ const UpdatePicture = () => {
       const response = await axios.post('https://ur-sg.com/removePictureFrame', formData, {
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
+          'Authorization': `Bearer ${sessions.googleSession.token}`,
         },
       });
   

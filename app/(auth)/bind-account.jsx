@@ -34,11 +34,13 @@ const BindAccount = () => {
 
   function submitForm() {
     if (form.account && form.server) {
+      const token = sessions.googleSession.token;
       axios.post('https://ur-sg.com/bindAccount', {
         userData: JSON.stringify(form)
       }, {
         headers: {
-          'Content-Type': 'application/x-www-form-urlencoded'
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'Authorization': `Bearer ${sessions.googleSession.token}`,
         }
       })
       .then(response => {
@@ -97,7 +99,8 @@ const BindAccount = () => {
       })
     }, {
       headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Authorization': `Bearer ${sessions.googleSession.token}`,
       }
     })
     .then(response => {

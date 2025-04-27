@@ -76,6 +76,7 @@ const Settings = () => {
         const response = await axios.post('https://ur-sg.com/chatFilterSwitch', `param=${encodeURIComponent(jsonData)}`, {
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
+                'Authorization': `Bearer ${sessions.googleSession.token}`,
             },
         });
 

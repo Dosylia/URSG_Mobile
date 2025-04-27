@@ -37,11 +37,13 @@ const ChatPage = () => {
   const [isBlocked, setIsBlocked] = useState(false);
   const { friendList } = useFriendList();
   const [isEmotePickerVisible, setIsEmotePickerVisible] = useState(false);
+  const [ownVIPEmotes, setownVIPEmotes] = useState(false);
 
   const scrollViewRef = useRef();
 
   useEffect(() => {
     fetchChatData();
+    fetchOwnVIPEmotes();
   }, [friendList]);
 
   const fetchChatData = async () => {
@@ -60,7 +62,6 @@ const ChatPage = () => {
     setIsLoading(false);
   };
 
-
   const handleBlockUser = (blockStatus) => {
     setIsBlocked(blockStatus);
 
@@ -71,29 +72,67 @@ const ChatPage = () => {
     }
   };
 
-  const fetchMessages = async (userId, friendId) => {
-    const token = sessions.googleSession.token;
+  const fetchOwnVIPEmotes = async () => {
     try {
-      const messagesResponse = await axios.post('https://ur-sg.com/getMessageDataPhone', new URLSearchParams({ userId, friendId, token}).toString(), {
+      const response = await axios.post('https://ur-sg.com/ownVIPEmotesPhone', {
+        userId: userId
+      }, {
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
           'Authorization': `Bearer ${sessions.googleSession.token}`,
-        },
+        }
       });
+      const emoteOwnershipData = response.data;
+      if (emoteOwnershipData.message === 'Success') {
+        if (emoteOwnershipData.ownVIPEmotes) {
+          setownVIPEmotes(true);
+        } else {
+          setownVIPEmotes(false);
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching status of ownership:', error);
+    }
+  };
 
+  const fetchMessages = async (userId, friendId) => {
+    const token = sessions.googleSession.token;
+  
+    try {
+      const messagesResponse = await axios.post(
+        'https://ur-sg.com/getMessageDataPhone',
+        new URLSearchParams({ userId, friendId, token }).toString(),
+        {
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Authorization': `Bearer ${sessions.googleSession.token}`,
+          },
+        }
+      );
+  
       if (messagesResponse.data.success) {
-        const formattedMessages = messagesResponse.data.messages.map((message) => ({
-          ...message,
-          formattedTime: formatTimestamp(message.chat_date),
-        }));
+        const { user, friend, messages } = messagesResponse.data;
+        const formattedMessages = messages.map((message) => {
+          const isSenderCurrentUser = message.chat_senderId === user.user_id;
+  
+          const senderOwnsVIPEmotes = isSenderCurrentUser ? user.ownVIPEmotes : friend.ownVIPEmotes;
+  
+          return {
+            ...message,
+            formattedTime: formatTimestamp(message.chat_date),
+            senderOwnsVIPEmotes,  
+          };
+        });
+  
         setMessages(formattedMessages);
       } else {
-        console.log("Error getting messages: ", messagesResponse.error);
+        console.log('Error getting messages:', messagesResponse.error);
       }
     } catch (error) {
       console.log('Error fetching messages');
     }
   };
+  
 
   const chatfilter = (textToFilter) => {
     const allBadWords = badWordsList.flatMap(([, badWords]) => badWords);
@@ -108,7 +147,7 @@ const ChatPage = () => {
 }
 
 
-function renderEmotes(message) {
+const renderEmotes = (message, textStyle, isVIPAllowed) => {
   const emoteMap = {
     ':surprised-cat:': emotes.surprisedCat,
     ':cat-smile:': emotes.catSmile,
@@ -120,10 +159,45 @@ function renderEmotes(message) {
     ':cat-bruh:': emotes.catbruh,
     ':cat-licking:': emotes.catlicking,
     ':cat-laugh:': emotes.catLaugh,
+    ':cat-crying:': emotes.catCrying,
+    ':cat-love:': emotes.catLove,
+  };
+
+  const vipEmoteMap = {
+    ':vipurpe-stonk:': emotes.VIPurpeStonks,
+    ':urpe-stonks:': emotes.VIPurpeStonks,
+    ':vipurpe-blanket:': emotes.VIPurpeBlanket,
+    ':urpe-blanket:': emotes.VIPurpeBlanket,
+    ':vipurpe-blush:': emotes.VIPurpeBlush,
+    ':urpe-blush:': emotes.VIPurpeBlush,
+    ':vipurpe-cool:': emotes.VIPurpeCool,
+    ':urpe-cool:': emotes.VIPurpeCool,
+    ':vipurpe-cry:': emotes.VIPurpeCry,
+    ':urpe-cry:': emotes.VIPurpeCry,
+    ':vipurpe-dead:': emotes.VIPurpeDead,
+    ':urpe-dead:': emotes.VIPurpeDead,
+    ':vipurpe-eat:': emotes.VIPurpeEat,
+    ':urpe-eat:': emotes.VIPurpeEat,
+    ':vipurpe-heart:': emotes.VIPurpeHeart,
+    ':urpe-heart:': emotes.VIPurpeHeart,
+    ':vipurpe-hide:': emotes.VIPurpeHide,
+    ':urpe-hide:': emotes.VIPurpeHide,
+    ':vipurpe-hype:': emotes.VIPurpeHype,
+    ':urpe-hype:': emotes.VIPurpeHype,
+    ':vipurpe-jesus:': emotes.VIPurpeJesus,
+    ':urpe-jesus:': emotes.VIPurpeJesus,
+    ':vipurpe-not-stonks:': emotes.VIPurpeNotStonks,
+    ':urpe-notstonks:': emotes.VIPurpeNotStonks,
+    ':vipurpe-sip:': emotes.VIPurpeSip,
+    ':urpe-sip:': emotes.VIPurpeSip,
+    ':urpe-sad:': emotes.VIPurpeSad,
+    ':vipurpe-sad:': emotes.VIPurpeSad,
+    ':urpe-run:': emotes.VIPurpeRun,
+    ':vipurpe-run:': emotes.VIPurpeRun,
   };
 
   return message.split(/(:[a-zA-Z0-9]+(?:-[a-zA-Z0-9]+)*:)/g).map((part, index) => {
-    const cleanedPart = part.replace(/::.*$/g, ''); 
+    const cleanedPart = part.replace(/::.*$/g, '');
     if (emoteMap[cleanedPart]) {
       return (
         <Image
@@ -134,9 +208,76 @@ function renderEmotes(message) {
         />
       );
     }
-    return <Text key={`text-${index}`}>{part}</Text>;
+    if (vipEmoteMap[cleanedPart] && isVIPAllowed) {
+      return (
+        <Image
+          key={`vipemote-${index}`}
+          source={vipEmoteMap[cleanedPart]}
+          style={{ width: 30, height: 30 }}
+          resizeMode="contain"
+        />
+      );
+    }
+    return <Text key={`text-${index}`} style={textStyle}>{part}</Text>;
   });
-}
+};
+
+const sanitizeUrl = (url) => {
+  const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.bmp', '.webp'];
+  const urlLower = url.toLowerCase();
+
+  const isValidImage = imageExtensions.some(ext => urlLower.endsWith(ext));
+  if (!isValidImage) return null;
+
+  if (url.startsWith('http://') || url.startsWith('https://')) {
+    return url;
+  } else {
+    return `https://ur-sg.com/${url.replace(/^\//, '')}`;
+  }
+};
+
+
+const processMessageContent = (content, textStyle, isVIPAllowed) => {
+  const imageRegex = /\[img\](.*?)\[\/img\]/g;
+  const parts = [];
+  let lastIndex = 0;
+  let match;
+
+  while ((match = imageRegex.exec(content)) !== null) {
+    const textBefore = content.slice(lastIndex, match.index);
+    if (textBefore) {
+      parts.push(...renderEmotes(textBefore, textStyle, isVIPAllowed));
+    }
+
+    const url = match[1];
+    const sanitizedUrl = sanitizeUrl(url);
+    if (sanitizedUrl) {
+      parts.push(
+        <TouchableOpacity key={`img-${parts.length}`} onPress={() => Linking.openURL(sanitizedUrl)}>
+          <Image 
+            source={{ uri: sanitizedUrl }} 
+            style={{ width: 100, height: 100, resizeMode: 'contain', marginVertical: 4 }} 
+          />
+        </TouchableOpacity>
+      );
+    } else {
+      parts.push(
+        <Text key={`invalid-${parts.length}`} style={[textStyle, { color: 'red' }]}>
+          Invalid image URL
+        </Text>
+      );
+    }
+
+    lastIndex = imageRegex.lastIndex;
+  }
+
+  const textAfter = content.slice(lastIndex);
+  if (textAfter) {
+    parts.push(...renderEmotes(textAfter, textStyle, isVIPAllowed));
+  }
+
+  return parts;
+};
 
 const toggleEmotePicker = () => {
   setIsEmotePickerVisible(!isEmotePickerVisible);
@@ -268,6 +409,9 @@ const addEmoteToMessage = (emoteCode) => {
       'catbruh': 'cat-bruh',
       'catlicking': 'cat-licking',
       'catLaugh': 'cat-laugh',
+      'catCrying': 'cat-crying',
+      'catLove': 'cat-love',
+      'VIPurpeStonks': 'vipurpe-stonk',
     };
   
     const dashCaseKey = dashCaseModel[camelCaseKey] || camelCaseKey
@@ -381,20 +525,30 @@ const addEmoteToMessage = (emoteCode) => {
               </TouchableOpacity>
               <UserDataChat userData={selectedFriend} onBlock={handleBlockUser} />
             </View>
-            {messages.map((message) => (
-              <View
-                key={message.chat_id}
-                className={`mb-2 p-3 rounded ${message.chat_senderId === userId ? 'bg-mainred self-end' : `${colorScheme === 'dark' ? 'bg-gray-300' : 'bg-gray-800'} self-start`}`}
-                style={{ maxWidth: '80%', paddingHorizontal: 10, minWidth: '20%' }}
-              >
-                <Text className={`text-white text-base pb-1 ${message.chat_senderId === userId ? 'text-white' : 'dark:text-blackPerso'}`}>
-                {sessions.userSession.hasChatFilter 
-                    ? renderEmotes(chatfilter(he.decode(message.chat_message))) 
-                    : renderEmotes(he.decode(message.chat_message))}
-                </Text>
-                <Text className={`text-white ${message.chat_senderId === userId ? 'text-white' : 'dark:text-blackPerso'} text-xs absolute bottom-0 right-0 pr-1 pt-1 opacity-50`}>{message.formattedTime}</Text>
-              </View>
-            ))}
+            {messages.map((message) => {
+              const textStyle = {
+                color: message.chat_senderId === userId ? 'white' : (colorScheme === 'dark' ? '#000' : '#fff'),
+                fontSize: 16,
+                paddingBottom: 4,
+              };
+
+              return (
+                <View
+                  key={message.chat_id}
+                  className={`mb-2 p-3 rounded ${message.chat_senderId === userId ? 'bg-mainred self-end' : `${colorScheme === 'dark' ? 'bg-gray-300' : 'bg-gray-800'} self-start`}`}
+                  style={{ maxWidth: '80%', paddingHorizontal: 10, minWidth: '20%' }}
+                >
+                  <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
+                    {sessions.userSession.hasChatFilter 
+                      ? processMessageContent(chatfilter(he.decode(message.chat_message)), textStyle, message.senderOwnsVIPEmotes)
+                      : processMessageContent(he.decode(message.chat_message), textStyle, message.senderOwnsVIPEmotes)}
+                  </View>
+                  <Text className={`text-white ${message.chat_senderId === userId ? 'text-white' : 'dark:text-blackPerso'} text-xs absolute bottom-0 right-0 pr-1 pt-1 opacity-50`}>
+                    {message.formattedTime}
+                  </Text>
+                </View>
+              );
+            })}
           </ScrollView>
 
           <Modal visible={isEmotePickerVisible} transparent={true} animationType="slide">
@@ -403,11 +557,22 @@ const addEmoteToMessage = (emoteCode) => {
                 <Text className="text-white text-center mb-4">Select an Emote</Text>
                 <ScrollView>
                   <View className="flex-row flex-wrap justify-around">
-                    {Object.keys(emotes).map((emoteKey) => (
-                      <TouchableOpacity key={emoteKey} onPress={() => addEmoteToMessage(`:${convertCamelToDashCase(emoteKey)}:`)}>
-                        <Image source={emotes[emoteKey]} style={{ width: 50, height: 50 }} />
-                      </TouchableOpacity>
-                    ))}
+                    {Object.keys(emotes)
+                      .filter(emoteKey => {
+                        const isVIP = emoteKey.startsWith('VIP');
+                        if (isVIP && !ownVIPEmotes) {
+                          return false; 
+                        }
+                        return true;
+                      })
+                      .map((emoteKey) => (
+                        <TouchableOpacity
+                          key={emoteKey}
+                          onPress={() => addEmoteToMessage(`:${convertCamelToDashCase(emoteKey)}:`)}
+                        >
+                          <Image source={emotes[emoteKey]} style={{ width: 50, height: 50 }} />
+                        </TouchableOpacity>
+                      ))}
                   </View>
                 </ScrollView>
                 <CustomButton title="Close" handlePress={toggleEmotePicker} />
