@@ -80,6 +80,7 @@ const championList = [
     "Malzahar",
     "Maokai",
     "Master Yi",
+    "Mel",
     "Milio",
     "Miss Fortune",
     "Mordekaiser",

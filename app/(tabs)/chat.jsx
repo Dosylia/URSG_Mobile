@@ -48,19 +48,21 @@ const ChatPage = () => {
 
   const fetchChatData = async () => {
     setFriends(friendList);
-  
+
     const savedFriendId = await AsyncStorage.getItem('selectedFriendId');
     if (savedFriendId) {
-      const lastFriend = friendList.find(f => f.friend_id === savedFriendId);
+      const lastFriend = friendList.find(f => f.friend_id === Number(savedFriendId));
       if (lastFriend) {
+        await AsyncStorage.removeItem('selectedFriendId');
         handleSelectFriend(lastFriend);
       }
     } else if (friendList.length > 0) {
       setFriendPage(true);
     }
-  
+
     setIsLoading(false);
   };
+
 
   const handleBlockUser = (blockStatus) => {
     setIsBlocked(blockStatus);
@@ -300,7 +302,6 @@ const addEmoteToMessage = (emoteCode) => {
     setFriendPage(false);
     setChatPage(true);
     setMessages([]);
-    await AsyncStorage.setItem('selectedFriendId', String(friend.friend_id));
     fetchMessages(userId, friend.friend_id);
   };
 
@@ -535,17 +536,35 @@ const addEmoteToMessage = (emoteCode) => {
               return (
                 <View
                   key={message.chat_id}
-                  className={`mb-2 p-3 rounded ${message.chat_senderId === userId ? 'bg-mainred self-end' : `${colorScheme === 'dark' ? 'bg-gray-300' : 'bg-gray-800'} self-start`}`}
+                  className={`mb-2 p-3 rounded relative ${
+                    message.chat_senderId === userId
+                      ? 'bg-mainred self-end'
+                      : `${colorScheme === 'dark' ? 'bg-gray-300' : 'bg-gray-800'} self-start`
+                  }`}
                   style={{ maxWidth: '80%', paddingHorizontal: 10, minWidth: '20%' }}
                 >
+                  {/* Message Content */}
                   <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
                     {sessions.userSession.hasChatFilter 
                       ? processMessageContent(chatfilter(he.decode(message.chat_message)), textStyle, message.senderOwnsVIPEmotes)
                       : processMessageContent(he.decode(message.chat_message), textStyle, message.senderOwnsVIPEmotes)}
                   </View>
-                  <Text className={`text-white ${message.chat_senderId === userId ? 'text-white' : 'dark:text-blackPerso'} text-xs absolute bottom-0 right-0 pr-1 pt-1 opacity-50`}>
-                    {message.formattedTime}
-                  </Text>
+
+                  {/* Time + Read/Unread status */}
+                  <View className="absolute bottom-0 right-1 flex-row items-center space-x-1">
+                    <Text className={`text-white ${message.chat_senderId === userId ? 'text-white' : 'dark:text-blackPerso'} text-xs opacity-50`}>
+                      {message.formattedTime}
+                    </Text>
+
+                    {/* Show only for sender */}
+                    {message.chat_senderId === userId && (
+                      message.chat_status === 'read' ? (
+                        <Text className="text-xs text-white opacity-50">✓✓</Text> // read
+                      ) : (
+                        <Text className="text-xs text-white opacity-50">✓</Text>  // sent but not read
+                      )
+                    )}
+                  </View>
                 </View>
               );
             })}

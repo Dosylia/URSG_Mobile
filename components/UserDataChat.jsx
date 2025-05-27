@@ -149,19 +149,24 @@ const UserDataChat = ({ userData, onBlock }) => {
       </Text>
   
       {/* Icons for Unfriend and Block */}
-      <View className="flex-row space-x-6 flex-1 justify-end ml-4">
+      <View className="flex-row space-x-6 flex-1 items-center justify-end ml-4">
+        {/* Green circle if online */}
+        {userData.friend_online === 1 && (
+          <View className="w-3 h-3 bg-green-500 rounded-full" />
+        )}
+
         {/* Minus Icon for Unfriend */}
         <TouchableOpacity onPress={openUnfriendPopup}>
           <Text className="text-4xl font-bold text-mainred">
             -
           </Text>
         </TouchableOpacity>
-  
+
         {/* Block Icon */}
         <TouchableOpacity onPress={openBlockPopup}>
           <Image 
-              source={icons.block}  
-              className="w-6 h-6 rounded-full"
+            source={icons.block}  
+            className="w-6 h-6 rounded-full"
           />
         </TouchableOpacity>
       </View>

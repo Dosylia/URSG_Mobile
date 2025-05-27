@@ -78,6 +78,7 @@ import Malphite from '../assets/champions/Malphite.png';
 import Malzahar from '../assets/champions/Malzahar.png';
 import Maokai from '../assets/champions/Maokai.png';
 import MasterYi from '../assets/champions/MasterYi.png';
+import Mel from '../assets/champions/Mel.png';
 import Milio from '../assets/champions/Milio.png';
 import MissFortune from '../assets/champions/MissFortune.png';
 import Mordekaiser from '../assets/champions/Mordekaiser.png';
@@ -248,6 +249,7 @@ export default {
     Malzahar,
     Maokai,
     MasterYi,
+    Mel,
     Milio,
     MissFortune,
     Mordekaiser,

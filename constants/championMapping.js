@@ -81,6 +81,7 @@ const championMapping = {
     "Malzahar": "Malzahar",
     "Maokai": "Maokai",
     "Master Yi": "MasterYi",
+    "Mel": "Mel",
     "Milio": "Milio",
     "Miss Fortune": "MissFortune",
     "Mordekaiser": "Mordekaiser",

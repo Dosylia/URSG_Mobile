@@ -93,6 +93,21 @@ const TabsLayout = () => {
           }}
         />
         <Tabs.Screen
+          name="playerfinder"
+          options={{
+            title: 'Player Finder',
+            headerShown: false,
+            tabBarIcon: ({ color, focused }) => (
+              <TabIcon
+                icon={icons.playerfinder}
+                color={color}
+                name="Player Finder"
+                focused={focused}
+              />
+            ),
+          }}
+        />
+        <Tabs.Screen
           name="chat"
           options={{
             title: 'Chat',

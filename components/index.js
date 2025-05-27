@@ -11,6 +11,8 @@ import Collapse from "./Collapse";
 import ValorantDataComponent from "./ValorantDataComponent";
 import ProgressBar from "./ProgressBar";
 import BonusPicture from "./BonusPicture";
+import PlayerCard from "./PlayerCard";
+import InterestedModal from "./InterestModal";
 
 export {
     CustomButton,
@@ -26,4 +28,6 @@ export {
     ValorantDataComponent, 
     ProgressBar,
     BonusPicture,
+    PlayerCard,
+    InterestedModal,
   };
