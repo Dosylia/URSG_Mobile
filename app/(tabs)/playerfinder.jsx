@@ -1,6 +1,6 @@
 // PlayerFinder.jsx
-import React, { useState, useEffect, useContext } from 'react';
-import { View, Text, Modal, TextInput, Button, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
+import React, { useState, useEffect, useContext, useCallback } from 'react';
+import { View, Text, Modal, TextInput, Button, ScrollView, TouchableOpacity, FlatList } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import axios from 'axios';
 import { SessionContext } from '../../context/SessionContext';
@@ -8,6 +8,7 @@ import { useTranslation } from 'react-i18next';
 import { PlayerCard, InterestedModal } from "../../components";
 import { useColorScheme } from 'nativewind';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useFocusEffect } from '@react-navigation/native';
 
 const PlayerFinder = ({ navigation }) => {
     const { t } = useTranslation();
@@ -38,21 +39,49 @@ const PlayerFinder = ({ navigation }) => {
     });
 
     const lolRanks = [
-    "Any", "Unranked", "Iron", "Bronze", "Silver", "Gold", "Platinum", "Emerald",
-    "Diamond", "Master", "Grand Master", "Challenger"
+    t('pf-any'),
+    t('pf-unranked'),
+    t('pf-iron'),
+    t('pf-bronze'),
+    t('pf-silver'),
+    t('pf-gold'),
+    t('pf-platinum'),
+    t('pf-emerald'),
+    t('pf-diamond'),
+    t('pf-master'),
+    t('pf-grandmaster'),
+    t('pf-challenger'),
     ];
 
     const lolRoles = [
-    "Any", "Support", "AD Carry", "Mid laner", "Jungler", "Top laner"
+    t('pf-any'),
+    t('pf-support'),
+    t('pf-adcarry'),
+    t('pf-mid'),
+    t('pf-jungle'),
+    t('pf-top'),
     ];
 
     const valorantRanks = [
-    "Any", "Unranked", "Iron", "Bronze", "Silver", "Gold", "Platinum", "Diamond",
-    "Ascendant", "Immortal", "Radiant"
+    t('pf-any'),
+    t('pf-unranked'),
+    t('pf-iron'),
+    t('pf-bronze'),
+    t('pf-silver'),
+    t('pf-gold'),
+    t('pf-platinum'),
+    t('pf-diamond'),
+    t('pf-ascendant'),
+    t('pf-immortal'),
+    t('pf-radiant'),
     ];
 
     const valorantRoles = [
-    "Any", "Controller", "Duelist", "Initiator", "Sentinel"
+    t('pf-any'),
+    t('pf-controller'),
+    t('pf-duelist'),
+    t('pf-initiator'),
+    t('pf-sentinel'),
     ];
 
     const openModal = () => {
@@ -64,47 +93,47 @@ const PlayerFinder = ({ navigation }) => {
         setModalVisible(true);
     };
 
-    // Fetch posts on mount
-    useEffect(() => {
-        fetchPosts();
-    }, []);
-
+    useFocusEffect(
+        useCallback(() => {
+            fetchPosts();
+        }, [])
+    );
     const fetchPosts = async () => {
-    try {
-        const response = await axios.post(
-        'https://ur-sg.com/getPlayerFinderPostsPhone',
-        new URLSearchParams({ userId: sessions.userSession.userId }).toString(),
-        {
-            headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-            'Authorization': `Bearer ${sessions.googleSession.token}`,
-            },
-        }
-        );
-
-        const posts = response.data.posts;
-
-        // Find the post created by the logged-in user
-        const userPost = posts.find(post => post.user_id === sessions.userSession.userId);
-
-        // If the user has a post, set the list of interested users
-        if (userPost) {
-        let peopleInterested = [];
-
         try {
-            peopleInterested = JSON.parse(userPost.pf_peopleInterest || '[]');
-        } catch (e) {
-            console.error('Failed to parse pf_peopleInterest:', e);
-        }
+            const response = await axios.post(
+            'https://ur-sg.com/getPlayerFinderPostsPhone',
+            new URLSearchParams({ userId: sessions.userSession.userId }).toString(),
+            {
+                headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'Authorization': `Bearer ${sessions.googleSession.token}`,
+                },
+            }
+            );
 
-        setInterestedUsers(peopleInterested);
-        }
+            const posts = response.data.posts;
 
-        setPosts(posts);
-        applyFilters(posts);
-    } catch (error) {
-        console.error('Error fetching posts:', error);
-    }
+            // Find the post created by the logged-in user
+            const userPost = posts.find(post => post.user_id === sessions.userSession.userId);
+
+            // If the user has a post, set the list of interested users
+            if (userPost) {
+            let peopleInterested = [];
+
+            try {
+                peopleInterested = JSON.parse(userPost.pf_peopleInterest || '[]');
+            } catch (e) {
+                console.error('Failed to parse pf_peopleInterest:', e);
+            }
+
+            setInterestedUsers(peopleInterested);
+            }
+
+            setPosts(posts);
+            applyFilters(posts);
+        } catch (error) {
+            console.error('Error fetching posts:', error);
+        }
     };
 
 
@@ -233,10 +262,10 @@ const applyFilters = (postsToFilter = posts, filtersToUse = filters) => {
         <View className="mb-4">
             {/* Toggle Button */}
             <TouchableOpacity
-                className="flex-row items-center justify-between px-4 py-2 bg-gray-800 rounded-md"
+                className="flex-row items-center justify-between px-4 py-2 bg-mainred rounded-md"
                 onPress={() => setFiltersVisible(!filtersVisible)}
             >
-                <Text className="text-white font-semibold">Filters</Text>
+                <Text className="text-white font-semibold">{t('pf-filter')}</Text>
                 <Text className="text-white text-lg">
                 {filtersVisible ? '▲' : '▼'}
                 </Text>
@@ -308,40 +337,46 @@ const applyFilters = (postsToFilter = posts, filtersToUse = filters) => {
          >
             <View className="flex-row justify-between items-center mb-4 p-3 bg-mainred rounded-xl w-[90%] mx-auto">
                 <Text className="text-white font-semibold">
-                <Text className="font-bold">{interestedUsers.length}</Text> Teammate ready
+                <Text className="font-bold">{interestedUsers.length}</Text> {t('pf-interest-users')}
                 </Text>
             </View>
         </TouchableOpacity>
         )}
 
         {/* Posts list */}
-        <ScrollView className="flex-1">
-        {filteredPosts.map(post => (
+        <FlatList
+        data={filteredPosts}
+        keyExtractor={(item) => item.pf_id.toString()} // Use a unique id
+        renderItem={({ item }) => (
             <PlayerCard
-            key={post.pf_id}
-            post={post}
+            key={item.pf_id}
+            post={item}
             navigation={navigation}
+            setInterestedModalVisible={setInterestedModalVisible}
+            setInterestedUsers={setInterestedUsers}
             currentUserId={sessions.userSession.userId}
             onInterest={fetchPosts}
             />
-        ))}
-        </ScrollView>
+        )}
+        contentContainerStyle={{ paddingBottom: 100 }}
+        ListEmptyComponent={<Text className="text-white text-center mt-10">No results found</Text>}
+        />
 
         {/* Create Post button */}
         <TouchableOpacity
         onPress={openModal}
         className="mt-4 bg-mainred py-1 rounded-xl items-center mb-2 w-[90%] mx-auto">  
-        <Text className="text-white dark:text-white font-bold text-lg">Create Post</Text>
+        <Text className="text-white dark:text-white font-bold text-lg">{t('pf-create-post')}</Text>
         </TouchableOpacity>
 
         {/* Modal for creating a post */}
         <Modal visible={modalVisible} animationType="slide" transparent>
         <View className="flex-1 justify-center items-center bg-black/60">
             <View className="w-[90%] bg-gray-900 dark:bg-white p-6 rounded-2xl">
-            <Text className="text-lg font-bold mb-4 text-white dark:text-black">Create a Post</Text>
+            <Text className="text-lg font-bold mb-4 text-white dark:text-black">{t('pf-create-post')}</Text>
 
             <TextInput
-                placeholder="Description"
+                placeholder={t('pf-description')}
                 placeholderTextColor={colorScheme !== 'dark' ? '#888' : '#666'}
                 value={newPost.description}
                 onChangeText={t => setNewPost({ ...newPost, description: t })}
@@ -389,14 +424,14 @@ const applyFilters = (postsToFilter = posts, filtersToUse = filters) => {
                 onPress={createPost}
                 className="flex-1 bg-red-500 dark:bg-green-600 py-3 rounded-xl items-center"
                 >
-                <Text className="text-white font-bold">Submit</Text>
+                <Text className="text-white font-bold">{t('pf-submit')}</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity
                 onPress={() => setModalVisible(false)}
                 className="flex-1 bg-gray-700 dark:bg-gray-300 py-3 rounded-xl items-center"
                 >
-                <Text className="text-white dark:text-black font-bold">Cancel</Text>
+                <Text className="text-white dark:text-black font-bold">{t('pf-cancel')}</Text>
                 </TouchableOpacity>
             </View>
             </View>

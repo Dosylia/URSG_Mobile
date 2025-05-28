@@ -13,6 +13,9 @@ import badWordsList from '../../constants/chatFilter';
 import { useData } from '../../context/DataContext';
 import { useFriendList } from '../../context/FriendListContext'; 
 import { Modal } from 'react-native';
+import * as ImagePicker from 'expo-image-picker';
+import * as FileSystem from 'expo-file-system';
+import * as DocumentPicker from 'expo-document-picker';
 import he from 'he';
 
 const ChatPage = () => {
@@ -38,6 +41,10 @@ const ChatPage = () => {
   const { friendList } = useFriendList();
   const [isEmotePickerVisible, setIsEmotePickerVisible] = useState(false);
   const [ownVIPEmotes, setownVIPEmotes] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
+  const [imagePicked, setImagePicked] = useState(false);
+  const [image, setImage] = useState(null);
+  const [fileName, setFileName] = useState(null);
 
   const scrollViewRef = useRef();
 
@@ -73,6 +80,138 @@ const ChatPage = () => {
       setChatPage(false);
     }
   };
+
+
+  const uploadImage = async (uri, name) => {
+    try {
+      setIsLoading(true);
+      const fileInfo = await FileSystem.getInfoAsync(uri);
+      console.log("File info:", fileInfo);
+    
+      if (!fileInfo.exists) {
+        throw new Error("File does not exist at URI: " + uri);
+      }
+      
+      const formData = new FormData();
+      const mimeType = {
+        jpg: 'image/jpeg',
+        jpeg: 'image/jpeg',
+        png: 'image/png',
+        gif: 'image/gif',
+        webp: 'image/webp'
+      }[name.split('.').pop().toLowerCase()] || 'image/jpeg';
+      
+      formData.append("image", {
+        uri,
+        name,
+        type: mimeType,
+      });
+      
+      // Add userId to the form data
+      formData.append("userId", sessions.userSession.userId);
+      
+      console.log("Uploading with:", { uri, name, type: mimeType, userId: sessions.userSession.userId });
+      
+      const response = await axios.post(
+        "https://ur-sg.com/uploadChatImagePhone",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            "Authorization": `Bearer ${sessions.googleSession.token}`,
+          },
+        }
+      );
+      
+      console.log("Server response:", response.data);
+      
+      if (response.data.success) {
+        const imageTag = `[img]${response.data.imageUrl}[/img]`;
+        setNewMessage((prev) => prev + imageTag);
+      } else {
+        throw new Error(response.data.message || response.data.error || "Upload failed");
+      }
+    } catch (error) {
+      console.error("Image upload error:", error);
+      if (error.response) {
+        console.error("Server response:", error.response.data);
+        console.error("Server status:", error.response.status);
+      }
+      console.error(`Upload failed: ${error.message}`);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+    const handleImageUpload = async () => {
+    try {
+      const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (!permissionResult.granted) {
+        alert("Permission to access photos is required!");
+        return;
+      }
+
+      let result;
+      try {
+        result = await ImagePicker.launchImageLibraryAsync({
+          mediaTypes: ImagePicker.MediaTypeOptions.Images,
+          allowsEditing: true,
+          aspect: [1, 1],
+          quality: 1,
+        });
+
+        if (result.canceled) {
+          console.log("Image selection was canceled");
+          return;
+        }
+
+        const uri = result.assets?.[0]?.uri;
+        const name = result.assets?.[0]?.fileName || `chat_${Date.now()}.jpg`;
+
+        if (uri) {
+          setImagePicked(true);
+          setImage(uri);
+          setFileName(name);
+          await uploadImage(uri, name);
+        }
+      } catch (error) {
+        console.warn("ImagePicker failed, trying fallback", error);
+        await pickImageFallback();
+      }
+    } catch (error) {
+      console.error("handleImageUpload error:", error);
+    }
+  };
+
+const pickImageFallback = async () => {
+  try {
+    const result = await DocumentPicker.getDocumentAsync({
+      type: "image/*",
+      // copyToCacheDirectory: true,
+    });
+
+    console.log("DocumentPicker result:", result);
+
+    if (!result.canceled && result.assets && result.assets.length > 0) {
+      const asset = result.assets[0];
+      const uri = asset.uri;
+      const name = asset.name;
+
+      console.log("Picked fallback image URI:", uri);
+
+      setImagePicked(true);
+      setImage(uri);
+      setFileName(name);
+      await uploadImage(uri, name);
+    } else {
+      console.log("Fallback image picking was canceled or failed.");
+    }
+  } catch (error) {
+    console.error("Fallback image upload error:", error);
+    console.error(`Fallback upload failed: ${error.message}`);
+  }
+};
+
 
   const fetchOwnVIPEmotes = async () => {
     try {
@@ -347,7 +486,7 @@ const addEmoteToMessage = (emoteCode) => {
           formattedTime: formattedTime,
         };
 
-        console.log('Error sending message:', responseData.message);
+        console.log('Message sent successfully:', responseData.message);
 
         setMessages((prevMessages) => [...prevMessages, newMessageObject]);
         setNewMessage('');
@@ -601,22 +740,44 @@ const addEmoteToMessage = (emoteCode) => {
 
           <View className="flex-row items-center">
             {/* Emote Button */}
-          <TouchableOpacity onPress={toggleEmotePicker}>
-            <Image source={emotes.catSmile} className="w-8 h-8 mr-2" />
-          </TouchableOpacity>
+            <TouchableOpacity onPress={toggleEmotePicker}>
+              <Image source={emotes.catSmile} className="w-8 h-8 mr-2" />
+            </TouchableOpacity>
+            
+            {/* Image Upload Button */}
+            <TouchableOpacity 
+              onPress={handleImageUpload}
+              disabled={isUploading}
+              className="mr-2"
+            >
+              {isUploading ? (
+                <ActivityIndicator size="small" color="#e74057" />
+              ) : (
+                <Image 
+                  source={icons.addImage} 
+                  className="w-8 h-8" 
+                />
+              )}
+            </TouchableOpacity>
+            
+            {/* Message Input */}
             <TextInput
               value={newMessage}
               onChangeText={setNewMessage}
               placeholder={t('type-message')}
               placeholderTextColor={placeholderColor}
               className={`flex-1 ${backgroundColorClass} text-white dark:text-blackPerso p-2 rounded-l`}
+              multiline
             />
-          <TouchableOpacity 
-            onPress={handleSendMessage}
-            className="bg-mainred p-3 rounded-r"
-          >
-            <Text className="text-white">{t('send-message')}</Text>
-          </TouchableOpacity>
+            
+            {/* Send Button */}
+            <TouchableOpacity 
+              onPress={handleSendMessage}
+              className="bg-mainred p-3 rounded-r"
+              disabled={isUploading}
+            >
+              <Text className="text-white">{t('send-message')}</Text>
+            </TouchableOpacity>
           </View>
         </>
       )}

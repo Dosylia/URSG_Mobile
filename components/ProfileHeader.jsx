@@ -44,7 +44,6 @@ const ProfileHeader = ({ userData, isProfile }) => {
         }
       });
       const itemsData = response.data;
-      console.log('Items data:', itemsData);
       if (itemsData.message === 'Success') {
         setOwnedItems(itemsData.items);
       } else {

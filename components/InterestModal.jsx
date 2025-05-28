@@ -108,7 +108,7 @@ const InterestedModal = ({ visible, onClose, interestedUsers, currentUserId }) =
         <Modal visible={visible} animationType="slide" transparent>
         <View className="flex-1 justify-center items-center bg-black/60">
             <View className="w-[90%] bg-gray-800 dark:bg-white p-6 rounded-2xl max-h-[80%]">
-            <Text className="text-lg font-bold mb-4 text-white dark:text-black">People Interested</Text>
+            <Text className="text-lg font-bold mb-4 text-white dark:text-black">{t('pf-people-interested')}</Text>
             <ScrollView contentContainerStyle={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between' }} className="mb-4">
                 {detailedUsers.map(user => (
                 <View
@@ -142,14 +142,14 @@ const InterestedModal = ({ visible, onClose, interestedUsers, currentUserId }) =
                         onPress={() => handleChat(user.user_id)}
                         className="bg-blue-500 p-2 rounded-xl mt-2"
                     >
-                        <Text className="text-white text-center text-sm">Chat</Text>
+                        <Text className="text-white text-center text-sm">{t('pf-chat')}</Text>
                     </TouchableOpacity>
                     ) : (
                     <TouchableOpacity
                         onPress={() => addFriendAndChat(user.user_id)}
                         className="bg-green-500 p-2 rounded-xl mt-2"
                     >
-                        <Text className="text-white text-center text-sm">Add and Chat</Text>
+                        <Text className="text-white text-center text-sm">{t('pf-chat-add')}</Text>
                     </TouchableOpacity>
                     )}
                 </View>
@@ -157,7 +157,7 @@ const InterestedModal = ({ visible, onClose, interestedUsers, currentUserId }) =
             </ScrollView>
 
             <TouchableOpacity onPress={onClose} className="bg-mainred py-2 rounded-xl mt-2">
-                <Text className="text-white text-center">Close</Text>
+                <Text className="text-white text-center">{t('pf-close')}</Text>
             </TouchableOpacity>
             </View>
         </View>

@@ -111,7 +111,7 @@ const PlayerCard = ({ post, onInterest, navigation, currentUserId }) => {
 
 
     return (
-    <View className="bg-gray-800 dark:bg-neutral-100 rounded-xl p-2 mb-4 shadow-md">
+    <View className="bg-gray-800 dark:bg-neutral-300 rounded-xl p-2 mb-5 shadow-md w-[95%] mx-auto">
         {/* Game Icon */}
         <Image
         source={{
@@ -142,7 +142,7 @@ const PlayerCard = ({ post, onInterest, navigation, currentUserId }) => {
         <View className="flex-row justify-around mb-2">
         {/* About Them */}
         <View className="items-center">
-            <Text className="text-[10px] italic text-gray-500 dark:text-gray-400 mb-1">About them</Text>
+            <Text className="text-[10px] italic text-gray-500 dark:text-gray-400 mb-1">{t('pf-about-them')}</Text>
             <View className="flex-row items-center gap-4">
                 <Image
                 source={{ uri: `https://ur-sg.com/public/images/${roleFolder}/${role}.${roleExt}` }}
@@ -157,7 +157,7 @@ const PlayerCard = ({ post, onInterest, navigation, currentUserId }) => {
 
         {/* Looking For */}
         <View className="items-center">
-            <Text className="text-[10px] italic text-gray-500 dark:text-gray-400 mb-1">Looking for</Text>
+            <Text className="text-[10px] italic text-gray-500 dark:text-gray-400 mb-1">{t('pf-looking-for')}</Text>
             <View className="flex-row items-center gap-4">
                 <Image
                 source={{ uri: `https://ur-sg.com/public/images/${roleFolder}/${post.pf_role.toLowerCase().replace(/\s/g, '')}.${roleExt}` }}
@@ -173,8 +173,8 @@ const PlayerCard = ({ post, onInterest, navigation, currentUserId }) => {
 
         {/* Description */}
         {post.pf_description && (
-        <ScrollView className="bg-gray-700 dark:bg-gray-200 rounded-md px-2 py-1 h-[55px] mb-2">
-            <Text className="text-sm text-white dark:text-black">{post.pf_description}</Text>
+        <ScrollView className="bg-gray-700 dark:bg-gray-200 rounded-md px-2 py-1 mb-2 self-center">
+            <Text className="text-base text-white dark:text-black">{post.pf_description}</Text>
         </ScrollView>
         )}
 
@@ -196,14 +196,14 @@ const PlayerCard = ({ post, onInterest, navigation, currentUserId }) => {
             className="bg-gray-300 dark:bg-gray-700 px-4 py-2 rounded-md"
             onPress={() => deletePost(post.pf_id)}
             >
-            <Text className="text-black dark:text-white text-sm">Delete</Text>
+            <Text className="text-black dark:text-white text-sm">{t('pf-delete-post')}</Text>
             </TouchableOpacity>
         ) : (
             <TouchableOpacity
             className="bg-mainred px-4 py-2 rounded-md"
             onPress={() => playWithThem(post.pf_id)}
             >
-            <Text className="text-white text-sm">Play with them</Text>
+            <Text className="text-white text-sm">{t('pf-play')}</Text>
             </TouchableOpacity>
         )}
         </View>

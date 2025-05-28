@@ -47,7 +47,7 @@ const StoreAndLeaderboard = () => {
     try {
       if (sessions.userSession && sessions.userSession.userId) {
         console.log("User session found:", sessions.userSession);
-        const allUsersResponse = await axios.post('https://ur-sg.com/getAllUsersPhone', {
+        const allUsersResponse = await axios.post('https://ur-sg.com/getLeaderboardUsers', {
           allUsers: 'allUsers'
         }, {
           headers: {
