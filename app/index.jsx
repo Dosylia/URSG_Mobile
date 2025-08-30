@@ -1,4 +1,4 @@
-import { View, Text, Image, ScrollView, TouchableOpacity, ActivityIndicator } from "react-native";
+import { View, Text, Image, ScrollView, TouchableOpacity, ActivityIndicator, Linking  } from "react-native";
 import { router, Redirect } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { CustomButton } from "../components";
@@ -35,6 +35,85 @@ export default function App() {
     });
     console.log("Google Sign-In configured");
   };
+
+  const parseUrlParams = (url) => {
+  const params = {};
+  const queryString = url.split('?')[1];
+  if (!queryString) return params;
+
+  queryString.split('&').forEach((param) => {
+    const [key, value] = param.split('=');
+    params[key] = decodeURIComponent(value);
+  });
+
+  return params;
+};
+
+  const handleUrl = ({ url }) => {
+    if (!url.startsWith("com.dosylia.URSG://riotCallback")) return;
+
+    const queryParams = parseUrlParams(url);
+
+    if (queryParams?.status === "success") {
+      try {
+        const data = JSON.parse(queryParams.response);
+
+        if (data.message !== "Success") {
+          setErrors(data.message);
+          return;
+        }
+
+        // Set Google session
+        setSession("googleSession", data.googleUser);
+
+        if (!data.newUser) {
+          setSession("userSession", data.user);
+
+          if (data.userExists) {
+            if (data.user.game === "League of Legends") {
+              if (data.leagueUserExists) {
+                setSession("leagueSession", data.leagueUser);
+                if (data.lookingForUserExists) {
+                  setSession("lookingforSession", data.lookingForUser);
+                  router.push("/swiping");
+                } else {
+                  router.push("/lookingfor-data");
+                }
+              } else router.push("/league-data");
+            } else {
+              if (data.valorantUserExists) {
+                setSession("valorantSession", data.valorantUser);
+                if (data.lookingForUserExists) {
+                  setSession("lookingforSession", data.lookingForUser);
+                  router.push("/swiping");
+                } else {
+                  router.push("/lookingfor-data");
+                }
+              } else router.push("/valorant-data");
+            }
+          } else router.push("/basic-info");
+        } else router.push("/basic-info");
+      } catch (err) {
+        console.error("Failed to parse Riot response:", err);
+        setErrors("Invalid response from Riot");
+      }
+    } else {
+      setErrors(queryParams?.error || "Error during Riot sign-in");
+    }
+  };
+
+  useEffect(() => {
+    // Add deep link listener
+    const sub = Linking.addEventListener("url", handleUrl);
+
+    // Handle cold start deep link
+    Linking.getInitialURL().then((url) => {
+      if (url) handleUrl({ url });
+    });
+
+    // Cleanup
+    return () => sub.remove();
+  }, []);
 
   useEffect(() => {
     configureGoogleSignIn();
@@ -96,6 +175,13 @@ export default function App() {
     }
   };
 
+  const signInRiot = () => {
+    console.log("Attempting to sign in with Riot");
+    Linking.openURL("https://ur-sg.com/connectRiotMobile?phoneData=yes").catch(
+      (err) => console.error("Failed to open URL:", err)
+    );
+  };
+
   function submitForm(userInfo) {
 
     const googleId = userInfo.user.id;
@@ -129,7 +215,7 @@ export default function App() {
 
         setSession('googleSession', data.googleUser, (updatedSessions) => {
           console.log("Google session after setting:", updatedSessions.googleSession);
-      });
+        });
 
         if (!data.newUser) {
           setSession('userSession', data.user, (updatedSessions) => {
@@ -280,6 +366,11 @@ export default function App() {
             <CustomButton
               title={t('join-google')}
               handlePress={signIn}
+              containerStyles="w-full mt-7"
+            />
+            <CustomButton
+              title={t('join-riot')}
+              handlePress={signInRiot}
               containerStyles="w-full mt-7"
             />
           </View>
