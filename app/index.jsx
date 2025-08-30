@@ -1,8 +1,8 @@
-import { View, Text, Image, ScrollView, TouchableOpacity, ActivityIndicator, Linking  } from "react-native";
+import { View, Text, Image, ScrollView, TouchableOpacity, ActivityIndicator, AppState  } from "react-native";
 import { router, Redirect } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { CustomButton } from "../components";
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useRef } from 'react';
 import {
   GoogleSignin,
 } from "@react-native-google-signin/google-signin";
@@ -12,6 +12,9 @@ import { SessionContext } from '../context/SessionContext';
 import { useTranslation } from 'react-i18next';
 import { useColorScheme } from 'nativewind';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as Linking from 'expo-linking';
+import NetInfo from '@react-native-community/netinfo';
+
 
 export default function App() {
   const webClientId = process.env.EXPO_GOOGLE_WEB_CLIENT_ID;
@@ -23,8 +26,10 @@ export default function App() {
   const [errors, setErrors] = useState('');
   const [error, setError] = useState();
   const [isLoading, setIsLoading] = useState(false);
-  const { setSession, sessions } = useContext(SessionContext);;
-
+  const [isAppReady, setIsAppReady] = useState(false);
+  const { setSession, sessions } = useContext(SessionContext);
+  const isProcessingDeepLink = useRef(false);
+  const appStateRef = useRef(AppState.currentState);
   const appImage = colorScheme === 'dark' ? images.logo : images.logoWhite;
 
   const configureGoogleSignIn = () => {
@@ -37,103 +42,179 @@ export default function App() {
   };
 
   const parseUrlParams = (url) => {
-  const params = {};
-  const queryString = url.split('?')[1];
-  if (!queryString) return params;
+    const params = {};
+    const queryString = url.split('?')[1];
+    if (!queryString) return params;
+    queryString.split('&').forEach((param) => {
+      const eqIdx = param.indexOf('=');
+      if (eqIdx === -1) return;
+      const key = param.slice(0, eqIdx);
+      const value = param.slice(eqIdx + 1);
+      params[key] = decodeURIComponent(value || '');
+    });
+    return params;
+  };
 
-  queryString.split('&').forEach((param) => {
-    const [key, value] = param.split('=');
-    params[key] = decodeURIComponent(value);
-  });
-
-  return params;
-};
-
-  const handleUrl = ({ url }) => {
+ const handleUrl = async ({ url }) => {
+    // Prevent multiple processing of the same URL
+    if (isProcessingDeepLink.current) return;
+    
+    console.log("Handling URL:", url);
     if (!url.startsWith("com.dosylia.URSG://riotCallback")) return;
-
-    const queryParams = parseUrlParams(url);
-
-    if (queryParams?.status === "success") {
-      try {
-        const data = JSON.parse(queryParams.response);
-
-        if (data.message !== "Success") {
-          setErrors(data.message);
-          return;
-        }
-
-        // Set Google session
-        setSession("googleSession", data.googleUser);
-
-        if (!data.newUser) {
-          setSession("userSession", data.user);
-
-          if (data.userExists) {
-            if (data.user.game === "League of Legends") {
-              if (data.leagueUserExists) {
-                setSession("leagueSession", data.leagueUser);
-                if (data.lookingForUserExists) {
-                  setSession("lookingforSession", data.lookingForUser);
-                  router.push("/swiping");
-                } else {
-                  router.push("/lookingfor-data");
-                }
-              } else router.push("/league-data");
-            } else {
-              if (data.valorantUserExists) {
-                setSession("valorantSession", data.valorantUser);
-                if (data.lookingForUserExists) {
-                  setSession("lookingforSession", data.lookingForUser);
-                  router.push("/swiping");
-                } else {
-                  router.push("/lookingfor-data");
-                }
-              } else router.push("/valorant-data");
-            }
-          } else router.push("/basic-info");
-        } else router.push("/basic-info");
-      } catch (err) {
-        console.error("Failed to parse Riot response:", err);
-        setErrors("Invalid response from Riot");
+    
+    isProcessingDeepLink.current = true;
+    
+    try {
+      const queryParams = parseUrlParams(url);
+      console.log("Raw response param:", queryParams.response);
+      
+      if (!queryParams.response) {
+        setErrors("No response parameter found in URL");
+        return;
       }
-    } else {
-      setErrors(queryParams?.error || "Error during Riot sign-in");
+      
+      const decodedResponse = decodeURIComponent(queryParams.response);
+      const data = JSON.parse(decodedResponse);
+      
+      if (data.message !== "Success") {
+        setErrors(data.message);
+        return;
+      }
+      
+      // Check network connection before proceeding
+      const netInfo = await NetInfo.fetch();
+      if (!netInfo.isConnected) {
+        setErrors("No internet connection");
+        return;
+      }
+      
+      // Set Google session
+      await new Promise((resolve) => {
+        setSession("googleSession", data.googleUser, resolve);
+      });
+      
+      if (!data.newUser) {
+        await new Promise((resolve) => {
+          setSession("userSession", data.user, resolve);
+        });
+        
+        if (data.userExists) {
+          if (data.user.game === "League of Legends") {
+            if (data.leagueUserExists) {
+              await new Promise((resolve) => {
+                setSession("leagueSession", data.leagueUser, resolve);
+              });
+              
+              if (data.lookingForUserExists) {
+                await new Promise((resolve) => {
+                  setSession("lookingforSession", data.lookingForUser, resolve);
+                });
+                
+                // Use replace instead of push to avoid adding to navigation stack
+                router.replace("/swiping");
+              } else {
+                router.replace("/lookingfor-data");
+              }
+            } else {
+              router.replace("/league-data");
+            }
+          } else {
+            if (data.valorantUserExists) {
+              await new Promise((resolve) => {
+                setSession("valorantSession", data.valorantUser, resolve);
+              });
+              
+              if (data.lookingForUserExists) {
+                await new Promise((resolve) => {
+                  setSession("lookingforSession", data.lookingForUser, resolve);
+                });
+                
+                router.replace("/swiping");
+              } else {
+                router.replace("/lookingfor-data");
+              }
+            } else {
+              router.replace("/valorant-data");
+            }
+          }
+        } else {
+          router.replace("/basic-info");
+        }
+      } else {
+        router.replace("/basic-info");
+      }
+    } catch (err) {
+      console.error("Failed to parse Riot response:", err);
+      setErrors("Invalid response from Riot");
+    } finally {
+      isProcessingDeepLink.current = false;
     }
   };
 
   useEffect(() => {
-    // Add deep link listener
-    const sub = Linking.addEventListener("url", handleUrl);
+    // Check initial URL when app starts
+    const checkInitialUrl = async () => {
+      try {
+        const url = await Linking.getInitialURL();
+        if (url) {
+          await handleUrl({ url });
+        }
+      } catch (error) {
+        console.error("Error handling initial URL:", error);
+      } finally {
+        setIsAppReady(true);
+      }
+    };
 
-    // Handle cold start deep link
-    Linking.getInitialURL().then((url) => {
-      if (url) handleUrl({ url });
+    checkInitialUrl();
+
+    const linkingSubscription = Linking.addEventListener('url', handleUrl);
+
+    // Listen for app state changes
+    const appStateSubscription = AppState.addEventListener('change', async (nextAppState) => {
+      if (
+        appStateRef.current.match(/inactive|background/) &&
+        nextAppState === 'active'
+      ) {
+        // App has come to the foreground
+        console.log("App has come to the foreground");
+        
+        // Check if we need to refresh data or handle any pending operations
+        const url = await Linking.getInitialURL();
+        if (url) {
+          await handleUrl({ url });
+        }
+      }
+      
+      appStateRef.current = nextAppState;
     });
 
-    // Cleanup
-    return () => sub.remove();
+    return () => {
+      linkingSubscription.remove();
+      appStateSubscription.remove();
+    };
   }, []);
 
   useEffect(() => {
     configureGoogleSignIn();
   }, []);
 
+
   useEffect(() => {
     const checkExistingSessions = async () => {
       try {
         const storedSessions = await AsyncStorage.getItem('userSessions');
         if (storedSessions) {
-          setIsLoading(true)
+          setIsLoading(true);
           const parsedSessions = JSON.parse(storedSessions);
-  
+
           console.log("Parsed sessions from storage:", parsedSessions);
-  
+
           const hasValidGoogleSession = parsedSessions.googleSession && Object.keys(parsedSessions.googleSession).length > 0;
-  
+
           if (hasValidGoogleSession) {
             const userDataStored = {
-              user : {
+              user: {
                 id: parsedSessions.googleSession.googleId,
                 name: parsedSessions.googleSession.fullName,
                 givenName: parsedSessions.googleSession.firstName,
@@ -141,20 +222,24 @@ export default function App() {
                 photo: parsedSessions.googleSession.imageUrl,
                 email: parsedSessions.googleSession.email,
               }
-            }
-  
+            };
+
             submitForm(userDataStored);
           } else {
-            setIsLoading(false)
+            setIsLoading(false);
           }
+        } else {
+          setIsAppReady(true);
         }
       } catch (error) {
         console.log('Error checking sessions in storage:', error);
+        setIsAppReady(true);
       }
     };
-  
+
     checkExistingSessions();
   }, []);
+
 
 
   const signIn = async () => {

@@ -96,6 +96,7 @@ const RootLayout = () => {
                 }}
               >
                 <Stack.Screen name="index" options={{ headerShown: false }} />
+                <Stack.Screen name="notfound" options={{ title: 'Oops!' }} />
               </Stack>
           </FriendListProvider>
         </DataProvider>

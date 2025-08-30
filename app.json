@@ -39,7 +39,7 @@
       "userInterfaceStyle": "automatic",
       "useNextNotificationsApi": true,
       "package": "com.dosylia.URSG",
-       "googleServicesFile": "./android/app/google-services.json",
+      "googleServicesFile": "./android/app/google-services.json",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon-ursg.png",
         "backgroundColor": "#ffffff"
@@ -50,7 +50,26 @@
           "apiKey": "YOUR_API_KEY",
           "certificateHash": "YOUR_CERTIFICATE_HASH"
         }
-      }
+      },
+      "intentFilters": [
+        {
+          "action": "VIEW",
+          "autoVerify": true,
+          "data": [
+            {
+              "scheme": "com.dosylia.URSG",
+              "host" : "com.dosylia.URSG",
+              "pathPrefix": "/"
+            },
+            {
+              "scheme": "com.dosylia.URSG",
+              "host" : "*",
+              "pathPrefix": "/"
+            }
+          ],
+          "category": ["BROWSABLE", "DEFAULT"]
+        }
+      ]
     },
     "web": {
       "bundler": "metro",

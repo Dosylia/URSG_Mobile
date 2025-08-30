@@ -89,6 +89,7 @@ const BasicInfo = () => {
         }
       })
         .then(response => {
+          console.log("Response from server:", response.data);
           const data = response.data;
           if (data.message !== 'Success') {
             setErrors(data.message);
