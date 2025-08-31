@@ -61,7 +61,7 @@ const LeagueData = () => {
 
 
   function submitForm() { // Add google data from Session created in previous step
-    console.log("Submitting form with data:", form);
+    console.log("Submitting form with data:", form, "Skip selection:", skipSelection);
     if (form.rank && form.role && form.server && (skipSelection === 1 || 
       form.main1 !== form.main2 &&
       form.main1 !== form.main3 &&
@@ -71,6 +71,7 @@ const LeagueData = () => {
         form.main2 = '';
         form.main3 = '';
       }
+      console.log("Form data is valid, sending to server...");
       axios.post('https://ur-sg.com/createLeagueUserPhone', {
         leagueData: JSON.stringify({ ...form, skipSelection })
       }, {

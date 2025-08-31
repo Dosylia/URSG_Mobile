@@ -10,7 +10,8 @@ export const SessionProvider = ({ children }) => {
     leagueSession: {},
     valorantSession: {},
     lookingforSession: {},
-    friendId: null
+    friendId: null,
+    errors: null
   });
 
   // Load sessions from AsyncStorage
@@ -41,9 +42,10 @@ export const SessionProvider = ({ children }) => {
           leagueSession: {},
           valorantSession: {},
           lookingforSession: {},
-          friendId: null
+          friendId: null,
+          errors: null
         };
-      } else if (type === 'friendId') {
+      } else if (type === 'friendId' || type === 'errors') {
         updatedSessions = {
           ...prevSessions,
           [type]: data

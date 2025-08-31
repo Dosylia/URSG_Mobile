@@ -81,6 +81,7 @@ const LeagueData = () => {
         }
       })
         .then(response => {
+          console.log("Response from server:", response);
           const data = response.data;
           if (data.message !== 'Success') {
             setErrors(data.message);

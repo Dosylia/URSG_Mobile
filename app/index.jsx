@@ -32,6 +32,14 @@ export default function App() {
   const appStateRef = useRef(AppState.currentState);
   const appImage = colorScheme === 'dark' ? images.logo : images.logoWhite;
 
+  // On mount, if there is an error in session, show it and clear it
+  useEffect(() => {
+    if (sessions.errors) {
+      console.log("Session error detected:", sessions.errors);
+      setErrors(sessions.errors);
+    }
+  }, [sessions.errors]);
+
   const configureGoogleSignIn = () => {
     GoogleSignin.configure({
       webClientId: webClientId,
@@ -60,8 +68,8 @@ export default function App() {
     if (isProcessingDeepLink.current) return;
     
     console.log("Handling URL:", url);
-    if (!url.startsWith("com.dosylia.URSG://riotCallback")) return;
-    
+    if (!url.startsWith("com.dosylia.URSG://riotCallback") && !url.startsWith("com.dosylia.URSG://discordCallback")) return;
+
     isProcessingDeepLink.current = true;
     
     try {
@@ -77,7 +85,9 @@ export default function App() {
       const data = JSON.parse(decodedResponse);
       
       if (data.message !== "Success") {
-        setErrors(data.message);
+        setSession('errors', data.message);
+        console.log('Session was set with error:', data.message);
+        router.replace("/");
         return;
       }
       
@@ -267,6 +277,13 @@ export default function App() {
     );
   };
 
+  const signInDiscord = () => {
+    console.log("Attempting to sign in with Discord");
+    Linking.openURL("https://ur-sg.com/connectDiscordMobile?phoneData=yes").catch(
+      (err) => console.error("Failed to open URL:", err)
+    );
+  };
+
   function submitForm(userInfo) {
 
     const googleId = userInfo.user.id;
@@ -430,12 +447,12 @@ export default function App() {
           <View className="w-full flex justify-normal items-center h-full px-4">
             <Image
               source={appImage}
-              className="w-[150px] h-[100px] mt-3"
+              className="w-[150px] h-[100px]"
               resizeMode='contain'
             />
             <Image
               source={images.ahri}
-              className="max-w-[380px] w-full h-[300px] rounded-md"
+              className="max-w-[320px] w-full h-[250px] rounded-md"
               resizeMode='contain'
             />
             <View className="relative mt-4">
@@ -451,6 +468,11 @@ export default function App() {
             <CustomButton
               title={t('join-google')}
               handlePress={signIn}
+              containerStyles="w-full mt-7"
+            />
+            <CustomButton
+              title={t('join-discord')}
+              handlePress={signInDiscord}
               containerStyles="w-full mt-7"
             />
             <CustomButton
