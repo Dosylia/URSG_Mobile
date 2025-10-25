@@ -121,8 +121,8 @@ android {
         applicationId 'com.dosylia.URSG'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 37
-        versionName "1.3.6"
+        versionCode 38
+        versionName "1.3.7"
     }
     signingConfigs {
         debug {

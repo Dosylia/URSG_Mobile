@@ -218,7 +218,7 @@ const StoreAndLeaderboard = () => {
                 <View className="mt-2 w-full">
                   <Text className="text-2xl text-mainred">{item.items_name}</Text>
                   <Text className="text-lg text-white dark:text-blackPerso">
-                    {sessions.userSession.isVip ? (
+                    {sessions.userSession.isGold ? (
                       <>
                         <Text style={{ textDecorationLine: 'line-through' }}>{item.items_price} </Text>
                         <Text>{item.items_price * 0.8} <Image source={icons.soulHard} className="w-4 h-4" /></Text>
@@ -237,22 +237,22 @@ const StoreAndLeaderboard = () => {
                 <TouchableOpacity
                   className={`mt-4 p-2 rounded-full ${(
                     ownedItems.some(ownedItem => ownedItem.items_id === item.items_id) || 
-                    (item.items_category === "role" && sessions.userSession.isVip === 1)
+                    (item.items_category === "role" && sessions.userSession.isGold === 1)
                   ) ? 'bg-gray-500' : 'bg-mainred'}`}
                   onPress={() => (
                     (ownedItems.some(ownedItem => ownedItem.items_id === item.items_id) || 
-                    (item.items_category === "role" && sessions.userSession.isVip === 1))
+                    (item.items_category === "role" && sessions.userSession.isGold === 1))
                     ? null 
                     : handleBuyItem(item.items_id, item.items_category)
                   )}
                   disabled={
                     (ownedItems.some(ownedItem => ownedItem.items_id === item.items_id) || 
-                    (item.items_category === "role" && sessions.userSession.isVip === 1))
+                    (item.items_category === "role" && sessions.userSession.isGold === 1))
                   }
                 >
                   <Text className="text-white text-center">
                     {(ownedItems.some(ownedItem => ownedItem.items_id === item.items_id) || 
-                      (item.items_category === "role" && sessions.userSession.isVip === 1))
+                      (item.items_category === "role" && sessions.userSession.isGold === 1))
                       ? t('owned') 
                       : t('buy')}
                   </Text>
@@ -289,9 +289,9 @@ const StoreAndLeaderboard = () => {
                       <Image source={icons.soulHard} className="w-4 h-4 inline" />
                     </Text>
 
-                    {/* VIP Status */}
+                    {/* Gold Status */}
                     <Text className="text-white dark:text-blackPerso w-24 text-center">
-                      {user.user_isVip ? 'Premium' : 'Regular'}
+                      {user.user_isGold ? 'Gold' : 'Regular'}
                     </Text>
                   </View>
                 ))}

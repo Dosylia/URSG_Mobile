@@ -163,10 +163,10 @@ const ProfileHeader = ({ userData, isProfile }) => {
         <Text className="text-xl pr-3">, {userData?.age || 'N/A'}</Text>
       </Text>
 
-        {/* VIP badge if applicable */}
-        {userData?.isVip && (
+        {/* Gold badge if applicable */}
+        {userData?.isGold && (
           <Image 
-            source={images.premiumBadge} 
+            source={images.goldBadge} 
             style={{ width: 30, height: 30 }} 
           />
         )}

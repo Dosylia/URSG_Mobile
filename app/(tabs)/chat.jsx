@@ -29,8 +29,6 @@ const ChatPage = () => {
   const [newMessage, setNewMessage] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [errors, setErrors] = useState(null);
-  const [friendPage, setFriendPage] = useState(true);
-  const [chatPage, setChatPage] = useState(false);
   const backgroundColorClass = colorScheme === 'dark' ? 'bg-gray-300' : 'bg-gray-800';
   const placeholderColor = colorScheme === 'dark' ? '#2f2f30' : '#bcb0b0';
   const profileImage = images.defaultpicture; 
@@ -40,17 +38,18 @@ const ChatPage = () => {
   const [isBlocked, setIsBlocked] = useState(false);
   const { friendList } = useFriendList();
   const [isEmotePickerVisible, setIsEmotePickerVisible] = useState(false);
-  const [ownVIPEmotes, setownVIPEmotes] = useState(false);
+  const [ownGoldEmotes, setownGoldEmotes] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [imagePicked, setImagePicked] = useState(false);
   const [image, setImage] = useState(null);
   const [fileName, setFileName] = useState(null);
+  const [currentView, setCurrentView] = useState('friendList');
 
   const scrollViewRef = useRef();
 
   useEffect(() => {
     fetchChatData();
-    fetchOwnVIPEmotes();
+    fetchownGoldEmotes();
   }, [friendList]);
 
   const fetchChatData = async () => {
@@ -63,8 +62,6 @@ const ChatPage = () => {
         await AsyncStorage.removeItem('selectedFriendId');
         handleSelectFriend(lastFriend);
       }
-    } else if (friendList.length > 0) {
-      setFriendPage(true);
     }
 
     setIsLoading(false);
@@ -76,8 +73,7 @@ const ChatPage = () => {
 
     if (blockStatus) {
       fetchChatData();  
-      setFriendPage(true); 
-      setChatPage(false);
+      setCurrentView('friendList');
     }
   };
 
@@ -213,9 +209,9 @@ const pickImageFallback = async () => {
 };
 
 
-  const fetchOwnVIPEmotes = async () => {
+  const fetchownGoldEmotes = async () => {
     try {
-      const response = await axios.post('https://ur-sg.com/ownVIPEmotesPhone', {
+      const response = await axios.post('https://ur-sg.com/ownGoldEmotesPhone', {
         userId: userId
       }, {
         headers: {
@@ -225,10 +221,10 @@ const pickImageFallback = async () => {
       });
       const emoteOwnershipData = response.data;
       if (emoteOwnershipData.message === 'Success') {
-        if (emoteOwnershipData.ownVIPEmotes) {
-          setownVIPEmotes(true);
+        if (emoteOwnershipData.ownGoldEmotes) {
+          setownGoldEmotes(true);
         } else {
-          setownVIPEmotes(false);
+          setownGoldEmotes(false);
         }
       }
     } catch (error) {
@@ -256,12 +252,12 @@ const pickImageFallback = async () => {
         const formattedMessages = messages.map((message) => {
           const isSenderCurrentUser = message.chat_senderId === user.user_id;
   
-          const senderOwnsVIPEmotes = isSenderCurrentUser ? user.ownVIPEmotes : friend.ownVIPEmotes;
+          const senderOwnsGoldEmotes = isSenderCurrentUser ? user.ownGoldEmotes : friend.ownGoldEmotes;
   
           return {
             ...message,
             formattedTime: formatTimestamp(message.chat_date),
-            senderOwnsVIPEmotes,  
+            senderOwnsGoldEmotes,  
           };
         });
   
@@ -288,7 +284,7 @@ const pickImageFallback = async () => {
 }
 
 
-const renderEmotes = (message, textStyle, isVIPAllowed) => {
+const renderEmotes = (message, textStyle, isGoldAllowed) => {
   const emoteMap = {
     ':surprised-cat:': emotes.surprisedCat,
     ':cat-smile:': emotes.catSmile,
@@ -304,37 +300,37 @@ const renderEmotes = (message, textStyle, isVIPAllowed) => {
     ':cat-love:': emotes.catLove,
   };
 
-  const vipEmoteMap = {
-    ':vipurpe-stonk:': emotes.VIPurpeStonks,
-    ':urpe-stonks:': emotes.VIPurpeStonks,
-    ':vipurpe-blanket:': emotes.VIPurpeBlanket,
-    ':urpe-blanket:': emotes.VIPurpeBlanket,
-    ':vipurpe-blush:': emotes.VIPurpeBlush,
-    ':urpe-blush:': emotes.VIPurpeBlush,
-    ':vipurpe-cool:': emotes.VIPurpeCool,
-    ':urpe-cool:': emotes.VIPurpeCool,
-    ':vipurpe-cry:': emotes.VIPurpeCry,
-    ':urpe-cry:': emotes.VIPurpeCry,
-    ':vipurpe-dead:': emotes.VIPurpeDead,
-    ':urpe-dead:': emotes.VIPurpeDead,
-    ':vipurpe-eat:': emotes.VIPurpeEat,
-    ':urpe-eat:': emotes.VIPurpeEat,
-    ':vipurpe-heart:': emotes.VIPurpeHeart,
-    ':urpe-heart:': emotes.VIPurpeHeart,
-    ':vipurpe-hide:': emotes.VIPurpeHide,
-    ':urpe-hide:': emotes.VIPurpeHide,
-    ':vipurpe-hype:': emotes.VIPurpeHype,
-    ':urpe-hype:': emotes.VIPurpeHype,
-    ':vipurpe-jesus:': emotes.VIPurpeJesus,
-    ':urpe-jesus:': emotes.VIPurpeJesus,
-    ':vipurpe-not-stonks:': emotes.VIPurpeNotStonks,
-    ':urpe-notstonks:': emotes.VIPurpeNotStonks,
-    ':vipurpe-sip:': emotes.VIPurpeSip,
-    ':urpe-sip:': emotes.VIPurpeSip,
-    ':urpe-sad:': emotes.VIPurpeSad,
-    ':vipurpe-sad:': emotes.VIPurpeSad,
-    ':urpe-run:': emotes.VIPurpeRun,
-    ':vipurpe-run:': emotes.VIPurpeRun,
+  const goldEmoteMap = {
+    ':goldurpe-stonk:': emotes.GoldurpeStonks,
+    ':urpe-stonks:': emotes.GoldurpeStonks,
+    ':goldurpe-blanket:': emotes.GoldurpeBlanket,
+    ':urpe-blanket:': emotes.GoldurpeBlanket,
+    ':goldurpe-blush:': emotes.GoldurpeBlush,
+    ':urpe-blush:': emotes.GoldurpeBlush,
+    ':goldurpe-cool:': emotes.GoldurpeCool,
+    ':urpe-cool:': emotes.GoldurpeCool,
+    ':goldurpe-cry:': emotes.GoldurpeCry,
+    ':urpe-cry:': emotes.GoldurpeCry,
+    ':goldurpe-dead:': emotes.GoldurpeDead,
+    ':urpe-dead:': emotes.GoldurpeDead,
+    ':goldurpe-eat:': emotes.GoldurpeEat,
+    ':urpe-eat:': emotes.GoldurpeEat,
+    ':goldurpe-heart:': emotes.GoldurpeHeart,
+    ':urpe-heart:': emotes.GoldurpeHeart,
+    ':goldurpe-hide:': emotes.GoldurpeHide,
+    ':urpe-hide:': emotes.GoldurpeHide,
+    ':goldurpe-hype:': emotes.GoldurpeHype,
+    ':urpe-hype:': emotes.GoldurpeHype,
+    ':goldurpe-jesus:': emotes.GoldurpeJesus,
+    ':urpe-jesus:': emotes.GoldurpeJesus,
+    ':goldurpe-not-stonks:': emotes.GoldurpeNotStonks,
+    ':urpe-notstonks:': emotes.GoldurpeNotStonks,
+    ':goldurpe-sip:': emotes.GoldurpeSip,
+    ':urpe-sip:': emotes.GoldurpeSip,
+    ':urpe-sad:': emotes.GoldurpeSad,
+    ':goldurpe-sad:': emotes.GoldurpeSad,
+    ':urpe-run:': emotes.GoldurpeRun,
+    ':goldurpe-run:': emotes.GoldurpeRun,
   };
 
   return message.split(/(:[a-zA-Z0-9]+(?:-[a-zA-Z0-9]+)*:)/g).map((part, index) => {
@@ -349,11 +345,11 @@ const renderEmotes = (message, textStyle, isVIPAllowed) => {
         />
       );
     }
-    if (vipEmoteMap[cleanedPart] && isVIPAllowed) {
+    if (goldEmoteMap[cleanedPart] && isGoldAllowed) {
       return (
         <Image
-          key={`vipemote-${index}`}
-          source={vipEmoteMap[cleanedPart]}
+          key={`goldemote-${index}`}
+          source={goldEmoteMap[cleanedPart]}
           style={{ width: 30, height: 30 }}
           resizeMode="contain"
         />
@@ -378,7 +374,7 @@ const sanitizeUrl = (url) => {
 };
 
 
-const processMessageContent = (content, textStyle, isVIPAllowed) => {
+const processMessageContent = (content, textStyle, isGoldAllowed) => {
   const imageRegex = /\[img\](.*?)\[\/img\]/g;
   const parts = [];
   let lastIndex = 0;
@@ -387,7 +383,7 @@ const processMessageContent = (content, textStyle, isVIPAllowed) => {
   while ((match = imageRegex.exec(content)) !== null) {
     const textBefore = content.slice(lastIndex, match.index);
     if (textBefore) {
-      parts.push(...renderEmotes(textBefore, textStyle, isVIPAllowed));
+      parts.push(...renderEmotes(textBefore, textStyle, isGoldAllowed));
     }
 
     const url = match[1];
@@ -414,7 +410,7 @@ const processMessageContent = (content, textStyle, isVIPAllowed) => {
 
   const textAfter = content.slice(lastIndex);
   if (textAfter) {
-    parts.push(...renderEmotes(textAfter, textStyle, isVIPAllowed));
+    parts.push(...renderEmotes(textAfter, textStyle, isGoldAllowed));
   }
 
   return parts;
@@ -438,15 +434,13 @@ const addEmoteToMessage = (emoteCode) => {
 
   const handleSelectFriend = async (friend) => {
     setSelectedFriend(friend);
-    setFriendPage(false);
-    setChatPage(true);
+    setCurrentView('chat');
     setMessages([]);
     fetchMessages(userId, friend.friend_id);
   };
 
   const handleBackToFriendList = () => {
-    setChatPage(false);
-    setFriendPage(true);
+    setCurrentView('friendList');
   };
 
   const handleSendMessage = async () => {
@@ -551,7 +545,7 @@ const addEmoteToMessage = (emoteCode) => {
       'catLaugh': 'cat-laugh',
       'catCrying': 'cat-crying',
       'catLove': 'cat-love',
-      'VIPurpeStonks': 'vipurpe-stonk',
+      'GoldurpeStonks': 'goldurpe-stonk',
     };
   
     const dashCaseKey = dashCaseModel[camelCaseKey] || camelCaseKey
@@ -563,7 +557,7 @@ const addEmoteToMessage = (emoteCode) => {
   
   return (
     <View className="flex-1 bg-gray-900 p-4 dark:bg-whitePerso">
-{friendPage && (
+{currentView === 'friendList' && (
   friends.length > 0 ? (
     <View className="flex-1">
       <Text className="text-mainred text-3xl mb-2 font-bold">{t('friends-list')}</Text>
@@ -652,7 +646,7 @@ const addEmoteToMessage = (emoteCode) => {
         )
       )}
 
-      {chatPage && (
+      {currentView === 'chat' && (
         <>
           <ScrollView ref={scrollViewRef} contentContainerStyle={{ flexGrow: 1 }} stickyHeaderIndices={[0]} onContentSizeChange={() => scrollViewRef.current?.scrollToEnd({ animated: true })}>
             <View className="sticky top-0 bg-gray-900 dark:bg-whitePerso z-10">
@@ -685,8 +679,8 @@ const addEmoteToMessage = (emoteCode) => {
                   {/* Message Content */}
                   <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
                     {sessions.userSession.hasChatFilter 
-                      ? processMessageContent(chatfilter(he.decode(message.chat_message)), textStyle, message.senderOwnsVIPEmotes)
-                      : processMessageContent(he.decode(message.chat_message), textStyle, message.senderOwnsVIPEmotes)}
+                      ? processMessageContent(chatfilter(he.decode(message.chat_message)), textStyle, message.senderOwnsGoldEmotes)
+                      : processMessageContent(he.decode(message.chat_message), textStyle, message.senderOwnsGoldEmotes)}
                   </View>
 
                   {/* Time + Read/Unread status */}
@@ -717,8 +711,8 @@ const addEmoteToMessage = (emoteCode) => {
                   <View className="flex-row flex-wrap justify-around">
                     {Object.keys(emotes)
                       .filter(emoteKey => {
-                        const isVIP = emoteKey.startsWith('VIP');
-                        if (isVIP && !ownVIPEmotes) {
+                        const isGold = emoteKey.startsWith('Gold');
+                        if (isGold && !ownGoldEmotes) {
                           return false; 
                         }
                         return true;
