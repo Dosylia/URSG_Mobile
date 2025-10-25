@@ -133,8 +133,17 @@ const StoreAndLeaderboard = () => {
   };
 
   const filteredItems = useMemo(() => {
-    return selectedCategory === 'all' ? items : items.filter(item => item.items_category === selectedCategory);
+    // Exclude items we don't want to show in the store
+    const visibleItems = items.filter(item =>
+      item.items_name !== 'Ursg Ascend' &&
+      item.items_category !== 'currency'
+    );
+
+    return selectedCategory === 'all'
+      ? visibleItems
+      : visibleItems.filter(item => item.items_category === selectedCategory);
   }, [items, selectedCategory]);
+
 
   useEffect(() => {
     fetchAllUsers();
