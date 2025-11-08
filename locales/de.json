@@ -134,6 +134,11 @@
     "pf-chat": "Chat",
     "pf-chat-add": "Hinzufügen und chatten",
     "pf-close": "Schließen",
+    "a-new-version": "Eine neue Version",
+    "version-available": "ist verfügbar. Bitte starten Sie die Anwendung neu, um zu aktualisieren.",
+    "update-now": "Jetzt aktualisieren",
+    "update-title": "Aktualisierung verfügbar",
+    "actual-version": "Aktuelle Version",
     "basic-info": {
         "username": "Benutzername",
         "gender": "Geschlecht",

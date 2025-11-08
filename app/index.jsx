@@ -26,6 +26,8 @@ export default function App() {
   const [errors, setErrors] = useState('');
   const [error, setError] = useState();
   const [isLoading, setIsLoading] = useState(false);
+  const [updateNeeded, setUpdateNeeded] = useState(true);
+  const [latestVersion, setLatestVersion] = useState(null);
   const [isAppReady, setIsAppReady] = useState(false);
   const { setSession, sessions } = useContext(SessionContext);
   const isProcessingDeepLink = useRef(false);
@@ -39,6 +41,39 @@ export default function App() {
       setErrors(sessions.errors);
     }
   }, [sessions.errors]);
+
+const isMobileUpdateNeeded = async () => {
+  const currentVersion = '1.3.8';
+  try {
+    const params = new URLSearchParams();
+    params.append('currentVersion', currentVersion);
+
+    const response = await axios.post('https://ur-sg.com/isMobileUpdateNeeded', params, {
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+    });
+
+    setUpdateNeeded(response.data.updateNeeded);
+    return [response.data.updateNeeded, response.data.latestVersion];
+  } catch (error) {
+    console.error("Error checking for mobile update:", error);
+    setUpdateNeeded(false);
+  } 
+};
+
+  useEffect(() => {
+      let mounted = true;
+      (async () => {
+        try {
+          const res = await isMobileUpdateNeeded();
+          if (!mounted || !res) return;
+          const [, latest] = res;
+          if (latest) setLatestVersion(latest);
+        } catch (e) {
+          console.error('Update check failed', e);
+      }
+      })();
+      return () => { mounted = false; };
+    }, []);
 
   const configureGoogleSignIn = () => {
     GoogleSignin.configure({
@@ -450,6 +485,40 @@ export default function App() {
               className="w-[150px] h-[100px]"
               resizeMode='contain'
             />
+              {/* Update banner — visible when API signals an update is needed */}
+              {updateNeeded ? (
+                <View className="w-full mt-6 p-[1px] rounded-2xl bg-gradient-to-r from-rose-500 via-pink-500 to-red-500 shadow-2xl">
+                  <View className="bg-[#e74057] rounded-2xl p-5 flex flex-col items-center">
+                    <Text className="text-white font-extrabold text-xl tracking-wide">
+                      🔔 {t('update-title')}
+                    </Text>
+                    <Text className="text-white text-center mt-2 leading-5">
+                      {t('a-new-version')}
+                      {latestVersion ? ` (${latestVersion})` : ''} {t('version-available')}
+                    </Text>
+
+                    <TouchableOpacity
+                      onPress={() =>
+                        Linking.openURL(
+                          'https://play.google.com/store/apps/details?id=com.dosylia.URSG&pcampaignid=web_share'
+                        )
+                      }
+                      className="mt-5 w-full"
+                    >
+                      <View className="bg-gradient-to-r from-rose-500 to-red-500 py-3 rounded-xl shadow-md">
+                        <Text className="text-white text-center font-semibold text-base">
+                          {t('update-now')}
+                        </Text>
+                      </View>
+                    </TouchableOpacity>
+
+                    <View className="mt-4 flex-row items-center">
+                      <View className="w-2 h-2 rounded-full bg-pink-400 mr-2" />
+                      <Text className="text-xs text-white">{t('actual-version')} : 1.3.8</Text>
+                    </View>
+                  </View>
+                </View>
+              ) : null}
             <Image
               source={images.ahri}
               className="max-w-[320px] w-full h-[250px] rounded-md"

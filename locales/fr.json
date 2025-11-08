@@ -134,6 +134,11 @@
     "pf-chat": "Discussion",
     "pf-chat-add": "Ajouter et discuter",
     "pf-close": "Fermer",
+    "a-new-version": "Une nouvelle version",
+    "version-available": "est disponible. Veuillez redémarrer l'application pour mettre à jour.",
+    "update-now": "Mettre à jour maintenant",
+    "update-title": "Mise à jour disponible",
+    "actual-version": "Version actuelle",
     "basic-info": {
         "username": "Nom d'utilisateur",
         "gender": "Genre",

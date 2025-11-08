@@ -134,6 +134,11 @@
     "pf-chat": "Chat",
     "pf-chat-add": "Add and chat",
     "pf-close": "Close",
+    "a-new-version": "A new version",
+    "version-available": "is available. Please restart the application to update.",
+    "update-now": "Update now",
+    "update-title": "Update available",
+    "actual-version": "Current version",
     "basic-info": {
         "username": "Username",
         "gender": "Gender",
